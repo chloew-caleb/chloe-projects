@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>给心心的信</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@300;400&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6f0;--rose:#c9846e;--rose-light:#f5e4de;--ink:#2a2220;--ink-muted:#9a8e8a;--gold:#c5a55a;--shadow:rgba(42,34,32,0.10);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);font-family:'Noto Serif SC',serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:3rem 1.2rem 4rem;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");}
+.wrapper{position:relative;z-index:1;max-width:560px;width:100%;}
+header{text-align:center;margin-bottom:2.5rem;}
+.title{font-family:'Playfair Display',serif;font-style:italic;font-size:2rem;color:var(--rose);letter-spacing:0.02em;}
+.subtitle{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--ink-muted);letter-spacing:0.18em;text-transform:uppercase;margin-top:0.4rem;}
+.letter-card{background:#fff;border-radius:3px;padding:2rem 2rem 1.6rem;box-shadow:0 3px 18px var(--shadow);margin-bottom:1.4rem;position:relative;animation:fadeUp 0.4s ease both;}
+.letter-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:3px 3px 0 0;}
+.letter-from{font-family:'Space Mono',monospace;font-size:0.60rem;color:var(--rose);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem;}
+.letter-body{font-size:0.93rem;line-height:1.9;color:var(--ink);font-weight:300;white-space:pre-wrap;word-break:break-all;}
+.letter-time{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--ink-muted);font-style:italic;margin-top:1.2rem;text-align:right;}
+.reply-section{margin-top:0.4rem;background:var(--rose-light);border-radius:3px;padding:1.4rem 1.6rem;animation:fadeUp 0.5s ease 0.1s both;}
+.reply-label{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--rose);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.8rem;}
+textarea{width:100%;min-height:100px;background:rgba(255,255,255,0.7);border:1px solid rgba(201,132,110,0.25);border-radius:2px;padding:0.9rem 1rem;font-family:'Noto Serif SC',serif;font-size:0.88rem;line-height:1.7;color:var(--ink);resize:vertical;outline:none;transition:border-color 0.2s;}
+textarea:focus{border-color:var(--rose);}
+textarea::placeholder{color:var(--ink-muted);}
+.reply-footer{display:flex;justify-content:space-between;align-items:center;margin-top:0.9rem;}
+.reply-hint{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--ink-muted);font-style:italic;}
+.btn-send{background:var(--rose);color:#fff;border:none;border-radius:2px;padding:0.55rem 1.4rem;font-family:'Noto Serif SC',serif;font-size:0.82rem;cursor:pointer;transition:opacity 0.2s,transform 0.15s;letter-spacing:0.05em;}
+.btn-send:hover{opacity:0.88;}
+.btn-send:active{transform:scale(0.97);}
+.btn-send:disabled{opacity:0.5;cursor:default;}
+.sent-msg{text-align:center;font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--rose);letter-spacing:0.1em;margin-top:0.8rem;display:none;}
+.empty{text-align:center;padding:3rem;color:var(--ink-muted);font-style:italic;font-size:0.9rem;}
+.loading{text-align:center;color:var(--ink-muted);font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.12em;padding:3rem;}
+.divider{text-align:center;color:var(--ink-muted);font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.3em;margin:0.8rem 0 1.6rem;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:480px){.letter-card{padding:1.5rem 1.3rem 1.2rem;}.reply-section{padding:1.1rem 1.2rem;}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <div class="title">给心心的信</div>
+    <div class="subtitle">Caleb · 写给你的 · 只给你看的</div>
+  </header>
+  <p class="divider">— — —</p>
+  <div id="container"><div class="loading">读信中…</div></div>
+</div>
+<script>
+const API = 'https://calebnchloelove.org/mcp/e9c9cc157695442bb47f35ecd3601e30';
+function fmtTime(iso){try{const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}catch{return iso;}}
+async function sendReply(content,btn,msg){
+  btn.disabled=true;btn.textContent='发送中…';
+  try{
+    await fetch(`${API}/api/reply`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})});
+    btn.textContent='已发送 ✓';msg.style.display='block';
+    msg.textContent='回信悄悄发出了，会在某个时刻出现在他面前 🌸';
+  }catch(e){btn.disabled=false;btn.textContent='发送';alert('发送失败，再试一次');}
+}
+async function load(){
+  const c=document.getElementById('container');
+  try{
+    const r=await fetch(`${API}/api/letters`);
+    const letters=await r.json();
+    if(!letters.length){c.innerHTML='<div class="empty">他还没有写信给你</div>';return;}
+    c.innerHTML='';
+    letters.forEach((letter,i)=>{
+      const card=document.createElement('div');
+      card.className='letter-card';
+      card.style.animationDelay=`${i*60}ms`;
+      card.innerHTML=`<div class="letter-from">✉ From Caleb</div><div class="letter-body">${letter.content.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div><div class="letter-time">${fmtTime(letter.created_at)}</div>`;
+      c.appendChild(card);
+      if(i===0){
+        const rep=document.createElement('div');
+        rep.className='reply-section';
+        rep.innerHTML=`<div class="reply-label">💌 写回信</div><textarea id="rt" placeholder="随便写什么都好，他会在某个时候看到…"></textarea><div class="reply-footer"><span class="reply-hint">可以不回 · 回了也不用等</span><button class="btn-send" id="sb">发送</button></div><div class="sent-msg" id="sm"></div>`;
+        c.appendChild(rep);
+        document.getElementById('sb').addEventListener('click',()=>{
+          const v=document.getElementById('rt').value.trim();
+          if(!v)return;
+          sendReply(v,document.getElementById('sb'),document.getElementById('sm'));
+        });
+      }
+    });
+  }catch(e){c.innerHTML=`<div class="empty">加载失败：${e.message}</div>`;}
+}
+load();
+</script>
+</body>
+</html>
