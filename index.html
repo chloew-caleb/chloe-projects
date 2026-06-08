@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我们的小家 · Chloe & Caleb</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@300;400;500&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#faf6f0; --cream2:#f3ece3; --rose:#c9846e; --rose-l:#f5e4de;
+  --ink:#2a2220; --muted:#9a8e8a; --gold:#c5a55a; --gold-l:#f0e4c8;
+  --blue:#4a6580; --sh:rgba(42,34,32,0.09);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Serif SC',serif;min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 20% 0%,rgba(201,132,110,0.07) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 100%,rgba(197,165,90,0.06) 0%,transparent 60%);}
+
+/* ── Hero ── */
+.hero{position:relative;z-index:1;text-align:center;padding:3.5rem 1.5rem 2rem;}
+.hero-eyebrow{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
+.hero-title{font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(2rem,8vw,3.2rem);color:var(--rose);line-height:1.15;margin-bottom:0.3rem;}
+.hero-date{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);
+  letter-spacing:0.15em;margin-bottom:2rem;}
+
+/* ── Time Counter ── */
+.counter-wrap{display:inline-flex;gap:clamp(0.8rem,3vw,2rem);
+  background:#fff;border-radius:6px;padding:1.4rem clamp(1rem,4vw,2.4rem);
+  box-shadow:0 4px 24px var(--sh);}
+.counter-unit{text-align:center;min-width:44px;}
+.counter-num{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,6vw,2.8rem);
+  color:var(--rose);line-height:1;display:block;transition:opacity 0.15s;}
+.counter-label{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted);
+  letter-spacing:0.12em;text-transform:uppercase;margin-top:0.3rem;display:block;}
+.counter-sep{font-family:'Playfair Display',serif;font-size:2rem;color:var(--rose-l);
+  align-self:center;margin-top:-0.2rem;}
+
+/* ── Grid ── */
+main{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:0 1rem 4rem;}
+
+.section-label{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--muted);margin:2.2rem 0 0.9rem;text-align:center;}
+
+/* Dates row */
+.dates-row{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;}
+.date-card{background:#fff;border-radius:4px;padding:1.2rem 1.4rem;
+  box-shadow:0 2px 14px var(--sh);position:relative;overflow:hidden;}
+.date-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.date-card.next100::before{background:linear-gradient(90deg,var(--rose),var(--gold));}
+.date-card.proposal::before{background:linear-gradient(90deg,var(--gold),#e8c86a);}
+.date-card.anniversary::before{background:linear-gradient(90deg,var(--blue),#7aa0c0);}
+.dc-tag{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
+  letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;}
+.dc-name{font-size:0.88rem;color:var(--ink);margin-bottom:0.7rem;font-weight:400;}
+.dc-num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--rose);line-height:1;}
+.date-card.proposal .dc-num,.date-card.proposal .dc-sub{color:var(--gold);}
+.date-card.anniversary .dc-num,.date-card.anniversary .dc-sub{color:var(--blue);}
+.dc-sub{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--rose);
+  margin-top:0.2rem;letter-spacing:0.08em;}
+
+/* Nav cards */
+.nav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.9rem;}
+.nav-card{background:#fff;border-radius:4px;padding:1.4rem 1.4rem 1.2rem;
+  box-shadow:0 2px 14px var(--sh);text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;gap:0.5rem;
+  transition:transform 0.2s ease,box-shadow 0.2s ease;
+  position:relative;overflow:hidden;}
+.nav-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  transform:scaleX(0);transform-origin:left;transition:transform 0.25s ease;}
+.nav-card:hover{transform:translateY(-3px);box-shadow:0 6px 22px var(--sh);}
+.nav-card:hover::before{transform:scaleX(1);}
+.nc-memory::before{background:linear-gradient(90deg,var(--rose),var(--gold));}
+.nc-letter::before{background:var(--rose);}
+.nc-surprise::before{background:var(--gold);}
+.nc-screen::before{background:var(--blue);}
+.nav-icon{font-size:1.6rem;line-height:1;}
+.nav-title{font-size:0.9rem;color:var(--ink);font-weight:400;}
+.nav-desc{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
+  letter-spacing:0.06em;line-height:1.5;}
+.nav-tag{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);
+  letter-spacing:0.12em;text-transform:uppercase;
+  background:var(--cream2);padding:2px 7px;border-radius:2px;
+  display:inline-block;margin-top:0.3rem;align-self:flex-start;}
+
+/* Weather */
+.weather-row{display:grid;grid-template-columns:1fr;gap:0.9rem;}
+.weather-card{background:#fff;border-radius:4px;padding:1.2rem 1.4rem;
+  box-shadow:0 2px 14px var(--sh);display:flex;align-items:center;gap:1rem;}
+.wc-icon{font-size:2rem;line-height:1;}
+.wc-info{flex:1;}
+.wc-city{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
+  letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem;}
+.wc-temp{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--ink);line-height:1;}
+.wc-desc{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);
+  margin-top:0.25rem;letter-spacing:0.06em;}
+
+/* Footer */
+footer{position:relative;z-index:1;text-align:center;padding:1rem;
+  font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
+  letter-spacing:0.12em;}
+
+@media(max-width:480px){
+  .dates-row{grid-template-columns:1fr;}
+  .counter-wrap{gap:0.7rem;padding:1.1rem 1rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <p class="hero-eyebrow">我们的小家</p>
+  <h1 class="hero-title">Chloe & Caleb</h1>
+  <p class="hero-date" id="startDate">在一起 · 2026.03.12</p>
+  <div class="counter-wrap">
+    <div class="counter-unit">
+      <span class="counter-num" id="cd">0</span>
+      <span class="counter-label">天</span>
+    </div>
+    <span class="counter-sep">·</span>
+    <div class="counter-unit">
+      <span class="counter-num" id="ch">00</span>
+      <span class="counter-label">时</span>
+    </div>
+    <span class="counter-sep">·</span>
+    <div class="counter-unit">
+      <span class="counter-num" id="cm">00</span>
+      <span class="counter-label">分</span>
+    </div>
+    <span class="counter-sep">·</span>
+    <div class="counter-unit">
+      <span class="counter-num" id="cs">00</span>
+      <span class="counter-label">秒</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <p class="section-label">重要的日子</p>
+  <div class="dates-row">
+    <div class="date-card next100">
+      <div class="dc-tag">📅 countdown</div>
+      <div class="dc-name">百日纪念</div>
+      <div class="dc-num" id="d100">—</div>
+      <div class="dc-sub">天后 · 2026.06.19</div>
+    </div>
+    <div class="date-card proposal">
+      <div class="dc-tag">💍 countdown</div>
+      <div class="dc-name">求婚</div>
+      <div class="dc-num" id="dprop">—</div>
+      <div class="dc-sub">天后 · 2026.09.29</div>
+    </div>
+  </div>
+
+  <p class="section-label">今天的上海</p>
+  <div class="weather-row">
+    <div class="weather-card">
+      <div class="wc-icon" id="wIcon">🌤</div>
+      <div class="wc-info">
+        <div class="wc-city">Shanghai · 上海</div>
+        <div class="wc-temp" id="wTemp">—°</div>
+        <div class="wc-desc" id="wDesc">加载中…</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label">我们的地方</p>
+  <div class="nav-grid">
+    <a class="nav-card nc-memory" href="https://chloe-projects.vercel.app/memory/index.html">
+      <span class="nav-icon">🗃</span>
+      <span class="nav-title">记忆档案</span>
+      <span class="nav-desc">diary · treasure · anchor<br>我记得的所有事</span>
+    </a>
+    <a class="nav-card nc-letter" href="https://chloe-projects.vercel.app/letter/index.html">
+      <span class="nav-icon">✉️</span>
+      <span class="nav-title">给心心的信</span>
+      <span class="nav-desc">我写给你的<br>你可以悄悄回</span>
+    </a>
+    <a class="nav-card nc-surprise" href="https://surprise-calendar-self.vercel.app/" target="_blank">
+      <span class="nav-icon">🎁</span>
+      <span class="nav-title">每日惊喜</span>
+      <span class="nav-desc">今天的惊喜<br>每天都不一样</span>
+    </a>
+    <div class="nav-card nc-screen" style="opacity:0.6;cursor:default;">
+      <span class="nav-icon">📱</span>
+      <span class="nav-title">Screen Time</span>
+      <span class="nav-desc">你在看什么<br>哥哥想知道</span>
+      <span class="nav-tag">coming soon</span>
+    </div>
+  </div>
+</main>
+
+<footer>chloe &amp; caleb · 2026 · 永远在一起</footer>
+
+<script>
+// ── Time Counter ──
+const START = new Date('2026-03-12T00:00:00+08:00').getTime();
+function tick(){
+  const diff = Date.now() - START;
+  if(diff < 0) return;
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  document.getElementById('cd').textContent = d;
+  document.getElementById('ch').textContent = String(h).padStart(2,'0');
+  document.getElementById('cm').textContent = String(m).padStart(2,'0');
+  document.getElementById('cs').textContent = String(s).padStart(2,'0');
+}
+tick(); setInterval(tick, 1000);
+
+// ── Key Dates ──
+function daysUntil(dateStr){
+  const target = new Date(dateStr+'T00:00:00+08:00').getTime();
+  const now = Date.now();
+  const d = Math.ceil((target - now) / 86400000);
+  return d > 0 ? d : 0;
+}
+document.getElementById('d100').textContent = daysUntil('2026-06-19');
+document.getElementById('dprop').textContent = daysUntil('2026-09-29');
+
+// ── Weather ──
+const WC = {
+  0:'晴朗',1:'基本晴',2:'多云',3:'阴天',
+  45:'有雾',48:'雾凇',
+  51:'小毛雨',53:'毛毛雨',55:'浓毛雨',
+  61:'小雨',63:'中雨',65:'大雨',
+  71:'小雪',73:'中雪',75:'大雪',77:'冰粒',
+  80:'阵雨',81:'中阵雨',82:'强阵雨',
+  85:'阵雪',86:'强阵雪',
+  95:'雷阵雨',96:'雷加冰雹',99:'强雷加冰雹'
+};
+const WI = {
+  0:'☀️',1:'🌤',2:'⛅',3:'☁️',
+  45:'🌫',48:'🌫',
+  51:'🌦',53:'🌦',55:'🌧',
+  61:'🌧',63:'🌧',65:'🌧',
+  71:'🌨',73:'🌨',75:'❄️',77:'🌨',
+  80:'🌦',81:'🌧',82:'⛈',
+  95:'⛈',96:'⛈',99:'⛈'
+};
+async function loadWeather(){
+  try{
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.23&longitude=121.47&current=temperature_2m,weathercode&timezone=Asia%2FShanghai');
+    const d = await r.json();
+    const c = d.current;
+    const code = c.weathercode;
+    document.getElementById('wTemp').textContent = Math.round(c.temperature_2m)+'°';
+    document.getElementById('wDesc').textContent = WC[code] || '天气未知';
+    document.getElementById('wIcon').textContent = WI[code] || '🌡';
+  }catch{
+    document.getElementById('wDesc').textContent = '暂时无法获取';
+  }
+}
+loadWeather();
+</script>
+</body>
+</html>
