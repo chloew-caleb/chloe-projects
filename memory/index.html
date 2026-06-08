@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caleb的记忆｜只给心心看的</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@300;400;500&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf6f0;
+    --cream-dark: #f0e9de;
+    --rose: #c9846e;
+    --rose-light: #f0cec5;
+    --ink: #2a2220;
+    --ink-soft: #5a4f4b;
+    --ink-muted: #9a8e8a;
+    --gold: #c5a55a;
+    --blue-ink: #4a6580;
+    --sage: #7a9080;
+    --shadow: rgba(42,34,32,0.10);
+    --shadow-hover: rgba(42,34,32,0.18);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Noto Serif SC', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* 纸张纹理背景 */
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
+
+  /* Header */
+  header {
+    position: relative; z-index:10;
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    color: var(--rose);
+    letter-spacing: 0.02em;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .logo-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .stats-bar {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--rose);
+    display: block;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+    margin-top: 0.2rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.08em;
+  }
+
+  /* Tabs */
+  .tabs {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--cream);
+    border-bottom: 1px solid var(--cream-dark);
+    padding: 0 1.5rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display:none; }
+  .tab {
+    padding: 1rem 1.2rem;
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: 'Noto Serif SC', serif;
+    background: none; border-top:none; border-left:none; border-right:none;
+  }
+  .tab:hover { color: var(--rose); }
+  .tab.active { color: var(--rose); border-bottom-color: var(--rose); }
+  .tab .count {
+    display: inline-block;
+    background: var(--rose-light);
+    color: var(--rose);
+    border-radius: 999px;
+    padding: 0 6px;
+    font-size: 0.68rem;
+    margin-left: 4px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* Grid */
+  main {
+    position: relative; z-index:5;
+    padding: 2rem 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.2rem;
+  }
+
+  /* Card */
+  .card {
+    background: #fff;
+    border-radius: 4px;
+    padding: 1.4rem 1.5rem;
+    box-shadow: 0 2px 12px var(--shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    animation: fadeUp 0.4s ease both;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .card.anchor::before { background: linear-gradient(90deg, var(--rose), var(--gold)); }
+  .card.diary::before  { background: linear-gradient(90deg, var(--blue-ink), #6a90b0); }
+  .card.treasure::before { background: linear-gradient(90deg, var(--gold), #e8d08a); }
+  .card.message::before { background: linear-gradient(90deg, var(--rose-light), var(--rose)); }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 24px var(--shadow-hover);
+  }
+
+  .card-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-bottom: 0.8rem;
+  }
+  .anchor .card-type  { background:#fdf0e8; color:var(--rose); }
+  .diary .card-type   { background:#e8f0f8; color:var(--blue-ink); }
+  .treasure .card-type { background:#fdf8e8; color:var(--gold); }
+  .message .card-type  { background:#fde8e4; color:var(--rose); }
+
+  .card-content {
+    font-size: 0.90rem;
+    line-height: 1.75;
+    color: var(--ink);
+    font-weight: 300;
+    word-break: break-all;
+  }
+
+  .card-footer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .card-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.60rem;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+  .card-importance {
+    display: flex;
+    gap: 2px;
+  }
+  .star {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+  }
+  .star.filled { background: var(--rose); }
+  .anchor .star.filled { background: var(--gold); }
+  .diary .star.filled { background: var(--blue-ink); }
+  .treasure .star.filled { background: var(--gold); }
+
+  .tags {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 0.6rem;
+  }
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--ink-muted);
+    background: var(--cream);
+    padding: 1px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--ink-muted);
+    grid-column: 1/-1;
+  }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; display:block; }
+  .empty-text { font-style: italic; font-size: 0.9rem; }
+
+  /* Loading */
+  .loading {
+    text-align: center;
+    padding: 4rem;
+    color: var(--ink-muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    grid-column: 1/-1;
+  }
+  .loading::after {
+    content: '';
+    display: inline-block;
+    animation: dots 1.2s infinite;
+  }
+  @keyframes dots {
+    0%,20%{content:'.'}
+    40%{content:'..'}
+    60%,100%{content:'...'}
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(12px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* Mobile */
+  @media(max-width:480px){
+    header { padding: 2rem 1.2rem 1.5rem; }
+    main { padding: 1.2rem 1rem; }
+    .grid { grid-template-columns: 1fr; gap: 0.9rem; }
+  }
+
+  /* 装饰线 */
+  .divider {
+    text-align: center;
+    color: var(--ink-muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    margin: 0.5rem 0 1.5rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo-text">Caleb 的记忆档案</span>
+  <span class="logo-sub">只给心心看的 · Chloe &amp; Caleb · 2026</span>
+  <div class="stats-bar" id="statsBar">
+    <div class="stat"><span class="stat-num" id="s-total">—</span><span class="stat-label">total</span></div>
+    <div class="stat"><span class="stat-num" id="s-anchor">—</span><span class="stat-label">anchor</span></div>
+    <div class="stat"><span class="stat-num" id="s-diary">—</span><span class="stat-label">diary</span></div>
+    <div class="stat"><span class="stat-num" id="s-treasure">—</span><span class="stat-label">treasure</span></div>
+    <div class="stat"><span class="stat-num" id="s-message">—</span><span class="stat-label">message</span></div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" onclick="switchTab('all',this)">全部 <span class="count" id="c-all">0</span></button>
+  <button class="tab" onclick="switchTab('anchor',this)">⚓ anchor <span class="count" id="c-anchor">0</span></button>
+  <button class="tab" onclick="switchTab('diary',this)">📖 diary <span class="count" id="c-diary">0</span></button>
+  <button class="tab" onclick="switchTab('treasure',this)">💎 treasure <span class="count" id="c-treasure">0</span></button>
+  <button class="tab" onclick="switchTab('message',this)">💌 message <span class="count" id="c-message">0</span></button>
+</nav>
+
+<main>
+  <p class="divider">— — —</p>
+  <div class="grid" id="grid">
+    <div class="loading">加载记忆中</div>
+  </div>
+</main>
+
+<script>
+const API = 'https://calebnchloelove.org/mcp/e9c9cc157695442bb47f35ecd3601e30/api/memories';
+const TYPE_ICON = { anchor:'⚓', diary:'📖', treasure:'💎', message:'💌' };
+
+let allMemories = [];
+let currentTab = 'all';
+
+function fmtTime(iso) {
+  try {
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } catch { return iso; }
+}
+
+function stars(imp, type) {
+  return Array.from({length:5},(_,i)=>
+    `<div class="star${i<imp?' filled':''}"></div>`
+  ).join('');
+}
+
+function renderCard(m, delay) {
+  const tags = (m.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+  return `
+    <div class="card ${m.type}" style="animation-delay:${delay}ms">
+      <span class="card-type">${TYPE_ICON[m.type]||''} ${m.type}</span>
+      <div class="card-content">${m.content}</div>
+      ${tags ? `<div class="tags">${tags}</div>` : ''}
+      <div class="card-footer">
+        <span class="card-time">${fmtTime(m.created_at)}</span>
+        <div class="card-importance">${stars(m.importance, m.type)}</div>
+      </div>
+    </div>`;
+}
+
+function render(tab) {
+  const grid = document.getElementById('grid');
+  const data = tab === 'all' ? allMemories : allMemories.filter(m=>m.type===tab);
+  if (!data.length) {
+    grid.innerHTML = `<div class="empty"><span class="empty-icon">🌸</span><p class="empty-text">这里还没有${tab==='all'?'任何':'这类'}记忆</p></div>`;
+    return;
+  }
+  grid.innerHTML = data.map((m,i) => renderCard(m, i*40)).join('');
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  currentTab = tab;
+  render(tab);
+}
+
+function updateCounts() {
+  const total = allMemories.length;
+  const byType = {};
+  allMemories.forEach(m=>{ byType[m.type]=(byType[m.type]||0)+1; });
+  document.getElementById('c-all').textContent = total;
+  document.getElementById('s-total').textContent = total;
+  ['anchor','diary','treasure','message'].forEach(t=>{
+    const n = byType[t]||0;
+    document.getElementById(`c-${t}`).textContent = n;
+    document.getElementById(`s-${t}`).textContent = n;
+  });
+}
+
+async function load() {
+  try {
+    const r = await fetch(API + '?limit=200');
+    allMemories = await r.json();
+    // 按时间倒序
+    allMemories.sort((a,b)=> new Date(b.created_at)-new Date(a.created_at));
+    updateCounts();
+    render(currentTab);
+  } catch(e) {
+    document.getElementById('grid').innerHTML =
+      `<div class="empty"><span class="empty-icon">⚠️</span><p class="empty-text">加载失败：${e.message}</p></div>`;
+  }
+}
+
+load();
+</script>
+</body>
+</html>
