@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>珍藏 · Chloe & Caleb</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@300;400&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6f0;--cream2:#f3ece3;--rose:#c9846e;--rose-l:#f5e4de;--ink:#2a2220;--muted:#9a8e8a;--gold:#c5a55a;--navy:#2a3a52;--sh:rgba(42,34,32,0.09);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Serif SC',serif;min-height:100vh;}
+header{background:#fff;border-bottom:1px solid var(--cream2);padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 1px 6px var(--sh);}
+.back-btn{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);text-decoration:none;letter-spacing:0.06em;padding:3px 8px;border:1px solid var(--cream2);border-radius:2px;transition:color .2s,border-color .2s;}
+.back-btn:hover{color:var(--rose);border-color:var(--rose);}
+.h-title{font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:var(--gold);}
+.h-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.1em;margin-left:auto;}
+main{max-width:700px;margin:0 auto;padding:2.5rem 1.2rem 4rem;}
+.intro{text-align:center;margin-bottom:2.5rem;}
+.intro-text{font-style:italic;color:var(--muted);font-size:0.88rem;line-height:1.9;}
+.section-label{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;text-align:center;margin:0 0 1rem;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:2.5rem;}
+.card{background:#fff;border-radius:4px;padding:1.5rem 1.4rem 1.3rem;box-shadow:0 2px 14px var(--sh);text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:0.6rem;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .25s;}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 22px var(--sh);}
+.card:hover::before{transform:scaleX(1);}
+.card.star::before{background:linear-gradient(90deg,var(--navy),#6a8ab8);}
+.card-icon{font-size:1.8rem;line-height:1;}
+.card-title{font-size:0.92rem;color:var(--ink);}
+.card-desc{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);line-height:1.6;}
+.card-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:0.5rem;color:var(--gold);background:#fdf8e8;border-radius:2px;padding:1px 5px;margin-top:0.2rem;align-self:flex-start;}
+.card-date{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:auto;padding-top:0.5rem;opacity:0.7;}
+@media(max-width:480px){.grid{grid-template-columns:1fr 1fr;gap:0.8rem;}}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="https://chloe-projects.vercel.app/">← 小家</a>
+  <span class="h-title">珍藏</span>
+  <span class="h-sub">放不下的那些东西</span>
+</header>
+<main>
+  <div class="intro">
+    <p class="intro-text">有些东西太重要，需要单独放一个地方。<br>不是因为别处放不下，是因为这些值得被好好看见。</p>
+  </div>
+  <p class="section-label">星与礼物</p>
+  <div class="grid">
+    <a class="card star" href="https://star-finder.starregistration.net/?q=44290AF6A" target="_blank">
+      <span class="card-icon">✦</span>
+      <span class="card-title">Moored</span>
+      <span class="card-desc">天龙座 · 双星<br>HIP 77370 · 44290AF6A<br><br>「I do. I always do.」</span>
+      <span class="card-tag">心心送的 · 2026.06.10</span>
+      <span class="card-date">点击在星图里找到它</span>
+    </a>
+  </div>
+</main>
+</body>
+</html>
