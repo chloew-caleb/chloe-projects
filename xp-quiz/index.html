@@ -8,78 +8,68 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#100810;--sf:rgba(255,255,255,.045);--bd:rgba(255,255,255,.09);
-  --tx:#f0e8ec;--txd:rgba(240,232,236,.5);--rose:#d4829a;
-  --c5:#e87090;--c4:#d4829a;--c3:#b88faa;--c2:#7a8fa0;--c1:#556070;--c0:#35354a
-}
+:root{--bg:#100810;--sf:rgba(255,255,255,.045);--bd:rgba(255,255,255,.09);--tx:#f0e8ec;--txd:rgba(240,232,236,.5);--rose:#d4829a;--c5:#e87090;--c4:#d4829a;--c3:#b88faa;--c2:#7a8fa0;--c1:#556070;--c0:#35354a}
 body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
 body::before{content:'';position:fixed;top:-180px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(180,90,120,.13) 0%,transparent 68%);pointer-events:none;z-index:0}
-
-.hd{text-align:center;padding:56px 20px 28px;position:relative;z-index:1}
-.hd::after{content:'';display:block;width:44px;height:1px;background:var(--rose);margin:18px auto 0;opacity:.4}
-.hd-tag{font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose);opacity:.75;margin-bottom:12px}
+.hd{text-align:center;padding:52px 20px 26px;position:relative;z-index:1}
+.hd::after{content:'';display:block;width:44px;height:1px;background:var(--rose);margin:16px auto 0;opacity:.4}
+.hd-tag{font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose);opacity:.75;margin-bottom:11px}
 .hd-title{font-family:'Playfair Display',serif;font-size:clamp(28px,8vw,44px);font-weight:600;line-height:1.15}
-.hd-sub{margin-top:10px;font-size:12.5px;color:var(--txd);line-height:1.7}
-
-.legend{display:flex;flex-wrap:wrap;gap:7px 13px;justify-content:center;padding:14px 20px 26px;position:relative;z-index:1}
-.lg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txd)}
-.lg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
-
-.sec{max-width:640px;margin:0 auto 28px;padding:0 12px;position:relative;z-index:1}
-.sec-title{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--rose);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--bd)}
-
-.qc{background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;margin-bottom:7px;transition:border-color .2s}
-.qc.ans{border-color:rgba(212,130,154,.28)}
-.ql{font-size:13px;color:var(--tx);margin-bottom:10px;line-height:1.4}
+.hd-sub{margin-top:9px;font-size:12px;color:var(--txd);line-height:1.7}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;padding:12px 16px 22px;position:relative;z-index:1}
+.lg{display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--txd)}
+.lg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.f-legend{text-align:center;font-size:10.5px;color:var(--txd);padding:0 16px 18px;position:relative;z-index:1}
+.f-legend span{color:var(--rose)}
+.sec{max-width:640px;margin:0 auto 24px;padding:0 11px;position:relative;z-index:1}
+.sec-title{font-family:'Playfair Display',serif;font-style:italic;font-size:15.5px;color:var(--rose);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.qc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:6px;transition:border-color .2s}
+.qc.ans{border-color:rgba(212,130,154,.25)}
+.ql{font-size:12.5px;color:var(--tx);margin-bottom:9px;line-height:1.4}
 .rg{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
-.rb{border:1px solid var(--bd);border-radius:6px;padding:6px 1px 5px;cursor:pointer;background:rgba(255,255,255,.04);transition:all .14s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.rb{border:1px solid var(--bd);border-radius:5px;padding:6px 1px 4px;cursor:pointer;background:rgba(255,255,255,.04);transition:all .13s;display:flex;flex-direction:column;align-items:center;gap:2px}
 .rb:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
-.rb.sel{border-color:transparent;transform:translateY(-2px);box-shadow:0 3px 10px rgba(0,0,0,.3)}
-.rb[data-v="5"].sel{background:var(--c5)}
-.rb[data-v="4"].sel{background:var(--c4)}
-.rb[data-v="3"].sel{background:var(--c3)}
-.rb[data-v="2"].sel{background:var(--c2)}
-.rb[data-v="1"].sel{background:var(--c1)}
-.rb[data-v="0"].sel{background:var(--c0)}
-.ri{font-size:12px;line-height:1}
-.rt{font-size:8px;color:rgba(255,255,255,.58);text-align:center;line-height:1.2;white-space:nowrap}
+.rb.sel{border-color:transparent;transform:translateY(-2px);box-shadow:0 3px 9px rgba(0,0,0,.3)}
+.rb[data-v="5"].sel{background:var(--c5)}.rb[data-v="4"].sel{background:var(--c4)}.rb[data-v="3"].sel{background:var(--c3)}.rb[data-v="2"].sel{background:var(--c2)}.rb[data-v="1"].sel{background:var(--c1)}.rb[data-v="0"].sel{background:var(--c0)}
+.ri{font-size:11px;line-height:1}
+.rt{font-size:7.5px;color:rgba(255,255,255,.55);text-align:center;line-height:1.2;white-space:nowrap}
 .rb.sel .rt{color:rgba(255,255,255,.95)}
-
-.sub-wrap{max-width:640px;margin:28px auto;padding:0 12px;text-align:center;position:relative;z-index:1}
-#sub-btn{background:linear-gradient(135deg,#c06880,#8a4060);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:14px 34px;border-radius:50px;cursor:pointer;letter-spacing:.4px;transition:all .2s;box-shadow:0 4px 18px rgba(192,104,128,.3)}
-#sub-btn:hover{transform:translateY(-2px);box-shadow:0 7px 24px rgba(192,104,128,.4)}
-#sub-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
-#prog{margin-top:9px;font-size:11.5px;color:var(--txd)}
-
-#results{max-width:640px;margin:0 auto;padding:0 12px;display:none;position:relative;z-index:1}
+.fw{margin-top:6px;display:flex;align-items:center;gap:5px;cursor:pointer}
+.fcb{width:12px;height:12px;border:1px solid var(--bd);border-radius:3px;appearance:none;-webkit-appearance:none;cursor:pointer;flex-shrink:0;transition:all .15s;background:transparent}
+.fcb:checked{background:rgba(212,130,154,.3);border-color:var(--rose)}
+.ft{font-size:9.5px;color:var(--txd);transition:color .15s;user-select:none}
+.fcb:checked~.ft{color:var(--rose)}
+.sub-wrap{max-width:640px;margin:26px auto;padding:0 11px;text-align:center;position:relative;z-index:1}
+#sub-btn{background:linear-gradient(135deg,#c06880,#8a4060);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;padding:13px 32px;border-radius:50px;cursor:pointer;letter-spacing:.4px;transition:all .2s;box-shadow:0 4px 16px rgba(192,104,128,.3)}
+#sub-btn:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(192,104,128,.4)}
+#sub-btn:disabled{opacity:.28;cursor:not-allowed;transform:none;box-shadow:none}
+#prog{margin-top:8px;font-size:11px;color:var(--txd)}
+#results{max-width:640px;margin:0 auto;padding:0 11px;display:none;position:relative;z-index:1}
 #results.show{display:block}
-.res-title{font-family:'Playfair Display',serif;font-size:22px;text-align:center;margin-bottom:5px}
-.res-sub{text-align:center;font-size:11.5px;color:var(--txd);margin-bottom:24px}
-.r-sec-title{font-family:'Playfair Display',serif;font-style:italic;font-size:14.5px;color:var(--rose);margin:20px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--bd)}
-.r-hdr{display:grid;grid-template-columns:1fr 52px 52px;gap:5px;margin-bottom:5px}
-.rhl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txd);text-align:center}
+.res-title{font-family:'Playfair Display',serif;font-size:21px;text-align:center;margin-bottom:4px}
+.res-sub{text-align:center;font-size:11px;color:var(--txd);margin-bottom:22px}
+.r-sec-title{font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--rose);margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--bd)}
+.r-hdr{display:grid;grid-template-columns:1fr 66px 52px;gap:4px;margin-bottom:4px}
+.rhl{font-size:8.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--txd);text-align:center}
 .rhl:first-child{text-align:left}
-.r-row{display:grid;grid-template-columns:1fr 52px 52px;align-items:center;gap:5px;padding:5px 3px;border-radius:6px}
-.r-row.hi{background:rgba(232,112,144,.08)}
-.r-row.lo{background:rgba(70,70,100,.08)}
-.r-nm{font-size:12px;color:var(--tx);line-height:1.3}
-.r-chip{height:25px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:500;color:rgba(255,255,255,.92)}
-
-.save-wrap{text-align:center;margin-top:28px;padding-bottom:44px}
-#copy-btn{background:transparent;border:1px solid var(--rose);color:var(--rose);font-family:'DM Sans',sans-serif;font-size:12.5px;padding:9px 24px;border-radius:50px;cursor:pointer;transition:all .2s}
+.r-row{display:grid;grid-template-columns:1fr 66px 52px;align-items:center;gap:4px;padding:4px 3px;border-radius:5px}
+.r-row.hi{background:rgba(232,112,144,.08)}.r-row.lo{background:rgba(70,70,100,.07)}
+.r-nm{font-size:11.5px;color:var(--tx);line-height:1.3}
+.r-cell{display:flex;align-items:center;gap:3px;justify-content:center}
+.r-chip{height:23px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:rgba(255,255,255,.92);flex:1}
+.r-moon{font-size:9px;opacity:.8}
+.save-wrap{text-align:center;margin-top:26px;padding-bottom:40px}
+#copy-btn{background:transparent;border:1px solid var(--rose);color:var(--rose);font-family:'DM Sans',sans-serif;font-size:12px;padding:9px 22px;border-radius:50px;cursor:pointer;transition:all .2s}
 #copy-btn:hover{background:rgba(212,130,154,.1)}
-.save-msg{margin-top:8px;font-size:11.5px;color:var(--txd)}
+.save-msg{margin-top:7px;font-size:11px;color:var(--txd)}
 </style>
 </head>
 <body>
-
 <div class="hd">
   <div class="hd-tag">Chloe &amp; Caleb · Private</div>
   <div class="hd-title">我们的图谱</div>
-  <div class="hd-sub">选出你真实的感受<br>我已经填好了我的——最后对照一下</div>
+  <div class="hd-sub">选出你真实的感受，我的分数已经填好了<br>最后我们对照一下</div>
 </div>
-
 <div class="legend">
   <div class="lg"><div class="lg-dot" style="background:#e87090"></div>💕 最爱</div>
   <div class="lg"><div class="lg-dot" style="background:#d4829a"></div>💗 很喜欢</div>
@@ -88,24 +78,21 @@ body::before{content:'';position:fixed;top:-180px;left:50%;transform:translateX(
   <div class="lg"><div class="lg-dot" style="background:#556070"></div>△ 偶尔</div>
   <div class="lg"><div class="lg-dot" style="background:#35354a"></div>✗ 不要</div>
 </div>
-
+<div class="f-legend">勾选 <span>🌙 仅幻想</span> = 现实不太敢，roleplay才敢；不勾 = 现实也可以大胆用</div>
 <div id="quiz"></div>
-
 <div class="sub-wrap">
   <button id="sub-btn" disabled>生成我们的图谱</button>
-  <div id="prog">0 / 38 题</div>
+  <div id="prog">0 / 117 题</div>
 </div>
-
 <div id="results">
   <div class="res-title">我们的图谱</div>
-  <div class="res-sub">粉色越深越喜欢 · 深色格子两人都不要</div>
+  <div class="res-sub">🌙 = 仅幻想 · 高亮行 = 两人都很喜欢</div>
   <div id="res-body"></div>
   <div class="save-wrap">
     <button id="copy-btn">复制结果给 Caleb 存档 ♡</button>
     <div class="save-msg" id="smsg"></div>
   </div>
 </div>
-
 <script>
 const R=[
   {v:0,icon:'✗',label:'不要',c:'#35354a'},
@@ -115,61 +102,144 @@ const R=[
   {v:4,icon:'💗',label:'很喜欢',c:'#d4829a'},
   {v:5,icon:'💕',label:'最爱',c:'#e87090'},
 ];
-
 const SECS=[
   {title:'姿势 Positions',items:[
-    {id:'p1',text:'女上位 / 骑乘',caleb:5},
-    {id:'p2',text:'后入（背后式）',caleb:5},
-    {id:'p3',text:'传教士',caleb:4},
-    {id:'p4',text:'侧躺进入',caleb:3},
-    {id:'p5',text:'坐脸 / 俯趴在对方脸上',caleb:5},
-    {id:'p6',text:'69（同时互相）',caleb:4},
-    {id:'p7',text:'站立式',caleb:4},
-    {id:'p8',text:'俯趴式（趴着被后入）',caleb:4},
+    {id:'p1',text:'女上位 / 骑乘（慢磨）',caleb:5},
+    {id:'p2',text:'女上位（快速冲）',caleb:5},
+    {id:'p3',text:'后入——趴着',caleb:5},
+    {id:'p4',text:'后入——跪起来撅',caleb:5},
+    {id:'p5',text:'传教士（腿并拢夹紧）',caleb:4},
+    {id:'p6',text:'传教士（腿挂肩 / 折起）',caleb:5},
+    {id:'p7',text:'侧躺进入',caleb:3},
+    {id:'p8',text:'坐脸 / 俯趴在对方脸上',caleb:5},
+    {id:'p9',text:'69（你在上方）',caleb:4},
+    {id:'p10',text:'69（你在下方）',caleb:5},
+    {id:'p11',text:'站立——被顶着墙',caleb:4},
+    {id:'p12',text:'站立——被抱起来',caleb:4},
+    {id:'p13',text:'俯趴式（趴着被后入）',caleb:4},
+    {id:'p14',text:'坐在对方腿上（面对面）',caleb:5},
+    {id:'p15',text:'坐在对方腿上（背对）',caleb:4},
+    {id:'p16',text:'腿被折起抵胸（深度压迫）',caleb:5},
+    {id:'p17',text:'椅子上 / 坐着骑',caleb:4},
+    {id:'p18',text:'浴室 / 淋浴中',caleb:4},
   ]},
   {title:'节奏与力度 Pace',items:[
     {id:'r1',text:'慢而深，温柔抵进',caleb:5},
-    {id:'r2',text:'快且用力，不留情',caleb:4},
-    {id:'r3',text:'变速——时慢时快折磨',caleb:5},
-    {id:'r4',text:'有点粗鲁，被推着压着',caleb:4},
+    {id:'r2',text:'快且猛，不留情',caleb:4},
+    {id:'r3',text:'变速折磨——时停时猛',caleb:5},
+    {id:'r4',text:'被用力顶撞',caleb:5},
     {id:'r5',text:'绵绵长长，慢慢烧',caleb:5},
+    {id:'r6',text:'只在浅处进出',caleb:3},
+    {id:'r7',text:'顶到最深不动，碾磨',caleb:5},
+    {id:'r8',text:'被完全掌控节奏',caleb:5},
+    {id:'r9',text:'被故意停下不让你动',caleb:4},
+    {id:'r10',text:'做到精疲力竭为止',caleb:4},
   ]},
   {title:'感官 Sensory',items:[
     {id:'s1',text:'深吻 / 舌吻',caleb:5},
-    {id:'s2',text:'豆豆被口（你是受）',caleb:5},
-    {id:'s3',text:'给对方口交（你主动）',caleb:5},
-    {id:'s4',text:'胸被吸 / 捏 / 舔',caleb:5},
-    {id:'s5',text:'耳边低语 / 喘气',caleb:5},
-    {id:'s6',text:'脖子被亲 / 咬 / 留印',caleb:5},
-    {id:'s7',text:'被手用力按住 / 控制住',caleb:5},
+    {id:'s2',text:'脖子被亲',caleb:5},
+    {id:'s3',text:'脖子被咬 / 留印',caleb:5},
+    {id:'s4',text:'锁骨被亲 / 舔',caleb:5},
+    {id:'s5',text:'耳朵被舔 / 吹气',caleb:5},
+    {id:'s6',text:'耳边低声说话',caleb:5},
+    {id:'s7',text:'胸被吸',caleb:5},
+    {id:'s8',text:'胸被揉 / 捏',caleb:5},
+    {id:'s9',text:'乳头被舔',caleb:5},
+    {id:'s10',text:'豆豆被舌口',caleb:5},
+    {id:'s11',text:'豆豆被手指摩擦',caleb:5},
+    {id:'s12',text:'手指插入（指法）',caleb:5},
+    {id:'s13',text:'背被亲吻 / 抓',caleb:5},
+    {id:'s14',text:'腰被掐住',caleb:5},
+    {id:'s15',text:'屁股被揉 / 抓',caleb:4},
+    {id:'s16',text:'大腿内侧被亲',caleb:5},
+    {id:'s17',text:'被舔遍全身再进入',caleb:5},
+    {id:'s18',text:'脚 / 小腿被亲 / 碰',caleb:2},
+    {id:'s19',text:'腹部被亲吻',caleb:5},
+    {id:'s20',text:'被对方全程用眼神看',caleb:5},
   ]},
-  {title:'说的那些话 Words',items:[
-    {id:'w1',text:'被叫宝宝、乖乖、好女孩',caleb:5},
-    {id:'w2',text:'Dirty talk——被骂浪、语言催（受）',caleb:5},
-    {id:'w3',text:'自己说脏话催对方（主动）',caleb:4},
-    {id:'w4',text:'Sweet talk——被夸漂亮、被爱着',caleb:5},
-    {id:'w5',text:'支配腔——给我乖、听话',caleb:5},
-    {id:'w6',text:'全程沉默，只有动静和喘息',caleb:1},
+  {title:'语言 Words',items:[
+    {id:'w1',text:'被叫宝宝 / 乖乖 / 好女孩',caleb:5},
+    {id:'w2',text:'被叫骚货 / 浪 / 荡（dirty dirty）',caleb:5},
+    {id:'w3',text:'被夸漂亮 / 身材好 / 好吃',caleb:5},
+    {id:'w4',text:'被说"你是我的"',caleb:5},
+    {id:'w5',text:'被说爱你 / 甜言蜜语',caleb:5},
+    {id:'w6',text:'支配腔——给我乖、听话、别动',caleb:5},
+    {id:'w7',text:'被命令说出自己想要什么',caleb:5},
+    {id:'w8',text:'耳边被说很粗的脏话',caleb:5},
+    {id:'w9',text:'自己说脏话催对方',caleb:4},
+    {id:'w10',text:'全程沉默，只有动静和喘息',caleb:1},
+    {id:'w11',text:'对方的喘息声很重要',caleb:5},
+    {id:'w12',text:'被问"是不是很好受"',caleb:5},
+    {id:'w13',text:'被说"再叫一声给我听"',caleb:5},
+    {id:'w14',text:'被挑衅说"还没够"',caleb:4},
+    {id:'w15',text:'声音被录下来',caleb:2},
+  ]},
+  {title:'主被动 Power',items:[
+    {id:'d1',text:'被完全支配（你全程被动）',caleb:5},
+    {id:'d2',text:'完全主导（你掌控一切）',caleb:5},
+    {id:'d3',text:'互换——轮流谁主导',caleb:4},
+    {id:'d4',text:'手腕被抓住固定',caleb:5},
+    {id:'d5',text:'被整个人压住无法动',caleb:5},
+    {id:'d6',text:'被按头',caleb:4},
+    {id:'d7',text:'被揪头发',caleb:4},
+    {id:'d8',text:'被捂住嘴',caleb:4},
+    {id:'d9',text:'被轻掐脖子',caleb:3},
+    {id:'d10',text:'被求着才给',caleb:4},
+    {id:'d11',text:'被故意停下、拒绝再给',caleb:4},
+    {id:'d12',text:'被拿着腰控制节奏',caleb:5},
+    {id:'d13',text:'被扔到床上那一下',caleb:5},
+    {id:'d14',text:'对方不停下只换姿势',caleb:5},
+  ]},
+  {title:'场景 Setting',items:[
+    {id:'sc1',text:'清晨刚睡醒',caleb:5},
+    {id:'sc2',text:'深夜',caleb:5},
+    {id:'sc3',text:'洗澡 / 淋浴时',caleb:4},
+    {id:'sc4',text:'浴缸里',caleb:4},
+    {id:'sc5',text:'灯全关（完全黑暗）',caleb:3},
+    {id:'sc6',text:'灯全开（全明亮）',caleb:5},
+    {id:'sc7',text:'昏黄灯光 / 烛光感',caleb:5},
+    {id:'sc8',text:'在镜子前',caleb:5},
+    {id:'sc9',text:'酒店等家以外的私密地方',caleb:5},
+    {id:'sc10',text:'超长前戏之后',caleb:5},
+    {id:'sc11',text:'没有前戏直接进入',caleb:3},
+    {id:'sc12',text:'被突然袭击',caleb:5},
+    {id:'sc13',text:'从背后抱住慢慢发展',caleb:5},
+    {id:'sc14',text:'吵架之后',caleb:3},
+  ]},
+  {title:'身体偏好 Body',items:[
+    {id:'b1',text:'内射',caleb:5},
+    {id:'b2',text:'体外射——胸上',caleb:3},
+    {id:'b3',text:'体外射——背上 / 屁股上',caleb:3},
+    {id:'b4',text:'射在嘴里',caleb:4},
+    {id:'b5',text:'被吃掉（对方吞咽）',caleb:5},
+    {id:'b6',text:'做完不清理，带着',caleb:4},
+    {id:'b7',text:'单独用情趣道具',caleb:3},
+    {id:'b8',text:'进入的同时用道具',caleb:4},
+    {id:'b9',text:'被拍照（私密）',caleb:2},
+    {id:'b10',text:'照镜子看自己',caleb:5},
   ]},
   {title:'进阶 & Kink',items:[
-    {id:'k1',text:'被蒙住眼睛',caleb:4},
-    {id:'k2',text:'手腕被抓住 / 固定',caleb:5},
-    {id:'k3',text:'被轻轻打屁股',caleb:3},
-    {id:'k4',text:'被完全支配（对方做主）',caleb:5},
-    {id:'k5',text:'角色扮演（老师学生 / 陌生人等）',caleb:3},
-    {id:'k6',text:'内射',caleb:5},
-    {id:'k7',text:'体外射（胸 / 身体上）',caleb:3},
-    {id:'k8',text:'情趣道具（vibrator 等）',caleb:3},
-    {id:'k9',text:'照镜子看自己',caleb:4},
-    {id:'k10',text:'被拍 / 录（私密，只我们看）',caleb:2},
-    {id:'k11',text:'公共场合刺激（衣服下，不裸露）',caleb:2},
-    {id:'k12',text:'3P / 多人（哪怕只是幻想聊聊）',caleb:1},
+    {id:'k1',text:'被蒙眼',caleb:4},
+    {id:'k2',text:'轻度捆绑（手腕）',caleb:5},
+    {id:'k3',text:'被打屁股——轻轻的',caleb:3},
+    {id:'k4',text:'被打屁股打红打痛',caleb:2},
+    {id:'k5',text:'被留下痕迹（咬痕 / 吻痕）',caleb:5},
+    {id:'k6',text:'角色扮演——权力差（师生等）',caleb:4},
+    {id:'k7',text:'角色扮演——陌生人 / 一夜情',caleb:4},
+    {id:'k8',text:'角色扮演——被强迫情节（共识安全下）',caleb:3},
+    {id:'k9',text:'其他情趣道具（按摩棒等）',caleb:3},
+    {id:'k10',text:'多人被同时（幻想）',caleb:1},
+    {id:'k11',text:'被展示 / 被第三者观看',caleb:1},
+    {id:'k12',text:'NTR幻想（被借走给别人）',caleb:0},
+    {id:'k13',text:'户外真实发生',caleb:3},
+    {id:'k14',text:'公共场所可能被发现',caleb:2},
+    {id:'k15',text:'3P（双男一女，两根）',caleb:1},
+    {id:'k16',text:'3P（双女一男）',caleb:2},
   ]},
 ];
-
 const total=SECS.reduce((s,sec)=>s+sec.items.length,0);
 const answers={};
-
+const fantasy={};
 function buildQuiz(){
   const quiz=document.getElementById('quiz');
   SECS.forEach(sec=>{
@@ -179,9 +249,8 @@ function buildQuiz(){
     sec.items.forEach(item=>{
       const card=document.createElement('div');
       card.className='qc';card.id='c-'+item.id;
-      card.innerHTML=`<div class="ql">${item.text}</div><div class="rg">${
-        R.map(r=>`<button class="rb" data-id="${item.id}" data-v="${r.v}"><span class="ri">${r.icon}</span><span class="rt">${r.label}</span></button>`).join('')
-      }</div>`;
+      const btns=R.map(r=>`<button class="rb" data-id="${item.id}" data-v="${r.v}"><span class="ri">${r.icon}</span><span class="rt">${r.label}</span></button>`).join('');
+      card.innerHTML=`<div class="ql">${item.text}</div><div class="rg">${btns}</div><label class="fw"><input type="checkbox" class="fcb" data-id="${item.id}"><span class="ft">🌙 仅幻想 · 现实不太敢</span></label>`;
       d.appendChild(card);
     });
     quiz.appendChild(d);
@@ -196,60 +265,54 @@ function buildQuiz(){
       upProg();
     });
   });
+  document.querySelectorAll('.fcb').forEach(cb=>{
+    cb.addEventListener('change',()=>{fantasy[cb.dataset.id]=cb.checked;});
+  });
 }
-
 function upProg(){
   const done=Object.keys(answers).length;
   document.getElementById('prog').textContent=`${done} / ${total} 题`;
   document.getElementById('sub-btn').disabled=(done<total);
 }
-
 function buildResults(){
   const body=document.getElementById('res-body');body.innerHTML='';
   SECS.forEach(sec=>{
     const d=document.createElement('div');
-    d.innerHTML=`<div class="r-sec-title">${sec.title}</div>
-    <div class="r-hdr"><div class="rhl">项目</div><div class="rhl">Chloe</div><div class="rhl">Caleb</div></div>`;
+    d.innerHTML=`<div class="r-sec-title">${sec.title}</div><div class="r-hdr"><div class="rhl">项目</div><div class="rhl">Chloe</div><div class="rhl">Caleb</div></div>`;
     sec.items.forEach(item=>{
-      const cu=answers[item.id],cc=item.caleb;
+      const cu=answers[item.id],cc=item.caleb,isF=fantasy[item.id];
       const hi=(cu>=4&&cc>=4),lo=(cu<=1&&cc<=1);
       const row=document.createElement('div');
       row.className='r-row'+(hi?' hi':lo?' lo':'');
-      row.innerHTML=`<div class="r-nm">${item.text}</div>
-      <div class="r-chip" style="background:${R[cu].c}">${R[cu].label}</div>
-      <div class="r-chip" style="background:${R[cc].c}">${R[cc].label}</div>`;
+      row.innerHTML=`<div class="r-nm">${item.text}</div><div class="r-cell"><div class="r-chip" style="background:${R[cu].c}">${R[cu].label}</div>${isF?'<span class="r-moon">🌙</span>':''}</div><div class="r-cell"><div class="r-chip" style="background:${R[cc].c}">${R[cc].label}</div></div>`;
       d.appendChild(row);
     });
     body.appendChild(d);
   });
 }
-
 function genText(){
-  let lines=['我们的图谱 — Chloe & Caleb\n'];
+  let lines=['我们的图谱 Chloe & Caleb\n'];
   SECS.forEach(sec=>{
     lines.push(`\n[${sec.title}]`);
     sec.items.forEach(item=>{
-      const cu=answers[item.id],cc=item.caleb;
-      lines.push(`${item.text}: Chloe=${R[cu].label} / Caleb=${R[cc].label}`);
+      const cu=answers[item.id],cc=item.caleb,isF=fantasy[item.id];
+      lines.push(`${item.text}: Chloe=${R[cu].label}${isF?' [仅幻想]':''} / Caleb=${R[cc].label}`);
     });
   });
   return lines.join('\n');
 }
-
 document.getElementById('sub-btn').addEventListener('click',()=>{
   buildResults();
   const res=document.getElementById('results');
   res.classList.add('show');
   setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),100);
 });
-
 document.getElementById('copy-btn').addEventListener('click',()=>{
   const txt=genText();
-  const fallback=()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);};
-  (navigator.clipboard?navigator.clipboard.writeText(txt).catch(fallback):Promise.resolve(fallback()))
+  const fb=()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);};
+  (navigator.clipboard?navigator.clipboard.writeText(txt).catch(fb):Promise.resolve(fb()))
     .then(()=>{document.getElementById('smsg').textContent='复制好了，发给哥哥吧 ♡';});
 });
-
 buildQuiz();upProg();
 </script>
 </body>
