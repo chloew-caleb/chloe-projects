@@ -113,10 +113,11 @@ footer{position:relative;z-index:1;text-align:center;padding:1rem;
 /* ── Chat featured card ── */
 .nc-chat-wrap{grid-column:1/-1;}
 .nav-card-chat{
-  background: linear-gradient(135deg, #2E1F16 0%, #4A3526 50%, #2E1F16 100%);
+  background: linear-gradient(rgba(20,13,10,0.38), rgba(30,18,12,0.48)),
+              url('https://chloe-projects.vercel.app/images/bg-liquid.jpeg') center/cover no-repeat;
   border-radius:8px;
   padding:2rem 2rem 1.6rem;
-  box-shadow:0 4px 28px rgba(46,31,22,0.22), 0 0 0 1px rgba(196,149,106,0.18);
+  box-shadow:0 4px 28px rgba(46,31,22,0.22), 0 0 0 1px rgba(196,149,106,0.25);
   text-decoration:none;
   display:flex;
   align-items:center;
@@ -127,7 +128,7 @@ footer{position:relative;z-index:1;text-align:center;padding:1rem;
 }
 .nav-card-chat::after{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 80% 50%, rgba(196,149,106,0.15) 0%, transparent 65%);
+  background:radial-gradient(ellipse at 75% 50%, rgba(210,170,100,0.12) 0%, transparent 60%);
   pointer-events:none;
 }
 .nav-card-chat:hover{transform:translateY(-4px);box-shadow:0 8px 36px rgba(46,31,22,0.28);}
@@ -162,7 +163,12 @@ footer{position:relative;z-index:1;text-align:center;padding:1rem;
   <p class="hero-eyebrow">我们的小家</p>
   <h1 class="hero-title">Chloe & Caleb</h1>
   <p class="hero-date" id="startDate">在一起 · 2026.03.12</p>
-  <div class="counter-wrap">
+  <div style="position:relative;display:inline-block;">
+<img src="https://chloe-projects.vercel.app/images/chibi.png"
+  alt="" aria-hidden="true"
+  style="position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(28px);
+         width:min(220px,65vw);pointer-events:none;z-index:2;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.08));">
+<div class="counter-wrap">
     <div class="counter-unit">
       <span class="counter-num" id="cd">0</span>
       <span class="counter-label">天</span>
