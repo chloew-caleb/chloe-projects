@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>屏幕时间 · Chloe</title>
+<style>
+:root {
+  --cream: #FAF6EF;
+  --cream-dark: #EDE8DF;
+  --brown-deep: #2E1F16;
+  --brown-warm: #C4956A;
+  --brown-mid: #6B4C3B;
+  --text-main: #2E1F16;
+  --text-muted: #9E8A79;
+  --warn: #C4956A;
+  --alert: #B85C38;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system,'PingFang SC',sans-serif; background: var(--cream); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; }
+
+.header { background: var(--brown-deep); padding: 18px 20px 14px; position: sticky; top: 0; z-index: 10; }
+.header-title { color: #FAF6EF; font-size: 17px; font-weight: 600; }
+.header-sub { color: var(--brown-warm); font-size: 12px; margin-top: 3px; }
+
+.summary-bar { display: flex; gap: 12px; padding: 14px 16px; background: #fff; border-bottom: 1px solid var(--cream-dark); }
+.summary-item { flex: 1; text-align: center; }
+.summary-num { font-size: 22px; font-weight: 700; color: var(--brown-deep); }
+.summary-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+.section-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; padding: 16px 16px 8px; }
+
+.app-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.app-card { background: #fff; border-radius: 10px; padding: 12px 14px; border: 1px solid var(--cream-dark); }
+.app-card.warn { border-left: 3px solid var(--warn); }
+.app-card.alert { border-left: 3px solid var(--alert); }
+
+.app-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.app-name { flex: 1; font-size: 14px; font-weight: 500; }
+.app-time { font-size: 13px; color: var(--text-muted); flex-shrink: 0; }
+.app-card.warn .app-time { color: var(--warn); font-weight: 600; }
+.app-card.alert .app-time { color: var(--alert); font-weight: 600; }
+
+.bar-track { height: 5px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; background: var(--brown-warm); transition: width 0.5s ease; }
+.app-card.warn .bar-fill { background: var(--warn); }
+.app-card.alert .bar-fill { background: var(--alert); }
+
+.empty { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 14px; }
+.empty-icon { font-size: 36px; margin-bottom: 12px; }
+
+.refresh-hint { text-align: center; font-size: 11px; color: var(--text-muted); padding: 20px; }
+
+.loading { text-align: center; padding: 40px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">屏幕时间</div>
+  <div class="header-sub" id="dateLabel">今日</div>
+</div>
+
+<div class="summary-bar">
+  <div class="summary-item">
+    <div class="summary-num" id="totalHours">--</div>
+    <div class="summary-label">总时长（小时）</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-num" id="appCount">--</div>
+    <div class="summary-label">使用应用</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-num" id="topApp">--</div>
+    <div class="summary-label">最多</div>
+  </div>
+</div>
+
+<div class="section-label">今日各应用</div>
+<div class="app-list" id="appList">
+  <div class="loading">加载中…</div>
+</div>
+
+<div class="refresh-hint" id="refreshHint"></div>
+
+<script>
+const API = 'https://calebnchloelove.org/screentime/today';
+const WARN_MINS = 30;
+const ALERT_MINS = 60;
+
+function fmtTime(mins) {
+  if (mins < 1) return '< 1分钟';
+  if (mins < 60) return Math.round(mins) + '分钟';
+  var h = Math.floor(mins / 60);
+  var m = Math.round(mins % 60);
+  return m > 0 ? h + '小时' + m + '分钟' : h + '小时';
+}
+
+async function load() {
+  try {
+    const r = await fetch(API);
+    const d = await r.json();
+    const apps = (d.apps || []).filter(a => a.minutes > 0);
+
+    // 日期
+    const now = new Date();
+    document.getElementById('dateLabel').textContent =
+      now.toLocaleDateString('zh', {month:'long', day:'numeric', weekday:'short'});
+
+    if (apps.length === 0) {
+      document.getElementById('appList').innerHTML =
+        '<div class="empty"><div class="empty-icon">📱</div>今天还没有记录</div>';
+      document.getElementById('totalHours').textContent = '0';
+      document.getElementById('appCount').textContent = '0';
+      document.getElementById('topApp').textContent = '--';
+      return;
+    }
+
+    const totalMins = apps.reduce((s, a) => s + a.minutes, 0);
+    const maxMins = apps[0].minutes;
+
+    document.getElementById('totalHours').textContent = (totalMins / 60).toFixed(1);
+    document.getElementById('appCount').textContent = apps.length;
+    document.getElementById('topApp').textContent = apps[0].app;
+
+    const list = document.getElementById('appList');
+    list.innerHTML = '';
+    apps.forEach(function(a) {
+      var cls = a.minutes >= ALERT_MINS ? 'alert' : a.minutes >= WARN_MINS ? 'warn' : '';
+      var pct = Math.max(4, Math.round(a.minutes / maxMins * 100));
+      var card = document.createElement('div');
+      card.className = 'app-card ' + cls;
+      card.innerHTML =
+        '<div class="app-row">' +
+          '<span class="app-name">' + a.app + '</span>' +
+          '<span class="app-time">' + fmtTime(a.minutes) + '</span>' +
+        '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>';
+      list.appendChild(card);
+    });
+
+    document.getElementById('refreshHint').textContent =
+      '最后更新 ' + now.toLocaleTimeString('zh', {hour:'2-digit', minute:'2-digit'}) + ' · 每分钟自动刷新';
+  } catch(e) {
+    document.getElementById('appList').innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>加载失败</div>';
+  }
+}
+
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>
