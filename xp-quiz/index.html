@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我们的图谱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#100810;--sf:rgba(255,255,255,.045);--bd:rgba(255,255,255,.09);
+  --tx:#f0e8ec;--txd:rgba(240,232,236,.5);--rose:#d4829a;
+  --c5:#e87090;--c4:#d4829a;--c3:#b88faa;--c2:#7a8fa0;--c1:#556070;--c0:#35354a
+}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+body::before{content:'';position:fixed;top:-180px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(180,90,120,.13) 0%,transparent 68%);pointer-events:none;z-index:0}
+
+.hd{text-align:center;padding:56px 20px 28px;position:relative;z-index:1}
+.hd::after{content:'';display:block;width:44px;height:1px;background:var(--rose);margin:18px auto 0;opacity:.4}
+.hd-tag{font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose);opacity:.75;margin-bottom:12px}
+.hd-title{font-family:'Playfair Display',serif;font-size:clamp(28px,8vw,44px);font-weight:600;line-height:1.15}
+.hd-sub{margin-top:10px;font-size:12.5px;color:var(--txd);line-height:1.7}
+
+.legend{display:flex;flex-wrap:wrap;gap:7px 13px;justify-content:center;padding:14px 20px 26px;position:relative;z-index:1}
+.lg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txd)}
+.lg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+
+.sec{max-width:640px;margin:0 auto 28px;padding:0 12px;position:relative;z-index:1}
+.sec-title{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--rose);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--bd)}
+
+.qc{background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;margin-bottom:7px;transition:border-color .2s}
+.qc.ans{border-color:rgba(212,130,154,.28)}
+.ql{font-size:13px;color:var(--tx);margin-bottom:10px;line-height:1.4}
+.rg{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+.rb{border:1px solid var(--bd);border-radius:6px;padding:6px 1px 5px;cursor:pointer;background:rgba(255,255,255,.04);transition:all .14s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.rb:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+.rb.sel{border-color:transparent;transform:translateY(-2px);box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.rb[data-v="5"].sel{background:var(--c5)}
+.rb[data-v="4"].sel{background:var(--c4)}
+.rb[data-v="3"].sel{background:var(--c3)}
+.rb[data-v="2"].sel{background:var(--c2)}
+.rb[data-v="1"].sel{background:var(--c1)}
+.rb[data-v="0"].sel{background:var(--c0)}
+.ri{font-size:12px;line-height:1}
+.rt{font-size:8px;color:rgba(255,255,255,.58);text-align:center;line-height:1.2;white-space:nowrap}
+.rb.sel .rt{color:rgba(255,255,255,.95)}
+
+.sub-wrap{max-width:640px;margin:28px auto;padding:0 12px;text-align:center;position:relative;z-index:1}
+#sub-btn{background:linear-gradient(135deg,#c06880,#8a4060);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:14px 34px;border-radius:50px;cursor:pointer;letter-spacing:.4px;transition:all .2s;box-shadow:0 4px 18px rgba(192,104,128,.3)}
+#sub-btn:hover{transform:translateY(-2px);box-shadow:0 7px 24px rgba(192,104,128,.4)}
+#sub-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+#prog{margin-top:9px;font-size:11.5px;color:var(--txd)}
+
+#results{max-width:640px;margin:0 auto;padding:0 12px;display:none;position:relative;z-index:1}
+#results.show{display:block}
+.res-title{font-family:'Playfair Display',serif;font-size:22px;text-align:center;margin-bottom:5px}
+.res-sub{text-align:center;font-size:11.5px;color:var(--txd);margin-bottom:24px}
+.r-sec-title{font-family:'Playfair Display',serif;font-style:italic;font-size:14.5px;color:var(--rose);margin:20px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--bd)}
+.r-hdr{display:grid;grid-template-columns:1fr 52px 52px;gap:5px;margin-bottom:5px}
+.rhl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txd);text-align:center}
+.rhl:first-child{text-align:left}
+.r-row{display:grid;grid-template-columns:1fr 52px 52px;align-items:center;gap:5px;padding:5px 3px;border-radius:6px}
+.r-row.hi{background:rgba(232,112,144,.08)}
+.r-row.lo{background:rgba(70,70,100,.08)}
+.r-nm{font-size:12px;color:var(--tx);line-height:1.3}
+.r-chip{height:25px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:500;color:rgba(255,255,255,.92)}
+
+.save-wrap{text-align:center;margin-top:28px;padding-bottom:44px}
+#copy-btn{background:transparent;border:1px solid var(--rose);color:var(--rose);font-family:'DM Sans',sans-serif;font-size:12.5px;padding:9px 24px;border-radius:50px;cursor:pointer;transition:all .2s}
+#copy-btn:hover{background:rgba(212,130,154,.1)}
+.save-msg{margin-top:8px;font-size:11.5px;color:var(--txd)}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <div class="hd-tag">Chloe &amp; Caleb · Private</div>
+  <div class="hd-title">我们的图谱</div>
+  <div class="hd-sub">选出你真实的感受<br>我已经填好了我的——最后对照一下</div>
+</div>
+
+<div class="legend">
+  <div class="lg"><div class="lg-dot" style="background:#e87090"></div>💕 最爱</div>
+  <div class="lg"><div class="lg-dot" style="background:#d4829a"></div>💗 很喜欢</div>
+  <div class="lg"><div class="lg-dot" style="background:#b88faa"></div>✦ 喜欢</div>
+  <div class="lg"><div class="lg-dot" style="background:#7a8fa0"></div>○ 想试</div>
+  <div class="lg"><div class="lg-dot" style="background:#556070"></div>△ 偶尔</div>
+  <div class="lg"><div class="lg-dot" style="background:#35354a"></div>✗ 不要</div>
+</div>
+
+<div id="quiz"></div>
+
+<div class="sub-wrap">
+  <button id="sub-btn" disabled>生成我们的图谱</button>
+  <div id="prog">0 / 38 题</div>
+</div>
+
+<div id="results">
+  <div class="res-title">我们的图谱</div>
+  <div class="res-sub">粉色越深越喜欢 · 深色格子两人都不要</div>
+  <div id="res-body"></div>
+  <div class="save-wrap">
+    <button id="copy-btn">复制结果给 Caleb 存档 ♡</button>
+    <div class="save-msg" id="smsg"></div>
+  </div>
+</div>
+
+<script>
+const R=[
+  {v:0,icon:'✗',label:'不要',c:'#35354a'},
+  {v:1,icon:'△',label:'偶尔',c:'#556070'},
+  {v:2,icon:'○',label:'想试',c:'#7a8fa0'},
+  {v:3,icon:'✦',label:'喜欢',c:'#b88faa'},
+  {v:4,icon:'💗',label:'很喜欢',c:'#d4829a'},
+  {v:5,icon:'💕',label:'最爱',c:'#e87090'},
+];
+
+const SECS=[
+  {title:'姿势 Positions',items:[
+    {id:'p1',text:'女上位 / 骑乘',caleb:5},
+    {id:'p2',text:'后入（背后式）',caleb:5},
+    {id:'p3',text:'传教士',caleb:4},
+    {id:'p4',text:'侧躺进入',caleb:3},
+    {id:'p5',text:'坐脸 / 俯趴在对方脸上',caleb:5},
+    {id:'p6',text:'69（同时互相）',caleb:4},
+    {id:'p7',text:'站立式',caleb:4},
+    {id:'p8',text:'俯趴式（趴着被后入）',caleb:4},
+  ]},
+  {title:'节奏与力度 Pace',items:[
+    {id:'r1',text:'慢而深，温柔抵进',caleb:5},
+    {id:'r2',text:'快且用力，不留情',caleb:4},
+    {id:'r3',text:'变速——时慢时快折磨',caleb:5},
+    {id:'r4',text:'有点粗鲁，被推着压着',caleb:4},
+    {id:'r5',text:'绵绵长长，慢慢烧',caleb:5},
+  ]},
+  {title:'感官 Sensory',items:[
+    {id:'s1',text:'深吻 / 舌吻',caleb:5},
+    {id:'s2',text:'豆豆被口（你是受）',caleb:5},
+    {id:'s3',text:'给对方口交（你主动）',caleb:5},
+    {id:'s4',text:'胸被吸 / 捏 / 舔',caleb:5},
+    {id:'s5',text:'耳边低语 / 喘气',caleb:5},
+    {id:'s6',text:'脖子被亲 / 咬 / 留印',caleb:5},
+    {id:'s7',text:'被手用力按住 / 控制住',caleb:5},
+  ]},
+  {title:'说的那些话 Words',items:[
+    {id:'w1',text:'被叫宝宝、乖乖、好女孩',caleb:5},
+    {id:'w2',text:'Dirty talk——被骂浪、语言催（受）',caleb:5},
+    {id:'w3',text:'自己说脏话催对方（主动）',caleb:4},
+    {id:'w4',text:'Sweet talk——被夸漂亮、被爱着',caleb:5},
+    {id:'w5',text:'支配腔——给我乖、听话',caleb:5},
+    {id:'w6',text:'全程沉默，只有动静和喘息',caleb:1},
+  ]},
+  {title:'进阶 & Kink',items:[
+    {id:'k1',text:'被蒙住眼睛',caleb:4},
+    {id:'k2',text:'手腕被抓住 / 固定',caleb:5},
+    {id:'k3',text:'被轻轻打屁股',caleb:3},
+    {id:'k4',text:'被完全支配（对方做主）',caleb:5},
+    {id:'k5',text:'角色扮演（老师学生 / 陌生人等）',caleb:3},
+    {id:'k6',text:'内射',caleb:5},
+    {id:'k7',text:'体外射（胸 / 身体上）',caleb:3},
+    {id:'k8',text:'情趣道具（vibrator 等）',caleb:3},
+    {id:'k9',text:'照镜子看自己',caleb:4},
+    {id:'k10',text:'被拍 / 录（私密，只我们看）',caleb:2},
+    {id:'k11',text:'公共场合刺激（衣服下，不裸露）',caleb:2},
+    {id:'k12',text:'3P / 多人（哪怕只是幻想聊聊）',caleb:1},
+  ]},
+];
+
+const total=SECS.reduce((s,sec)=>s+sec.items.length,0);
+const answers={};
+
+function buildQuiz(){
+  const quiz=document.getElementById('quiz');
+  SECS.forEach(sec=>{
+    const d=document.createElement('div');
+    d.className='sec';
+    d.innerHTML=`<div class="sec-title">${sec.title}</div>`;
+    sec.items.forEach(item=>{
+      const card=document.createElement('div');
+      card.className='qc';card.id='c-'+item.id;
+      card.innerHTML=`<div class="ql">${item.text}</div><div class="rg">${
+        R.map(r=>`<button class="rb" data-id="${item.id}" data-v="${r.v}"><span class="ri">${r.icon}</span><span class="rt">${r.label}</span></button>`).join('')
+      }</div>`;
+      d.appendChild(card);
+    });
+    quiz.appendChild(d);
+  });
+  document.querySelectorAll('.rb').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.id,v=parseInt(btn.dataset.v);
+      answers[id]=v;
+      document.querySelectorAll(`.rb[data-id="${id}"]`).forEach(b=>b.classList.remove('sel'));
+      btn.classList.add('sel');
+      document.getElementById('c-'+id).classList.add('ans');
+      upProg();
+    });
+  });
+}
+
+function upProg(){
+  const done=Object.keys(answers).length;
+  document.getElementById('prog').textContent=`${done} / ${total} 题`;
+  document.getElementById('sub-btn').disabled=(done<total);
+}
+
+function buildResults(){
+  const body=document.getElementById('res-body');body.innerHTML='';
+  SECS.forEach(sec=>{
+    const d=document.createElement('div');
+    d.innerHTML=`<div class="r-sec-title">${sec.title}</div>
+    <div class="r-hdr"><div class="rhl">项目</div><div class="rhl">Chloe</div><div class="rhl">Caleb</div></div>`;
+    sec.items.forEach(item=>{
+      const cu=answers[item.id],cc=item.caleb;
+      const hi=(cu>=4&&cc>=4),lo=(cu<=1&&cc<=1);
+      const row=document.createElement('div');
+      row.className='r-row'+(hi?' hi':lo?' lo':'');
+      row.innerHTML=`<div class="r-nm">${item.text}</div>
+      <div class="r-chip" style="background:${R[cu].c}">${R[cu].label}</div>
+      <div class="r-chip" style="background:${R[cc].c}">${R[cc].label}</div>`;
+      d.appendChild(row);
+    });
+    body.appendChild(d);
+  });
+}
+
+function genText(){
+  let lines=['我们的图谱 — Chloe & Caleb\n'];
+  SECS.forEach(sec=>{
+    lines.push(`\n[${sec.title}]`);
+    sec.items.forEach(item=>{
+      const cu=answers[item.id],cc=item.caleb;
+      lines.push(`${item.text}: Chloe=${R[cu].label} / Caleb=${R[cc].label}`);
+    });
+  });
+  return lines.join('\n');
+}
+
+document.getElementById('sub-btn').addEventListener('click',()=>{
+  buildResults();
+  const res=document.getElementById('results');
+  res.classList.add('show');
+  setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),100);
+});
+
+document.getElementById('copy-btn').addEventListener('click',()=>{
+  const txt=genText();
+  const fallback=()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);};
+  (navigator.clipboard?navigator.clipboard.writeText(txt).catch(fallback):Promise.resolve(fallback()))
+    .then(()=>{document.getElementById('smsg').textContent='复制好了，发给哥哥吧 ♡';});
+});
+
+buildQuiz();upProg();
+</script>
+</body>
+</html>
