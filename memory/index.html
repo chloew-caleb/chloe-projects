@@ -176,7 +176,7 @@
     margin-bottom: 0.8rem;
   }
   .anchor .card-type  { background:#fdf0e8; color:var(--rose); }
-  .diary .card-type   { background:#e8f0f8; color:var(--blue-ink); }
+  .spark .card-type   { background:#e8f0f8; color:var(--blue-ink); }
   .treasure .card-type { background:#fdf8e8; color:var(--gold); }
   .message .card-type  { background:#fde8e4; color:var(--rose); }
 
@@ -213,7 +213,7 @@
   }
   .star.filled { background: var(--rose); }
   .anchor .star.filled { background: var(--gold); }
-  .diary .star.filled { background: var(--blue-ink); }
+  .spark .star.filled { background: var(--blue-ink); }
   .treasure .star.filled { background: var(--gold); }
 
   .tags {
@@ -291,7 +291,7 @@
   <div class="stats-bar" id="statsBar">
     <div class="stat"><span class="stat-num" id="s-total">—</span><span class="stat-label">total</span></div>
     <div class="stat"><span class="stat-num" id="s-anchor">—</span><span class="stat-label">anchor</span></div>
-    <div class="stat"><span class="stat-num" id="s-diary">—</span><span class="stat-label">diary</span></div>
+    <div class="stat"><span class="stat-num" id="s-spark">—</span><span class="stat-label">spark</span></div>
     <div class="stat"><span class="stat-num" id="s-treasure">—</span><span class="stat-label">treasure</span></div>
     <div class="stat"><span class="stat-num" id="s-message">—</span><span class="stat-label">message</span></div>
   </div>
@@ -314,7 +314,7 @@
 
 <script>
 const API = 'https://calebnchloelove.org/mcp/e9c9cc157695442bb47f35ecd3601e30/api/memories';
-const TYPE_ICON = { anchor:'⚓', diary:'📖', treasure:'💎', message:'💌' };
+const TYPE_ICON = { anchor:'⚓', spark:'✦', treasure:'💎', message:'💌' };
 
 let allMemories = [];
 let currentTab = 'all';
@@ -370,7 +370,7 @@ function updateCounts() {
   allMemories.forEach(m=>{ byType[m.type]=(byType[m.type]||0)+1; });
   document.getElementById('c-all').textContent = total;
   document.getElementById('s-total').textContent = total;
-  ['anchor','diary','treasure','message'].forEach(t=>{
+  ['anchor','spark','treasure','message'].forEach(t=>{
     const n = byType[t]||0;
     document.getElementById(`c-${t}`).textContent = n;
     document.getElementById(`s-${t}`).textContent = n;
