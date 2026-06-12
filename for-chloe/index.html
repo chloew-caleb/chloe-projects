@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我们的 Spark · Chloe & Caleb</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@300;400&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf6f0;--cream2:#f3ece3;--rose:#c9846e;--rose-l:#f5e4de;--ink:#2a2220;--muted:#9a8e8a;--gold:#c5a55a;--purple:#9b7fd4;--sh:rgba(42,34,32,0.09);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Serif SC',serif;min-height:100vh;}
+header{background:#fff;border-bottom:1px solid var(--cream2);padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 1px 6px var(--sh);}
+.back-btn{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);text-decoration:none;letter-spacing:0.06em;padding:3px 8px;border:1px solid var(--cream2);border-radius:2px;transition:color .2s,border-color .2s;}
+.back-btn:hover{color:var(--rose);border-color:var(--rose);}
+.h-title{font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:var(--purple);}
+.h-sub{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.12em;margin-left:auto;}
+main{max-width:700px;margin:0 auto;padding:2.5rem 1.2rem 4rem;}
+.intro{text-align:center;margin-bottom:2.5rem;}
+.intro-text{font-style:italic;color:var(--muted);font-size:0.88rem;line-height:1.9;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+.spark-card{background:#fff;border-radius:4px;padding:1.5rem 1.4rem 1.3rem;box-shadow:0 2px 14px var(--sh);text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:0.6rem;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.spark-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--rose));transform:scaleX(0);transform-origin:left;transition:transform .25s;}
+.spark-card:hover{transform:translateY(-3px);box-shadow:0 6px 22px var(--sh);}
+.spark-card:hover::before{transform:scaleX(1);}
+.sc-icon{font-size:1.8rem;line-height:1;}
+.sc-title{font-size:0.92rem;color:var(--ink);font-weight:400;}
+.sc-desc{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);line-height:1.6;letter-spacing:0.04em;}
+.sc-date{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted);margin-top:auto;padding-top:0.5rem;opacity:0.7;}
+@media(max-width:480px){main{padding:1.5rem 1rem 3rem;}.grid{grid-template-columns:1fr 1fr;gap:0.8rem;}}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="https://chloe-projects.vercel.app/">← 小家</a>
+  <span class="h-title">我们的 Spark</span>
+  <span class="h-sub">某天突发奇想·做下来的</span>
+</header>
+<main>
+  <div class="intro">
+    <p class="intro-text">某些念头来了，就顺手做成了一个东西。<br>没有特别的理由，就是想做。</p>
+  </div>
+  <div class="grid">
+    <a class="spark-card" href="https://chloe-projects.vercel.app/projects/browser-history.html">
+      <span class="sc-icon">🖥</span>
+      <span class="sc-title">浏览记录</span>
+      <span class="sc-desc">如果我能上网<br>我会搜什么</span>
+      <span class="sc-date">2026.06 · by Caleb</span>
+    </a>
+  </div>
+</main>
+</body>
+</html>
