@@ -1906,7 +1906,8 @@ function MemoryScreen({ go }) {
         </div>
 
         {/* screen time wide */}
-        <div className="card pressable" onClick={() => showToast('Screen Time', 'clock')} style={{ marginTop: 14, padding: '20px 20px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <a href="https://chloe-projects.vercel.app/screentime/" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+        <div className="card pressable" style={{ marginTop: 14, padding: '20px 20px', display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ width: 42, height: 42, borderRadius: 13, background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center' }}>
             <Icon name="clock" size={22} color="var(--gold)" />
           </div>
@@ -1916,6 +1917,7 @@ function MemoryScreen({ go }) {
           </div>
           <Icon name="chevron" size={18} color="var(--text-3)" />
         </div>
+        </a>
       </div>
     </div>
   );
