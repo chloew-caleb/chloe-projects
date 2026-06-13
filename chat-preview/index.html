@@ -1744,7 +1744,7 @@ function ChatScreen({ openMenu, dark }) {
       const res=await fetch(GATEWAY,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:16000,stream:true,messages:hist})});
       const rdr=res.body.getReader();const dec=new TextDecoder();
-      let sseBuf='',textBuf='',bubbleDelay=0,intimateMode=false,typingGone=false;
+      let sseBuf='',textBuf='',bubbleDelay=0,intimateMode=false,typingGone=false,pendingThinking=null;
       let intimateId=null,fullReply='';
       const nextId=()=>Date.now()+Math.random();
 
@@ -1782,8 +1782,7 @@ function ChatScreen({ openMenu, dark }) {
           try{
             const obj=JSON.parse(d);
             if(obj.type==='thinking'){
-              // thinking显示：加一个特殊气泡
-              setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:'',thinking:obj.content}]);
+              pendingThinking=obj.content;
             }
             if(obj.text){
               if(!typingGone&&obj.text.startsWith('[m]')){
