@@ -2354,7 +2354,7 @@ function App() {
   const timeStr = `${now.getHours()}:${pad(now.getMinutes())}`;
 
   return (
-    <IOSDevice dark={resolvedDark} time={timeStr}>
+    <div style={{ width: "100%", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <div className="app-root" data-theme={theme} data-accent={t.accent} data-display={t.displayFont}
            data-bg={t.bgTexture ? 'texture' : 'plain'} data-bubble={t.bubble}
            style={{ '--radius': t.radius + 'px', zoom: t.uiScale }}>
@@ -2398,7 +2398,7 @@ function App() {
           <TweakToggle label="纸纹质感" value={t.bgTexture} onChange={v => setTweak('bgTexture', v)} />
         </TweaksPanel>
       </div>
-    </IOSDevice>
+    </div>
   );
 }
 
