@@ -155,6 +155,13 @@ footer{position:relative;z-index:1;text-align:center;padding:1rem;
 .nav-card-chat:hover .chat-card-arrow{transform:translateX(4px);}
 
 </style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="小家">
+  <meta name="theme-color" content="#c9846e">
+  <link rel="apple-touch-icon" href="/images/icon-192.png">
 </head>
 <body>
 
@@ -332,6 +339,13 @@ async function loadWeather(){
   }
 }
 loadWeather();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
 </script>
 </body>
 </html>
