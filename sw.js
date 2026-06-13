@@ -1,4 +1,4 @@
-const CACHE = 'xiaojia-v1';
+const CACHE = 'xiaojia-v2';
 const PRECACHE = ['/', '/index.html'];
 
 self.addEventListener('install', e => {
@@ -15,6 +15,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // network-first：优先拉最新，失败才用缓存
   e.respondWith(
     fetch(e.request).then(res => {
       const clone = res.clone();
