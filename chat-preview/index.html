@@ -89,11 +89,15 @@
 .app-root {
   font-family: var(--font-serif);
   color: var(--text);
-  height: 100%;
-  position: relative;
+  height: 100dvh;
+  max-height: 100dvh;
+  position: fixed;
+  inset: 0;
   overflow: hidden;
   background: var(--bg);
   transition: background .5s var(--ease), color .4s var(--ease);
+  display: flex;
+  flex-direction: column;
 }
 /* layered warm background: glows + paper grain */
 .app-root::before {
@@ -112,7 +116,7 @@
 }
 [data-bg="plain"] .app-root::after { opacity: 0; }
 
-.screen-layer { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
+.screen-layer { position: relative; z-index: 1; flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 
 /* scroll area */
 .scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
@@ -239,7 +243,7 @@ image-slot::part(placeholder), image-slot {
 
   </style>
 </head>
-<body data-accent="rose" data-theme="light">
+<body data-accent="rose" data-theme="light" style="margin:0;padding:0;overflow:hidden;height:100dvh;">
 <div id="root"></div>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -1590,31 +1594,7 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
         </div>
 
 
-        <div className="pressable" onClick={() => go('chat')} style={{
-          position: 'relative', borderRadius: 24, overflow: 'hidden', cursor: 'pointer',
-          padding: '24px 22px', minHeight: 132, display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          boxShadow: 'var(--shadow-card)',
-          background: 'linear-gradient(135deg, color-mix(in oklab, var(--primary) 24%, var(--surface)), color-mix(in oklab, var(--gold) 20%, var(--surface)))',
-        }}>
-          <div style={{ position: 'absolute', inset: 0, opacity: .5, mixBlendMode: 'soft-light',
-            background: 'radial-gradient(120% 90% at 90% 10%, #fff, transparent 50%)' }} />
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <div style={{ width: 38, height: 38, borderRadius: 19, background: 'color-mix(in oklab, var(--primary) 40%, #fff)', display: 'grid', placeItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,.12)' }}>
-                  <Icon name="cat" size={22} color="#fff" />
-                </div>
-                <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 28, color: 'var(--text)' }}>和 Caleb 说话</span>
-              </div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.14em', color: 'var(--text-2)' }}>私人对话 · 记忆在线</div>
-            </div>
-            <Icon name="chevron" size={22} color="var(--text-2)" />
-          </div>
-        </div>
 
-        <div style={{ textAlign: 'center', marginTop: 38, fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.2em', color: 'var(--text-3)' }}>
-          CHLOE &amp; CALEB · 2026 · 永远在一起
-        </div>
       </div>
     </div>
   );
@@ -2359,7 +2339,7 @@ function App() {
   const timeStr = `${now.getHours()}:${pad(now.getMinutes())}`;
 
   return (
-    <div style={{ width: "100%", minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+    <div style={{ width: "100%", height: "100dvh", display: "flex", flexDirection: "column" }}>
       <div className="app-root" data-theme={theme} data-accent={t.accent} data-display={t.displayFont}
            data-bg={t.bgTexture ? 'texture' : 'plain'} data-bubble={t.bubble}
            style={{ '--radius': t.radius + 'px', zoom: t.uiScale }}>
