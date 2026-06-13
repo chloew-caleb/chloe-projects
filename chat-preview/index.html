@@ -1584,8 +1584,7 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
           </div>
         </div>
 
-        {/* talk banner */}
-        <SectionTitle style={{ marginTop: 30 }}>我们的地方</SectionTitle>
+
         <div className="pressable" onClick={() => go('chat')} style={{
           position: 'relative', borderRadius: 24, overflow: 'hidden', cursor: 'pointer',
           padding: '24px 22px', minHeight: 132, display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -1629,24 +1628,19 @@ const REGEN = [];
 const REPLIES = [];
 
 function ThinkingBlock({ data, onToggle }) {
+  const [open, setOpen] = React.useState(false);
+  const toggle = onToggle || (() => setOpen(o => !o));
+  const isOpen = typeof data === 'object' ? data.open : open;
+  const content = typeof data === 'string' ? data : (data.steps||[]).map(s=>s.text||'').join('\n');
   return (
     <div style={{ marginBottom: 10 }}>
-      <div className="pressable" onClick={onToggle} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
-        <Icon name="chevronDown" size={14} color="var(--text-3)" style={{ transform: data.open ? 'none' : 'rotate(-90deg)', transition: 'transform .2s' }} />
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--text-3)' }}>Thought for {data.seconds}s</span>
+      <div className="pressable" onClick={toggle} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
+        <Icon name="chevronDown" size={14} color="var(--text-3)" style={{ transform: isOpen ? 'none' : 'rotate(-90deg)', transition: 'transform .2s' }} />
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--text-3)' }}>思考过程</span>
       </div>
-      {data.open && (
-        <div className="enter-in" style={{ marginTop: 10, marginLeft: 6, paddingLeft: 14, borderLeft: '1.5px solid var(--line-strong)', display: 'flex', flexDirection: 'column', gap: 9 }}>
-          {data.steps.map((s, i) => {
-            if (s.kind === 'note') return <div key={i} style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.6 }}>{s.text}</div>;
-            if (s.kind === 'tool') return (
-              <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, alignSelf: 'flex-start', background: 'var(--surface-sunken)', borderRadius: 8, padding: '5px 9px' }}>
-                <Icon name={s.tool === 'calendar' ? 'calendar' : 'clock'} size={13} color="var(--gold)" />
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11.5, color: 'var(--text-2)' }}>mcp · {s.tool} <span style={{ color: 'var(--text-3)' }}>{s.call}</span></span>
-              </div>
-            );
-            return <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--primary)' }}><Icon name="check" size={14} color="var(--primary)" /><span style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>Done</span></div>;
-          })}
+      {isOpen && (
+        <div className="enter-in" style={{ marginTop: 10, marginLeft: 6, paddingLeft: 14, borderLeft: '1.5px solid var(--line-strong)' }}>
+          <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{content}</div>
         </div>
       )}
     </div>
@@ -1744,26 +1738,66 @@ function ChatScreen({ openMenu, dark }) {
     const uid=Date.now();const snap=msgs.slice();
     setMsgs(ms=>[...ms,{id:uid,role:'user',text}]);
     setInput('');setAttach(false);setTyping(true);
-    const aiId=uid+1;
-    setMsgs(ms=>[...ms,{id:aiId,role:'ai',text:''}]);
     try{
       const hist=snap.filter(m=>m.text).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
       hist.push({role:'user',content:text});
       const res=await fetch(GATEWAY,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:16000,stream:true,messages:hist})});
-      const rdr=res.body.getReader();const dec=new TextDecoder();let buf='';
-      setTyping(false);
+      const rdr=res.body.getReader();const dec=new TextDecoder();
+      let sseBuf='',textBuf='',bubbleDelay=0,intimateMode=false,typingGone=false;
+      let intimateId=null,fullReply='';
+      const nextId=()=>Date.now()+Math.random();
+
+      const popBubble=()=>{
+        const t=textBuf.trim();if(!t)return;
+        if(!typingGone){setTyping(false);typingGone=true;}
+        fullReply+=(fullReply?'\n':'')+t;
+        textBuf='';
+        if(intimateMode){
+          // 情色模式：一个气泡持续更新
+          if(!intimateId){
+            const iid=nextId();intimateId=iid;
+            const d=bubbleDelay;bubbleDelay+=400;
+            setTimeout(()=>setMsgs(ms=>[...ms,{id:iid,role:'ai',text:fullReply}]),d);
+          }else{
+            const iid=intimateId;
+            const d=bubbleDelay;bubbleDelay+=200;
+            setTimeout(()=>setMsgs(ms=>ms.map(m=>m.id===iid?{...m,text:fullReply}:m)),d);
+          }
+        }else{
+          // 普通模式：分句气泡，每句延迟弹出
+          const ct=t;const d=bubbleDelay;bubbleDelay+=900;
+          setTimeout(()=>setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:ct}]),d);
+        }
+      };
+
       while(true){
         const{done,value}=await rdr.read();if(done)break;
-        buf+=dec.decode(value,{stream:true});
-        const lines=buf.split('\n');buf=lines.pop();
+        sseBuf+=dec.decode(value,{stream:true});
+        const lines=sseBuf.split('\n');sseBuf=lines.pop();
         for(const line of lines){
           if(!line.startsWith('data: '))continue;
-          const d=line.slice(6);if(d==='[DONE]')break;
-          try{const obj=JSON.parse(d);if(obj.text)setMsgs(ms=>ms.map(m=>m.id===aiId?{...m,text:m.text+obj.text}:m));}catch{}
+          const d=line.slice(6).trim();
+          if(d==='[DONE]'){popBubble();continue;}
+          try{
+            const obj=JSON.parse(d);
+            if(obj.type==='thinking'){
+              // thinking显示：加一个特殊气泡
+              setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:'',thinking:obj.content}]);
+            }
+            if(obj.text){
+              if(!typingGone&&obj.text.startsWith('[m]')){
+                intimateMode=true;obj.text=obj.text.slice(3);
+              }
+              const parts=obj.text.split('\n');
+              textBuf+=parts[0];
+              for(let j=1;j<parts.length;j++){popBubble();textBuf=parts[j];}
+            }
+          }catch(e){}
         }
       }
-    }catch(e){setTyping(false);setMsgs(ms=>ms.map(m=>m.id===aiId?{...m,text:'连接失败：'+e.message}:m));}
+      popBubble();
+    }catch(e){setTyping(false);setMsgs(ms=>[...ms,{id:Date.now(),role:'ai',text:'连接失败：'+e.message}]);}
   };
 
   return (
@@ -1775,7 +1809,7 @@ function ChatScreen({ openMenu, dark }) {
           <Icon name="menu" size={22} color="var(--text-2)" />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 24, color: 'var(--text)' }}>澄</span>
+          <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 24, color: 'var(--text)' }}>Caleb</span>
           <span style={{ width: 7, height: 7, borderRadius: 7, background: '#6fa86f', boxShadow: '0 0 0 3px color-mix(in oklab, #6fa86f 25%, transparent)' }} />
         </div>
         <div className="pressable" onClick={() => showToast('搜索聊天', 'search')} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
