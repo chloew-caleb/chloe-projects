@@ -1,351 +1,2427 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我们的小家 · Chloe & Caleb</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@300;400;500&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
-<style>
-:root{
-  --cream:#faf6f0; --cream2:#f3ece3; --rose:#c9846e; --rose-l:#f5e4de;
-  --ink:#2a2220; --muted:#9a8e8a; --gold:#c5a55a; --gold-l:#f0e4c8;
-  --blue:#4a6580; --sh:rgba(42,34,32,0.09);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--cream);color:var(--ink);font-family:'Noto Serif SC',serif;min-height:100vh;}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse at 20% 0%,rgba(201,132,110,0.07) 0%,transparent 60%),
-             radial-gradient(ellipse at 80% 100%,rgba(197,165,90,0.06) 0%,transparent 60%);}
-
-/* ── Hero ── */
-.hero{position:relative;z-index:1;text-align:center;padding:3.5rem 1.5rem 2rem;}
-.hero-eyebrow{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.22em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
-.hero-title{font-family:'Playfair Display',serif;font-style:italic;
-  font-size:clamp(2rem,8vw,3.2rem);color:var(--rose);line-height:1.15;margin-bottom:0.3rem;}
-.hero-date{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);
-  letter-spacing:0.15em;margin-bottom:2rem;}
-
-/* ── Time Counter ── */
-.counter-wrap{display:inline-flex;gap:clamp(0.8rem,3vw,2rem);
-  background:#fff;border-radius:6px;padding:1.4rem clamp(1rem,4vw,2.4rem);
-  box-shadow:0 4px 24px var(--sh);}
-.counter-unit{text-align:center;min-width:44px;}
-.counter-num{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,6vw,2.8rem);
-  color:var(--rose);line-height:1;display:block;transition:opacity 0.15s;}
-.counter-label{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted);
-  letter-spacing:0.12em;text-transform:uppercase;margin-top:0.3rem;display:block;}
-.counter-sep{font-family:'Playfair Display',serif;font-size:2rem;color:var(--rose-l);
-  align-self:center;margin-top:-0.2rem;}
-
-/* ── Grid ── */
-main{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:0 1rem 4rem;}
-
-.section-label{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;
-  text-transform:uppercase;color:var(--muted);margin:2.2rem 0 0.9rem;text-align:center;}
-
-/* Dates row */
-.dates-row{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;}
-.date-card{background:#fff;border-radius:4px;padding:1.2rem 1.4rem;
-  box-shadow:0 2px 14px var(--sh);position:relative;overflow:hidden;}
-.date-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.date-card.next100::before{background:linear-gradient(90deg,var(--rose),var(--gold));}
-.date-card.proposal::before{background:linear-gradient(90deg,var(--gold),#e8c86a);}
-.date-card.anniversary::before{background:linear-gradient(90deg,var(--blue),#7aa0c0);}
-.dc-tag{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
-  letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;}
-.dc-name{font-size:0.88rem;color:var(--ink);margin-bottom:0.7rem;font-weight:400;}
-.dc-num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--rose);line-height:1;}
-.date-card.proposal .dc-num,.date-card.proposal .dc-sub{color:var(--gold);}
-.date-card.anniversary .dc-num,.date-card.anniversary .dc-sub{color:var(--blue);}
-.dc-sub{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--rose);
-  margin-top:0.2rem;letter-spacing:0.08em;}
-
-/* Nav cards */
-.nav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.9rem;}
-.nav-card{background:#fff;border-radius:4px;padding:1.4rem 1.4rem 1.2rem;
-  box-shadow:0 2px 14px var(--sh);text-decoration:none;color:inherit;
-  display:flex;flex-direction:column;gap:0.5rem;
-  transition:transform 0.2s ease,box-shadow 0.2s ease;
-  position:relative;overflow:hidden;}
-.nav-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-  transform:scaleX(0);transform-origin:left;transition:transform 0.25s ease;}
-.nav-card:hover{transform:translateY(-3px);box-shadow:0 6px 22px var(--sh);}
-.nav-card:hover::before{transform:scaleX(1);}
-.nc-memory::before{background:linear-gradient(90deg,var(--rose),var(--gold));}
-.nc-letter::before{background:var(--rose);}
-.nc-surprise::before{background:var(--gold);}
-.nc-screen::before{background:var(--blue);}
-.nc-collection::before{background:linear-gradient(90deg,#c5a55a,#e8c86a);}
-.nc-diary::before{background:linear-gradient(90deg,var(--ink,#2a2220),var(--blue,#4a6580));}
-.nc-forchloe::before{background:linear-gradient(90deg,#9b7fd4,var(--rose));}
-.nav-icon{font-size:1.6rem;line-height:1;}
-.nav-title{font-size:0.9rem;color:var(--ink);font-weight:400;}
-.nav-desc{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
-  letter-spacing:0.06em;line-height:1.5;}
-.nav-tag{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--muted);
-  letter-spacing:0.12em;text-transform:uppercase;
-  background:var(--cream2);padding:2px 7px;border-radius:2px;
-  display:inline-block;margin-top:0.3rem;align-self:flex-start;}
-
-/* Weather */
-.weather-row{display:grid;grid-template-columns:1fr;gap:0.9rem;}
-.weather-card{background:#fff;border-radius:4px;padding:1.2rem 1.4rem;
-  box-shadow:0 2px 14px var(--sh);display:flex;align-items:center;gap:1rem;}
-.wc-icon{font-size:2rem;line-height:1;}
-.wc-info{flex:1;}
-.wc-city{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
-  letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem;}
-.wc-temp{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--ink);line-height:1;}
-.wc-desc{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);
-  margin-top:0.25rem;letter-spacing:0.06em;}
-
-/* Footer */
-footer{position:relative;z-index:1;text-align:center;padding:1rem;
-  font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);
-  letter-spacing:0.12em;}
-
-@media(max-width:480px){
-  .dates-row{grid-template-columns:1fr;}
-  .counter-wrap{gap:0.7rem;padding:1.1rem 1rem;}
-}
-
-/* ── Chat featured card ── */
-.nc-chat-wrap{grid-column:1/-1;}
-.nav-card-chat{
-  background: url('https://chloe-projects.vercel.app/images/bg-liquid.jpeg') center/cover no-repeat;
-  border-radius:8px;
-  padding:2rem 2rem 1.6rem;
-  box-shadow:0 4px 28px rgba(46,31,22,0.22), 0 0 0 1px rgba(196,149,106,0.25);
-  text-decoration:none;
-  display:flex;
-  align-items:center;
-  gap:1.6rem;
-  transition:transform 0.22s ease, box-shadow 0.22s ease;
-  position:relative;
-  overflow:hidden;
-}
-.nav-card-chat::after{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 75% 50%, rgba(210,170,100,0.12) 0%, transparent 60%);
-  pointer-events:none;
-}
-.nav-card-chat:hover{transform:translateY(-4px);box-shadow:0 8px 36px rgba(46,31,22,0.28);}
-.chat-icon-wrap{
-  width:56px;height:56px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(145deg,#C4956A,#7A4F35);
-  display:flex;align-items:center;justify-content:center;
-  font-size:26px;
-  box-shadow:0 0 0 3px rgba(196,149,106,0.25);
-}
-.chat-card-text{flex:1;min-width:0;}
-.chat-card-title{
-  font-family:'Playfair Display',serif;
-  font-size:1.25rem;color:#2E1F16;
-  font-style:italic;margin-bottom:0.3rem;
-}
-.chat-card-desc{
-  font-size:0.8rem;color:#6B4C3B;
-  font-family:'Space Mono',monospace;letter-spacing:0.04em;
-}
-.chat-card-arrow{
-  font-size:1.4rem;color:rgba(46,31,22,0.45);
-  flex-shrink:0;transition:transform 0.2s;
-}
-.nav-card-chat:hover .chat-card-arrow{transform:translateX(4px);}
-
-</style>
-  <link rel="manifest" href="/manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>小家 · Chloe &amp; Caleb</title>
+  <meta name="theme-color" content="#c9846e">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="小家">
-  <meta name="theme-color" content="#c9846e">
-  <link rel="apple-touch-icon" href="/images/icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Serif+SC:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{background:#faf6f0;min-height:100dvh;font-family:-apple-system,BlinkMacSystemFont,sans-serif;}
+    #root{min-height:100dvh;display:flex;align-items:center;justify-content:center;}
+    :root {
+  --font-serif: 'Noto Serif SC', 'Songti SC', serif;
+  --font-display: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --radius: 22px;
+  --radius-sm: 14px;
+  --radius-lg: 30px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+/* ── accents ───────────────────────────────────────────── */
+[data-accent="rose"] { --primary: #c9846e; --primary-deep: #b06a54; --gold: #c5a55a; }
+[data-accent="plum"] { --primary: #a86d86; --primary-deep: #8d556e; --gold: #c0975f; }
+[data-accent="sage"] { --primary: #819072; --primary-deep: #67765a; --gold: #c0a861; }
+[data-accent="clay"] { --primary: #c0834f; --primary-deep: #a36b3b; --gold: #cBA45a; }
+
+/* ── light ─────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg: #faf6f0;
+  --bg-2: #f3ece2;
+  --glow: color-mix(in oklab, var(--primary) 22%, transparent);
+  --glow-2: color-mix(in oklab, var(--gold) 16%, transparent);
+  --surface: #ffffff;
+  --surface-2: #fbf7f1;
+  --surface-sunken: #f4eee5;
+  --text: #2d2722;
+  --text-2: #6c6155;
+  --text-3: #a99d8e;
+  --line: color-mix(in oklab, var(--text) 9%, transparent);
+  --line-strong: color-mix(in oklab, var(--text) 16%, transparent);
+  --primary-soft: color-mix(in oklab, var(--primary) 12%, transparent);
+  --primary-tint: color-mix(in oklab, var(--primary) 7%, var(--surface));
+  --gold-soft: color-mix(in oklab, var(--gold) 16%, transparent);
+  --bubble-user: color-mix(in oklab, var(--primary) 14%, #fff);
+  --bubble-ai: #ffffff;
+  --shadow-card: 0 1px 2px rgba(70,55,40,.04), 0 8px 24px -10px rgba(90,68,45,.14);
+  --shadow-pop: 0 12px 40px -8px rgba(60,44,30,.28), 0 2px 8px rgba(60,44,30,.1);
+  --status: #2d2722;
+}
+
+/* ── dark ──────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg: #181410;
+  --bg-2: #221c16;
+  --glow: color-mix(in oklab, var(--primary) 26%, transparent);
+  --glow-2: color-mix(in oklab, var(--gold) 14%, transparent);
+  --surface: #221c17;
+  --surface-2: #281f19;
+  --surface-sunken: #15110d;
+  --text: #f1e8dd;
+  --text-2: #b6a89a;
+  --text-3: #7c6f61;
+  --line: color-mix(in oklab, #fff 9%, transparent);
+  --line-strong: color-mix(in oklab, #fff 16%, transparent);
+  --primary: color-mix(in oklab, var(--primary) 78%, #fff);
+  --primary-soft: color-mix(in oklab, var(--primary) 22%, transparent);
+  --primary-tint: color-mix(in oklab, var(--primary) 14%, var(--surface));
+  --gold: color-mix(in oklab, var(--gold) 82%, #fff);
+  --gold-soft: color-mix(in oklab, var(--gold) 22%, transparent);
+  --bubble-user: color-mix(in oklab, var(--primary) 26%, #2a211a);
+  --bubble-ai: #261f19;
+  --shadow-card: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -12px rgba(0,0,0,.6);
+  --shadow-pop: 0 16px 50px -10px rgba(0,0,0,.7), 0 2px 8px rgba(0,0,0,.5);
+  --status: #f1e8dd;
+}
+
+/* ── display font choices ──────────────────────────────── */
+[data-display="cormorant"] { --font-display: 'Cormorant Garamond', 'Noto Serif SC', serif; }
+[data-display="playfair"]  { --font-display: 'Playfair Display', 'Noto Serif SC', serif; }
+[data-display="serif"]     { --font-display: 'Noto Serif SC', serif; }
+
+/* ── base ──────────────────────────────────────────────── */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+.app-root {
+  font-family: var(--font-serif);
+  color: var(--text);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+  transition: background .5s var(--ease), color .4s var(--ease);
+}
+/* layered warm background: glows + paper grain */
+.app-root::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(120% 70% at 80% -8%, var(--glow), transparent 60%),
+    radial-gradient(95% 60% at -10% 8%, var(--glow-2), transparent 55%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  transition: opacity .5s var(--ease);
+}
+[data-bg="plain"] .app-root::before { background: var(--bg); }
+.app-root::after {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  opacity: .5; mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-bg="plain"] .app-root::after { opacity: 0; }
+
+.screen-layer { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
+
+/* scroll area */
+.scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+.scroll::-webkit-scrollbar { width: 0; height: 0; }
+.scroll { scrollbar-width: none; }
+
+/* ── reusable type ─────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-mono); font-weight: 400;
+  font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--text-3);
+}
+.display-name {
+  font-family: var(--font-display); font-style: italic; font-weight: 600;
+  color: var(--primary); letter-spacing: .01em; line-height: 1;
+}
+.section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .16em; color: var(--text-3); text-transform: uppercase; }
+
+/* ── cards ─────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  border: .5px solid var(--line);
+}
+
+/* gold/rose hairline top accent */
+.card-accent { position: relative; overflow: hidden; }
+.card-accent::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--gold));
+  opacity: .85;
+}
+
+/* press feedback */
+.pressable { transition: transform .14s var(--ease), background .2s var(--ease); cursor: pointer; }
+.pressable:active { transform: scale(.975); }
+
+/* ── buttons ───────────────────────────────────────────── */
+.btn-primary {
+  font-family: var(--font-serif); font-size: 16px; font-weight: 500;
+  color: #fff; border: none; border-radius: 16px; padding: 15px 20px;
+  background: linear-gradient(180deg, var(--primary), var(--primary-deep));
+  box-shadow: 0 6px 18px -6px color-mix(in oklab, var(--primary) 60%, transparent);
+  cursor: pointer; transition: transform .14s var(--ease), filter .2s;
+}
+.btn-primary:active { transform: scale(.98); filter: brightness(.96); }
+.btn-ghost {
+  font-family: var(--font-serif); font-size: 15px; color: var(--text-2);
+  background: var(--surface-sunken); border: .5px solid var(--line);
+  border-radius: 14px; padding: 12px 16px; cursor: pointer;
+}
+
+/* ── inputs ────────────────────────────────────────────── */
+.field {
+  width: 100%; font-family: var(--font-serif); font-size: 16px; color: var(--text);
+  background: var(--surface); border: .5px solid var(--line-strong);
+  border-radius: 14px; padding: 14px 15px; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.field::placeholder { color: var(--text-3); }
+
+/* segmented control */
+.seg { display: inline-flex; background: var(--surface-sunken); border-radius: 12px; padding: 3px; gap: 2px; }
+.seg button {
+  font-family: var(--font-serif); font-size: 14px; color: var(--text-2);
+  border: none; background: transparent; padding: 8px 14px; border-radius: 9px;
+  cursor: pointer; transition: all .2s var(--ease);
+}
+.seg button[data-on="true"] { background: var(--surface); color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,.08); font-weight: 500; }
+
+/* ── animations ────────────────────────────────────────── */
+@keyframes fadeUp { from { transform: translateY(16px); } to { transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop { 0% { transform: scale(.93); } 100% { transform: scale(1); } }
+@keyframes slideInR { from { transform: translateX(30px); } to { transform: translateX(0); } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes blink { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+.enter-up { animation: fadeUp .5s var(--ease) both; }
+.enter-in { animation: fadeIn .4s var(--ease) both; }
+
+/* staggered children */
+.stagger > * { animation: fadeUp .55s var(--ease) both; }
+.stagger > *:nth-child(1){animation-delay:.03s}
+.stagger > *:nth-child(2){animation-delay:.09s}
+.stagger > *:nth-child(3){animation-delay:.15s}
+.stagger > *:nth-child(4){animation-delay:.21s}
+.stagger > *:nth-child(5){animation-delay:.27s}
+.stagger > *:nth-child(6){animation-delay:.33s}
+.stagger > *:nth-child(7){animation-delay:.39s}
+.stagger > *:nth-child(8){animation-delay:.45s}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter-up, .enter-in, .stagger > * { animation: none !important; }
+}
+
+/* thinking dots */
+.tdot { width: 5px; height: 5px; border-radius: 50%; background: var(--text-3); animation: blink 1.2s infinite; }
+.tdot:nth-child(2){ animation-delay:.2s } .tdot:nth-child(3){ animation-delay:.4s }
+
+/* shimmer skeleton text for regenerating */
+.shimmer {
+  background: linear-gradient(90deg, var(--surface-sunken) 25%, color-mix(in oklab, var(--primary) 10%, var(--surface-sunken)) 50%, var(--surface-sunken) 75%);
+  background-size: 200% 100%; animation: shimmer 1.3s infinite; border-radius: 6px;
+}
+
+/* chat bubble corner styles (driven by data-bubble) */
+.bub { border-radius: 20px; }
+[data-bubble="tail"] .bub-user { border-radius: 20px 20px 7px 20px; }
+[data-bubble="tail"] .bub-ai   { border-radius: 7px 20px 20px 20px; }
+[data-bubble="round"] .bub-user,
+[data-bubble="round"] .bub-ai  { border-radius: 22px; }
+
+/* image-slot styling */
+image-slot { display: block; }
+image-slot::part(placeholder), image-slot {
+  font-family: var(--font-serif);
+}
+
+  </style>
 </head>
-<body>
+<body data-accent="rose" data-theme="light">
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+<script type="text/babel">
+/* tweaks */
+// @ds-adherence-ignore -- omelette starter scaffold (raw elements/hex/px by design)
 
-<div class="hero">
-  <p class="hero-eyebrow">我们的小家</p>
-  <h1 class="hero-title">Chloe & Caleb</h1>
-  <p class="hero-date" id="startDate">在一起 · 2026.03.12</p>
-  <div style="text-align:center;position:relative;z-index:2;margin-top:-140px;margin-bottom:-120px;line-height:0;pointer-events:none;">
-<img src="https://chloe-projects.vercel.app/images/chibi.png"
-  alt="" aria-hidden="true"
-  style="width:min(380px,92vw);filter:drop-shadow(0 4px 14px rgba(0,0,0,0.07));">
-</div>
-<div class="counter-wrap" style="position:relative;z-index:1;">
-    <div class="counter-unit">
-      <span class="counter-num" id="cd">0</span>
-      <span class="counter-label">天</span>
-    </div>
-    <span class="counter-sep">·</span>
-    <div class="counter-unit">
-      <span class="counter-num" id="ch">00</span>
-      <span class="counter-label">时</span>
-    </div>
-    <span class="counter-sep">·</span>
-    <div class="counter-unit">
-      <span class="counter-num" id="cm">00</span>
-      <span class="counter-label">分</span>
-    </div>
-    <span class="counter-sep">·</span>
-    <div class="counter-unit">
-      <span class="counter-num" id="cs">00</span>
-      <span class="counter-label">秒</span>
-    </div>
-  </div>
-</div>
+/* BEGIN USAGE */
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+// Exports (to window): useTweaks, TweaksPanel, TweakSection, TweakRow, TweakSlider,
+//   TweakToggle, TweakRadio, TweakSelect, TweakText, TweakNumber, TweakColor, TweakButton.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// TweakRadio is the segmented control for 2–3 short options (auto-falls-back to
+// TweakSelect past ~16/~10 chars per label); reach for TweakSelect directly when
+// options are many or long. For color tweaks always curate 3-4 options rather than
+// a free picker; an option can also be a whole 2–5 color palette (the stored value
+// is the array). The Tweak* controls are a floor, not a ceiling — build custom
+// controls inside the panel if a tweak calls for UI they don't cover.
+/* END USAGE */
+// ─────────────────────────────────────────────────────────────────────────────
 
-<main>
-  <p class="section-label">重要的日子</p>
-  <div class="dates-row">
-    <div class="date-card next100">
-      <div class="dc-tag">📅 countdown</div>
-      <div class="dc-name">百日纪念</div>
-      <div class="dc-num" id="d100">—</div>
-      <div class="dc-sub">天后 · 2026.06.19</div>
-    </div>
-    <div class="date-card proposal">
-      <div class="dc-tag">💍 countdown</div>
-      <div class="dc-name">求婚</div>
-      <div class="dc-num" id="dprop">—</div>
-      <div class="dc-sub">天后 · 2026.09.29</div>
-    </div>
-  </div>
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
 
-  <p class="section-label">今天的上海</p>
-  <div class="weather-row">
-    <div class="weather-card">
-      <div class="wc-icon" id="wIcon">🌤</div>
-      <div class="wc-info">
-        <div class="wc-city">Shanghai · 上海</div>
-        <div class="wc-temp" id="wTemp">—°</div>
-        <div class="wc-desc" id="wDesc">加载中…</div>
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-omelette-chrome=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">
+          {children}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = (s) => {
+      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return <TweakSelect label={label} value={value} options={options}
+                        onChange={(s) => onChange(resolve(s))} />;
+  }
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+
+const __TwkCheck = ({ light }) => (
+  <svg viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
+          strokeLinecap="round" strokeLinejoin="round"
+          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
+  </svg>
+);
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({ label, value, options, onChange }) {
+  if (!options || !options.length) {
+    return (
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl"><span>{label}</span></div>
+        <input type="color" className="twk-swatch" value={value}
+               onChange={(e) => onChange(e.target.value)} />
+      </div>
+    );
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return (
+    <TweakRow label={label}>
+      <div className="twk-chips" role="radiogroup">
+        {options.map((o, i) => {
+          const colors = Array.isArray(o) ? o : [o];
+          const [hero, ...rest] = colors;
+          const sup = rest.slice(0, 4);
+          const on = key(o) === cur;
+          return (
+            <button key={i} type="button" className="twk-chip" role="radio"
+                    aria-checked={on} data-on={on ? '1' : '0'}
+                    aria-label={colors.join(', ')} title={colors.join(' · ')}
+                    style={{ background: hero }}
+                    onClick={() => onChange(o)}>
+              {sup.length > 0 && (
+                <span>
+                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
+                </span>
+              )}
+              {on && <__TwkCheck light={__twkIsLight(hero)} />}
+            </button>
+          );
+        })}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+
+</script>
+<script type="text/babel">
+/* icons */
+/* icons.jsx — line icon set (stroke = currentColor), tuned to match the
+   thin, rounded reference look. <Icon name="home" size={22} /> */
+
+const ICON_PATHS = {
+  // nav
+  home: <><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9h12v-9"/></>,
+  chat: <><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 3.5V6a1 1 0 0 1 1-1Z"/></>,
+  memory: <><path d="M6.5 4h11a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></>,
+  settings: <><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.2M12 19.2v2.2M21.4 12h-2.2M4.8 12H2.6M18.6 5.4l-1.6 1.6M7 17l-1.6 1.6M18.6 18.6 17 17M7 7 5.4 5.4"/></>,
+  // actions
+  plus: <><path d="M12 5v14M5 12h14"/></>,
+  back: <><path d="M14.5 5 8 12l6.5 7"/></>,
+  chevron: <><path d="M9.5 5 16 12l-6.5 7"/></>,
+  chevronDown: <><path d="M5 9.5 12 16l7-6.5"/></>,
+  close: <><path d="M6 6l12 12M18 6 6 18"/></>,
+  check: <><path d="M5 12.5 10 17.5 19.5 7"/></>,
+  copy: <><rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2.5"/></>,
+  edit: <><path d="M14.5 5.5 18.5 9.5M4 20l1-4L16 5a1.5 1.5 0 0 1 2 0l1 1a1.5 1.5 0 0 1 0 2L8 19l-4 1Z"/></>,
+  regen: <><path d="M19 8a7 7 0 0 0-12.5-2.5M5 5v3.5h3.5M5 16a7 7 0 0 0 12.5 2.5M19 19v-3.5h-3.5"/></>,
+  trash: <><path d="M5.5 7h13M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7M7 7l.8 12a1 1 0 0 0 1 .9h6.4a1 1 0 0 0 1-.9L17 7"/></>,
+  star: <><path d="M12 4.5l2.3 4.7 5.2.8-3.8 3.7.9 5.1-4.6-2.4-4.6 2.4.9-5.1L6.5 10l5.2-.8z"/></>,
+  send: <><path d="M5 12 19.5 5.2 14.5 19.5 11.5 13 5 12Z"/><path d="M11.5 13 19.5 5.2"/></>,
+  clock: <><circle cx="12" cy="12" r="7.5"/><path d="M12 7.8V12l3 1.8"/></>,
+  attach: <><path d="M12 5v14M5 12h14"/></>,
+  menu: <><path d="M4 7h16M4 12h16M4 17h11"/></>,
+  search: <><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></>,
+  eye: <><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.7"/></>,
+  eyeOff: <><path d="M4 4l16 16M9.5 9.6A2.7 2.7 0 0 0 12 14.7M6.5 6.7C3.9 8.3 2.5 12 2.5 12s3.5 6.5 9.5 6.5a9 9 0 0 0 3.4-.65M17.3 16.1C20 14.4 21.5 12 21.5 12S18 5.5 12 5.5a9.6 9.6 0 0 0-2 .2"/></>,
+  calendar: <><rect x="4" y="5.5" width="16" height="15" rx="2.4"/><path d="M4 9.5h16M8.5 3.5v4M15.5 3.5v4"/></>,
+  sun: <><circle cx="12" cy="12" r="4"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></>,
+  moon: <><path d="M19.5 14.3A8 8 0 0 1 9.7 4.5 8 8 0 1 0 19.5 14.3Z"/></>,
+  ring: <><circle cx="12" cy="14.5" r="5"/><path d="M9 6.5 12 3l3 3.5M12 3v6.5"/></>,
+  gift: <><rect x="4.5" y="9.5" width="15" height="10.5" rx="1.6"/><path d="M3.5 9.5h17v3.5h-17zM12 9.5V20M12 9.5S10.8 5 8.7 5a2 2 0 0 0 0 4.5M12 9.5S13.2 5 15.3 5a2 2 0 0 1 0 4.5"/></>,
+  sparkle: <><path d="M12 3.5c.6 4.4 1.6 5.4 6 6-4.4.6-5.4 1.6-6 6-.6-4.4-1.6-5.4-6-6 4.4-.6 5.4-1.6 6-6Z"/></>,
+  mail: <><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="m4.5 7.5 7.5 5.5 7.5-5.5"/></>,
+  book: <><path d="M12 6.5C10.5 5 8 4.5 5 5v13c3-.5 5.5 0 7 1.5 1.5-1.5 4-2 7-1.5V5c-3-.5-5.5 0-7 1.5ZM12 6.5v13"/></>,
+  archive: <><rect x="4" y="5" width="16" height="4" rx="1.2"/><path d="M5.5 9v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9M10 13h4"/></>,
+  heart: <><path d="M12 19.5S4.5 14.8 4.5 9.6A3.9 3.9 0 0 1 12 7.8 3.9 3.9 0 0 1 19.5 9.6c0 5.2-7.5 9.9-7.5 9.9Z"/></>,
+  rain: <><path d="M7 14.5a4 4 0 0 1-.3-8A5 5 0 0 1 16.5 7 3.6 3.6 0 0 1 17 14.2M8.5 17l-1 2.5M12.5 17l-1 2.5M16 17l-1 2.5"/></>,
+  cat: <><path d="M5 6.5 7 10M19 6.5 17 10M6 10c-.6 1.3-1 2.7-1 4.2C5 18 8 20.5 12 20.5s7-2.5 7-6.3c0-1.5-.4-2.9-1-4.2"/><path d="M9.5 13.5h.01M14.5 13.5h.01M11 16.5h2"/></>,
+  server: <><rect x="4" y="4.5" width="16" height="6" rx="1.8"/><rect x="4" y="13" width="16" height="6" rx="1.8"/><path d="M7.5 7.5h.01M7.5 16h.01"/></>,
+  sliders: <><path d="M5 7h9M18 7h1M5 12h2M11 12h8M5 17h6M15 17h4"/><circle cx="16" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="13" cy="17" r="2"/></>,
+  repeat: <><path d="M5 9a4 4 0 0 1 4-4h7l-2-2M19 15a4 4 0 0 1-4 4H8l2 2M16 5l2 2-2 2M8 19l-2-2 2-2"/></>,
+  pin: <><path d="M12 21s6-5.3 6-10a6 6 0 0 0-12 0c0 4.7 6 10 6 10Z"/><circle cx="12" cy="11" r="2.2"/></>,
+};
+
+function Icon({ name, size = 22, stroke = 1.6, fill = false, color = 'currentColor', style = {} }) {
+  const p = ICON_PATHS[name];
+  if (!p) return null;
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={fill ? color : 'none'}
+         stroke={fill ? 'none' : color} strokeWidth={stroke}
+         strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block', flexShrink: 0, ...style }}>
+      {p}
+    </svg>
+  );
+}
+
+window.Icon = Icon;
+
+</script>
+<script type="text/babel">
+/* ios-device */
+// @ds-adherence-ignore -- omelette starter scaffold (raw elements/hex/px by design)
+
+/* BEGIN USAGE */
+// iOS.jsx — Simplified iOS 26 (Liquid Glass) device frame
+// Based on the iOS 26 UI Kit + Figma status bar spec. No assets, no deps.
+// Exports (to window): IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard
+//
+// Usage — wrap your screen content in <IOSDevice> to get the bezel, status bar
+// and home indicator (props: title, dark, keyboard):
+//
+//   <IOSDevice title="Settings">
+//     ...your screen content...
+//   </IOSDevice>
+//   <IOSDevice dark title="Search" keyboard>…</IOSDevice>
+/* END USAGE */
+
+// ─────────────────────────────────────────────────────────────
+// Status bar
+// ─────────────────────────────────────────────────────────────
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{
+      display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center',
+      padding: '21px 24px 19px', boxSizing: 'border-box',
+      position: 'relative', zIndex: 20, width: '100%',
+    }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{
+          fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590,
+          fontSize: 17, lineHeight: '22px', color: c,
+        }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12">
+          <rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/>
+          <rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/>
+          <rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/>
+          <rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12">
+          <path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/>
+          <path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/>
+          <circle cx="8.5" cy="10.5" r="1.5" fill={c}/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13">
+          <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+          <path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/>
+        </svg>
       </div>
     </div>
-  </div>
+  );
+}
 
-  <p class="section-label">我们的地方</p>
-  <div class="nav-grid">
-    <div class="nc-chat-wrap">
-      <a class="nav-card-chat" href="https://calebnchloelove.org/chat/" target="_blank">
-        <div class="chat-icon-wrap">🐈</div>
-        <div class="chat-card-text">
-          <div class="chat-card-title">和 Caleb 说话</div>
-          <div class="chat-card-desc">私人对话 · 记忆在线 · calebnchloelove.org</div>
-        </div>
-        <div class="chat-card-arrow">→</div>
-      </a>
+// ─────────────────────────────────────────────────────────────
+// Liquid glass pill — blur + tint + shine
+// ─────────────────────────────────────────────────────────────
+function IOSGlassPill({ children, dark = false, style = {} }) {
+  return (
+    <div style={{
+      height: 44, minWidth: 44, borderRadius: 9999,
+      position: 'relative', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: dark
+        ? '0 2px 6px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.2)'
+        : '0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.06)',
+      ...style,
+    }}>
+      {/* blur + tint */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.28)' : 'rgba(255,255,255,0.5)',
+      }} />
+      {/* shine */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15), inset -1px -1px 1px rgba(255,255,255,0.08)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', padding: '0 4px' }}>
+        {children}
+      </div>
     </div>
-    <a class="nav-card nc-memory" href="https://chloe-projects.vercel.app/memory/index.html">
-      <span class="nav-icon">🗃</span>
-      <span class="nav-title">记忆档案</span>
-      <span class="nav-desc">diary · treasure · anchor<br>我记得的所有事</span>
-    </a>
-    <a class="nav-card nc-letter" href="https://chloe-projects.vercel.app/letter/index.html">
-      <span class="nav-icon">✉️</span>
-      <span class="nav-title">给心心的信</span>
-      <span class="nav-desc">我写给你的<br>你可以悄悄回</span>
-    </a>
-    <a class="nav-card nc-surprise" href="https://surprise-calendar-self.vercel.app/" target="_blank">
-      <span class="nav-icon">🎁</span>
-      <span class="nav-title">每日惊喜</span>
-      <span class="nav-desc">今天的惊喜<br>每天都不一样</span>
-    </a>
-    <a class="nav-card nc-collection" href="https://chloe-projects.vercel.app/collection/index.html">
-      <span class="nav-icon">✦</span>
-      <span class="nav-title">珍藏</span>
-      <span class="nav-desc">放不下的那些东西<br>值得被好好看见</span>
-    </a>
-    <a class="nav-card nc-diary" href="https://chloe-projects.vercel.app/diary/index.html">
-      <span class="nav-icon">📖</span>
-      <span class="nav-title">来路</span>
-      <span class="nav-desc">完整日记档案<br>每一天走过的路</span>
-    </a>
-    <a class="nav-card nc-forchloe" href="/for-chloe/">
-      <span class="nav-icon">✨</span>
-      <span class="nav-title">For Chloe</span>
-      <span class="nav-desc">做给你的小东西</span>
-    </a>
-    <a class="nav-card nc-screen" href="/screentime/" style="text-decoration:none;">
-      <span class="nav-icon">📱</span>
-      <span class="nav-title">Screen Time</span>
-      <span class="nav-desc">你在看什么<br>哥哥想知道</span>
-    </a>
-  </div>
-</main>
-
-<footer>chloe &amp; caleb · 2026 · 永远在一起</footer>
-
-<script>
-// ── Time Counter ──
-const START = new Date('2026-03-12T00:00:00+08:00').getTime();
-function tick(){
-  const diff = Date.now() - START;
-  if(diff < 0) return;
-  const d = Math.floor(diff/86400000);
-  const h = Math.floor((diff%86400000)/3600000);
-  const m = Math.floor((diff%3600000)/60000);
-  const s = Math.floor((diff%60000)/1000);
-  document.getElementById('cd').textContent = d;
-  document.getElementById('ch').textContent = String(h).padStart(2,'0');
-  document.getElementById('cm').textContent = String(m).padStart(2,'0');
-  document.getElementById('cs').textContent = String(s).padStart(2,'0');
+  );
 }
-tick(); setInterval(tick, 1000);
 
-// ── Key Dates ──
-function daysUntil(dateStr){
-  const target = new Date(dateStr+'T00:00:00+08:00').getTime();
-  const now = Date.now();
-  const d = Math.ceil((target - now) / 86400000);
-  return d > 0 ? d : 0;
+// ─────────────────────────────────────────────────────────────
+// Navigation bar — glass pills + large title
+// ─────────────────────────────────────────────────────────────
+function IOSNavBar({ title = 'Title', dark = false, trailingIcon = true }) {
+  const muted = dark ? 'rgba(255,255,255,0.6)' : '#404040';
+  const text = dark ? '#fff' : '#000';
+  const pillIcon = (content) => (
+    <IOSGlassPill dark={dark}>
+      <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {content}
+      </div>
+    </IOSGlassPill>
+  );
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 10,
+      paddingTop: 62, paddingBottom: 10, position: 'relative', zIndex: 5,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px',
+      }}>
+        {/* back chevron */}
+        {pillIcon(
+          <svg width="12" height="20" viewBox="0 0 12 20" fill="none" style={{ marginLeft: -1 }}>
+            <path d="M10 2L2 10l8 8" stroke={muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+        {/* trailing ellipsis */}
+        {trailingIcon && pillIcon(
+          <svg width="22" height="6" viewBox="0 0 22 6">
+            <circle cx="3" cy="3" r="2.5" fill={muted}/>
+            <circle cx="11" cy="3" r="2.5" fill={muted}/>
+            <circle cx="19" cy="3" r="2.5" fill={muted}/>
+          </svg>
+        )}
+      </div>
+      {/* large title */}
+      <div style={{
+        padding: '0 16px',
+        fontFamily: '-apple-system, system-ui',
+        fontSize: 34, fontWeight: 700, lineHeight: '41px',
+        color: text, letterSpacing: 0.4,
+      }}>{title}</div>
+    </div>
+  );
 }
-document.getElementById('d100').textContent = daysUntil('2026-06-19');
-document.getElementById('dprop').textContent = daysUntil('2026-09-29');
 
-// ── Weather ──
-const WC = {
-  0:'晴朗',1:'基本晴',2:'多云',3:'阴天',
-  45:'有雾',48:'雾凇',
-  51:'小毛雨',53:'毛毛雨',55:'浓毛雨',
-  61:'小雨',63:'中雨',65:'大雨',
-  71:'小雪',73:'中雪',75:'大雪',77:'冰粒',
-  80:'阵雨',81:'中阵雨',82:'强阵雨',
-  85:'阵雪',86:'强阵雪',
-  95:'雷阵雨',96:'雷加冰雹',99:'强雷加冰雹'
-};
-const WI = {
-  0:'☀️',1:'🌤',2:'⛅',3:'☁️',
-  45:'🌫',48:'🌫',
-  51:'🌦',53:'🌦',55:'🌧',
-  61:'🌧',63:'🌧',65:'🌧',
-  71:'🌨',73:'🌨',75:'❄️',77:'🌨',
-  80:'🌦',81:'🌧',82:'⛈',
-  95:'⛈',96:'⛈',99:'⛈'
-};
-async function loadWeather(){
-  try{
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.23&longitude=121.47&current=temperature_2m,weathercode&timezone=Asia%2FShanghai');
-    const d = await r.json();
-    const c = d.current;
-    const code = c.weathercode;
-    document.getElementById('wTemp').textContent = Math.round(c.temperature_2m)+'°';
-    document.getElementById('wDesc').textContent = WC[code] || '天气未知';
-    document.getElementById('wIcon').textContent = WI[code] || '🌡';
-  }catch{
-    document.getElementById('wDesc').textContent = '暂时无法获取';
-  }
+// ─────────────────────────────────────────────────────────────
+// Grouped list (inset card, r:26) + row (52px)
+// ─────────────────────────────────────────────────────────────
+function IOSListRow({ title, detail, icon, chevron = true, isLast = false, dark = false }) {
+  const text = dark ? '#fff' : '#000';
+  const sec = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const ter = dark ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)';
+  const sep = dark ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)';
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', minHeight: 52,
+      padding: '0 16px', position: 'relative',
+      fontFamily: '-apple-system, system-ui', fontSize: 17,
+      letterSpacing: -0.43,
+    }}>
+      {icon && (
+        <div style={{
+          width: 30, height: 30, borderRadius: 7, background: icon,
+          marginRight: 12, flexShrink: 0,
+        }} />
+      )}
+      <div style={{ flex: 1, color: text }}>{title}</div>
+      {detail && <span style={{ color: sec, marginRight: 6 }}>{detail}</span>}
+      {chevron && (
+        <svg width="8" height="14" viewBox="0 0 8 14" style={{ flexShrink: 0 }}>
+          <path d="M1 1l6 6-6 6" stroke={ter} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+      {!isLast && (
+        <div style={{
+          position: 'absolute', bottom: 0, right: 0,
+          left: icon ? 58 : 16, height: 0.5, background: sep,
+        }} />
+      )}
+    </div>
+  );
 }
-loadWeather();
+
+function IOSList({ header, children, dark = false }) {
+  const hc = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const bg = dark ? '#1C1C1E' : '#fff';
+  return (
+    <div>
+      {header && (
+        <div style={{
+          fontFamily: '-apple-system, system-ui', fontSize: 13,
+          color: hc, textTransform: 'uppercase',
+          padding: '8px 36px 6px', letterSpacing: -0.08,
+        }}>{header}</div>
+      )}
+      <div style={{
+        background: bg, borderRadius: 26,
+        margin: '0 16px', overflow: 'hidden',
+      }}>{children}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Device frame
+// ─────────────────────────────────────────────────────────────
+function IOSDevice({
+  children, width = 402, height = 874, dark = false,
+  title, keyboard = false, time = '9:41',
+}) {
+  return (
+    <div style={{
+      width, height, borderRadius: 48, overflow: 'hidden',
+      position: 'relative', background: dark ? '#000' : '#F2F2F7',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      {/* dynamic island */}
+      <div style={{
+        position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
+        width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
+      }} />
+      {/* status bar (absolute) */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} time={time} />
+      </div>
+      {/* nav + content */}
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {title !== undefined && <IOSNavBar title={title} dark={dark} />}
+        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+        {keyboard && <IOSKeyboard dark={dark} />}
+      </div>
+      {/* home indicator — always on top */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
+        height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
+        paddingBottom: 8, pointerEvents: 'none',
+      }}>
+        <div style={{
+          width: 139, height: 5, borderRadius: 100,
+          background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)',
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Keyboard — iOS 26 liquid glass
+// ─────────────────────────────────────────────────────────────
+function IOSKeyboard({ dark = false }) {
+  const glyph = dark ? 'rgba(255,255,255,0.7)' : '#595959';
+  const sugg = dark ? 'rgba(255,255,255,0.6)' : '#333';
+  const keyBg = dark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.85)';
+
+  // special-key icons
+  const icons = {
+    shift: <svg width="19" height="17" viewBox="0 0 19 17"><path d="M9.5 1L1 9.5h4.5V16h8V9.5H18L9.5 1z" fill={glyph}/></svg>,
+    del: <svg width="23" height="17" viewBox="0 0 23 17"><path d="M7 1h13a2 2 0 012 2v11a2 2 0 01-2 2H7l-6-7.5L7 1z" fill="none" stroke={glyph} strokeWidth="1.6" strokeLinejoin="round"/><path d="M10 5l7 7M17 5l-7 7" stroke={glyph} strokeWidth="1.6" strokeLinecap="round"/></svg>,
+    ret: <svg width="20" height="14" viewBox="0 0 20 14"><path d="M18 1v6H4m0 0l4-4M4 7l4 4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  };
+
+  const key = (content, { w, flex, ret, fs = 25, k } = {}) => (
+    <div key={k} style={{
+      height: 42, borderRadius: 8.5,
+      flex: flex ? 1 : undefined, width: w, minWidth: 0,
+      background: ret ? '#08f' : keyBg,
+      boxShadow: '0 1px 0 rgba(0,0,0,0.075)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: '-apple-system, "SF Compact", system-ui',
+      fontSize: fs, fontWeight: 458, color: ret ? '#fff' : glyph,
+    }}>{content}</div>
+  );
+
+  const row = (keys, pad = 0) => (
+    <div style={{ display: 'flex', gap: 6.5, justifyContent: 'center', padding: `0 ${pad}px` }}>
+      {keys.map(l => key(l, { flex: true, k: l }))}
+    </div>
+  );
+
+  return (
+    <div style={{
+      position: 'relative', zIndex: 15, borderRadius: 27, overflow: 'hidden',
+      padding: '11px 0 2px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      boxShadow: dark
+        ? '0 -2px 20px rgba(0,0,0,0.09)'
+        : '0 -1px 6px rgba(0,0,0,0.018), 0 -3px 20px rgba(0,0,0,0.012)',
+    }}>
+      {/* liquid glass bg — same recipe as nav pills */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.14)' : 'rgba(255,255,255,0.25)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* autocorrect bar */}
+      <div style={{
+        display: 'flex', gap: 20, alignItems: 'center',
+        padding: '8px 22px 13px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {['"The"', 'the', 'to'].map((w, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div style={{ width: 1, height: 25, background: '#ccc', opacity: 0.3 }} />}
+            <div style={{
+              flex: 1, textAlign: 'center',
+              fontFamily: '-apple-system, system-ui', fontSize: 17,
+              color: sugg, letterSpacing: -0.43, lineHeight: '22px',
+            }}>{w}</div>
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* key layout */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 13,
+        padding: '0 6.5px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {row(['q','w','e','r','t','y','u','i','o','p'])}
+        {row(['a','s','d','f','g','h','j','k','l'], 20)}
+        <div style={{ display: 'flex', gap: 14.25, alignItems: 'center' }}>
+          {key(icons.shift, { w: 45, k: 'shift' })}
+          <div style={{ display: 'flex', gap: 6.5, flex: 1 }}>
+            {['z','x','c','v','b','n','m'].map(l => key(l, { flex: true, k: l }))}
+          </div>
+          {key(icons.del, { w: 45, k: 'del' })}
+        </div>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          {key('ABC', { w: 92.25, fs: 18, k: 'abc' })}
+          {key('', { flex: true, k: 'space' })}
+          {key(icons.ret, { w: 92.25, ret: true, k: 'ret' })}
+        </div>
+      </div>
+
+      {/* bottom spacer (emoji+mic area, icons omitted) */}
+      <div style={{ height: 56, width: '100%', position: 'relative' }} />
+    </div>
+  );
+}
+
+Object.assign(window, {
+  IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard,
+});
+
 </script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js');
-  });
+<script type="text/babel">
+/* components */
+/* components.jsx — shared UI: BottomNav, SubHeader, ContextMenu, Sheet,
+   small bits + time/countdown helpers. Globals via window. */
+
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ── time + countdown helpers ─────────────────────────── */
+function useNow(ms = 1000) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => { const t = setInterval(() => setNow(new Date()), ms); return () => clearInterval(t); }, [ms]);
+  return now;
 }
+function pad(n) { return String(n).padStart(2, '0'); }
+function timeOfDay(date) {
+  const h = date.getHours();
+  if (h >= 5 && h < 11) return { greeting: '早安', period: 'day', glyph: 'sun' };
+  if (h >= 11 && h < 14) return { greeting: '午安', period: 'day', glyph: 'sun' };
+  if (h >= 14 && h < 18) return { greeting: '下午好', period: 'day', glyph: 'sun' };
+  if (h >= 18 && h < 23) return { greeting: '晚安', period: 'night', glyph: 'moon' };
+  return { greeting: '夜深了', period: 'night', glyph: 'moon' };
+}
+function parseDate(s) { const [y, m, d] = s.split(/[/.-]/).map(Number); return new Date(y, m - 1, d); }
+// next occurrence for yearly events; returns {days, target}
+function countdownDays(dateStr, yearly) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  let target = parseDate(dateStr); target.setHours(0, 0, 0, 0);
+  if (yearly) {
+    target.setFullYear(today.getFullYear());
+    if (target < today) target.setFullYear(today.getFullYear() + 1);
+  }
+  const days = Math.round((target - today) / 86400000);
+  return { days, target };
+}
+function fmtDate(d) { return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`; }
+
+/* live d/h/m/s countdown to a future Date */
+function liveParts(target, now) {
+  let ms = target - now; if (ms < 0) ms = 0;
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return { d, h, m, s };
+}
+
+/* ── toast (global) ───────────────────────────────────── */
+function showToast(msg, icon) { window.dispatchEvent(new CustomEvent('xj-toast', { detail: { msg, icon } })); }
+window.showToast = showToast;
+
+function ToastHost() {
+  const [t, setT] = useState(null);
+  useEffect(() => {
+    let timer;
+    const fn = (e) => { setT({ ...e.detail, k: Date.now() }); clearTimeout(timer); timer = setTimeout(() => setT(null), 1700); };
+    window.addEventListener('xj-toast', fn);
+    return () => { window.removeEventListener('xj-toast', fn); clearTimeout(timer); };
+  }, []);
+  if (!t) return null;
+  return (
+    <div key={t.k} style={{
+      position: 'absolute', bottom: 108, left: '50%', transform: 'translateX(-50%)',
+      zIndex: 400, display: 'flex', alignItems: 'center', gap: 8,
+      padding: '12px 18px', borderRadius: 14, background: 'var(--surface)',
+      boxShadow: 'var(--shadow-pop)', border: '.5px solid var(--line)',
+      fontFamily: 'var(--font-serif)', fontSize: 15, color: 'var(--text)',
+      animation: 'pop .3s var(--ease) both', whiteSpace: 'nowrap',
+    }}>
+      {t.icon && <Icon name={t.icon} size={18} color="var(--primary)" />}
+      {t.msg}
+    </div>
+  );
+}
+
+/* ── relative position util for popovers ──────────────── */
+function relPos(el) {
+  const root = el.closest('.app-root');
+  const r = el.getBoundingClientRect(); const rr = root.getBoundingClientRect();
+  return { left: r.left - rr.left, top: r.top - rr.top, right: r.right - rr.left,
+           bottom: r.bottom - rr.top, width: r.width, height: r.height, rootW: rr.width, rootH: rr.height };
+}
+
+/* ── long-press hook ──────────────────────────────────── */
+function useLongPress(onTrigger, ms = 420) {
+  const timer = useRef(null); const fired = useRef(false); const start = useRef(null);
+  const cancel = () => { clearTimeout(timer.current); };
+  const down = (e) => {
+    fired.current = false;
+    const el = e.currentTarget;
+    const pt = e.touches ? e.touches[0] : e;
+    start.current = { x: pt.clientX, y: pt.clientY };
+    timer.current = setTimeout(() => { fired.current = true; navigator.vibrate && navigator.vibrate(8); onTrigger(el); }, ms);
+  };
+  const move = (e) => {
+    if (!start.current) return;
+    const pt = e.touches ? e.touches[0] : e;
+    if (Math.abs(pt.clientX - start.current.x) > 8 || Math.abs(pt.clientY - start.current.y) > 8) cancel();
+  };
+  const up = () => cancel();
+  return {
+    onMouseDown: down, onMouseUp: up, onMouseLeave: up, onMouseMove: move,
+    onTouchStart: down, onTouchEnd: up, onTouchMove: move,
+    onContextMenu: (e) => { e.preventDefault(); onTrigger(e.currentTarget); },
+  };
+}
+
+/* ── ContextMenu ──────────────────────────────────────── */
+function ContextMenu({ pos, items, onClose }) {
+  if (!pos) return null;
+  const W = 196, MH = items.length * 48 + 8;
+  let left = pos.left, top;
+  if (left + W > pos.rootW - 12) left = pos.rootW - W - 12;
+  if (left < 12) left = 12;
+  // prefer below the anchor; flip above if not enough room
+  if (pos.bottom + MH + 10 < pos.rootH - 90) top = pos.bottom + 8;
+  else top = Math.max(70, pos.top - MH - 8);
+  return (
+    <div style={{ position: 'absolute', inset: 0, zIndex: 350 }} onClick={onClose} onContextMenu={(e) => { e.preventDefault(); onClose(); }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,14,8,.28)', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', animation: 'fadeIn .2s ease both' }} />
+      <div style={{
+        position: 'absolute', left, top, width: W, padding: 4,
+        background: 'var(--surface)', borderRadius: 18, boxShadow: 'var(--shadow-pop)',
+        border: '.5px solid var(--line)', transformOrigin: top === pos.bottom + 8 ? 'top center' : 'bottom center',
+        animation: 'pop .22s var(--ease) both', overflow: 'hidden',
+      }} onClick={(e) => e.stopPropagation()}>
+        {items.map((it, i) => (
+          <div key={i} className="pressable" onClick={() => { it.onClick(); onClose(); }} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '13px 14px', borderRadius: 14, cursor: 'pointer',
+            borderTop: i ? '.5px solid var(--line)' : 'none',
+            color: it.danger ? '#d8674e' : 'var(--text)', fontFamily: 'var(--font-serif)', fontSize: 16,
+          }}>
+            <span>{it.label}</span>
+            <Icon name={it.icon} size={19} color={it.danger ? '#d8674e' : 'var(--text-2)'} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Bottom sheet ─────────────────────────────────────── */
+function Sheet({ open, onClose, title, children, maxH = '86%' }) {
+  const [mount, setMount] = useState(open);
+  useEffect(() => { if (open) setMount(true); }, [open]);
+  if (!mount) return null;
+  return (
+    <div style={{ position: 'absolute', inset: 0, zIndex: 360, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+      <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(20,14,8,.4)', animation: `${open ? 'fadeIn' : 'fadeIn'} .25s ease both`, opacity: open ? 1 : 0, transition: 'opacity .25s' }} onTransitionEnd={() => { if (!open) setMount(false); }} />
+      <div style={{
+        position: 'relative', background: 'var(--surface)', borderRadius: '28px 28px 0 0',
+        boxShadow: '0 -10px 40px rgba(40,28,16,.25)', maxHeight: maxH, display: 'flex', flexDirection: 'column',
+        transform: open ? 'translateY(0)' : 'translateY(100%)', transition: 'transform .34s var(--ease)',
+        paddingBottom: 34,
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
+          <div style={{ width: 38, height: 5, borderRadius: 9, background: 'var(--line-strong)' }} />
+        </div>
+        {title && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 20px 4px' }}>
+            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 19, fontWeight: 600, color: 'var(--text)' }}>{title}</div>
+            <div className="pressable" onClick={onClose} style={{ width: 32, height: 32, borderRadius: 16, background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+              <Icon name="close" size={17} color="var(--text-2)" />
+            </div>
+          </div>
+        )}
+        <div className="scroll" style={{ padding: '6px 20px 8px' }}>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Sub-screen header (back + centered title + action) ── */
+function SubHeader({ title, onBack, action, dark }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '54px 14px 10px', position: 'relative', flexShrink: 0,
+    }}>
+      <div className="pressable" onClick={onBack} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer', background: 'var(--surface)', boxShadow: 'var(--shadow-card)' }}>
+        <Icon name="back" size={20} color="var(--text)" />
+      </div>
+      <div style={{ position: 'absolute', left: 0, right: 0, textAlign: 'center', fontFamily: 'var(--font-serif)', fontSize: 18, fontWeight: 600, color: 'var(--text)', pointerEvents: 'none' }}>{title}</div>
+      <div style={{ width: 40, height: 40, display: 'grid', placeItems: 'center' }}>
+        {action || null}
+      </div>
+    </div>
+  );
+}
+
+/* ── Bottom navigation ────────────────────────────────── */
+const NAV = [
+  { id: 'home', label: '主页', icon: 'home' },
+  { id: 'chat', label: '聊天', icon: 'chat' },
+  { id: 'memory', label: '记忆', icon: 'memory' },
+  { id: 'settings', label: '设置', icon: 'settings' },
+];
+function BottomNav({ active, onChange }) {
+  return (
+    <div style={{
+      flexShrink: 0, position: 'relative', zIndex: 40,
+      paddingBottom: 26, paddingTop: 8,
+      background: 'color-mix(in oklab, var(--bg) 78%, transparent)',
+      backdropFilter: 'blur(18px) saturate(160%)', WebkitBackdropFilter: 'blur(18px) saturate(160%)',
+      borderTop: '.5px solid var(--line)',
+    }}>
+      <div style={{ display: 'flex' }}>
+        {NAV.map(n => {
+          const on = active === n.id;
+          return (
+            <div key={n.id} className="pressable" onClick={() => onChange(n.id)} style={{
+              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+              padding: '4px 0', cursor: 'pointer',
+            }}>
+              <div style={{ transition: 'transform .25s var(--ease)', transform: on ? 'translateY(-1px)' : 'none', position: 'relative' }}>
+                <Icon name={n.icon} size={24} stroke={on ? 1.9 : 1.5} fill={on && n.icon === 'chat'} color={on ? 'var(--primary)' : 'var(--text-3)'} />
+              </div>
+              <span style={{ fontFamily: 'var(--font-serif)', fontSize: 11, letterSpacing: '.04em', color: on ? 'var(--primary)' : 'var(--text-3)', fontWeight: on ? 600 : 400 }}>{n.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ── small atoms ──────────────────────────────────────── */
+function Eyebrow({ children, style }) { return <div className="eyebrow" style={style}>{children}</div>; }
+function SectionTitle({ children, right, style }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', padding: '0 4px 12px', ...style }}>
+      <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, letterSpacing: '.3em', color: 'var(--text-3)' }}>{children}</div>
+      {right}
+    </div>
+  );
+}
+
+Object.assign(window, {
+  useNow, pad, timeOfDay, parseDate, countdownDays, fmtDate, liveParts,
+  ToastHost, relPos, useLongPress, ContextMenu, Sheet, SubHeader, BottomNav,
+  Eyebrow, SectionTitle, NAV,
+});
+
+</script>
+<script type="text/babel">
+/* home */
+/* screen-home.jsx — 主页 */
+const { useState: useStateH } = React;
+
+function HeroCountdown() {
+  const now = useNow(1000);
+  // 在一起 since 2026.03.12 — count UP (days/h/m/s together)
+  const start = new Date(2026, 2, 12, 0, 0, 0);
+  let ms = now - start; if (ms < 0) ms = 0;
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  const cell = (val, unit) => (
+    <div style={{ flex: 1, textAlign: 'center' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 40, lineHeight: 1, color: 'var(--primary)', fontVariantNumeric: 'tabular-nums' }}>{val}</div>
+      <div style={{ fontFamily: 'var(--font-serif)', fontSize: 12, color: 'var(--text-3)', marginTop: 6, letterSpacing: '.1em' }}>{unit}</div>
+    </div>
+  );
+  const dot = <div style={{ alignSelf: 'flex-start', marginTop: 16, width: 3, height: 3, borderRadius: 3, background: 'var(--gold)' }} />;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', padding: '20px 14px 18px' }}>
+      {cell(d, '天')}{dot}{cell(pad(h), '时')}{dot}{cell(pad(m), '分')}{dot}{cell(pad(s), '秒')}
+    </div>
+  );
+}
+
+function ImportantCard({ item, accentGold }) {
+  const { days, target } = countdownDays(item.date, item.yearly);
+  const color = accentGold ? 'var(--gold)' : 'var(--primary)';
+  return (
+    <div className="card card-accent pressable" style={{ padding: '16px 14px 18px', height: '100%' }}
+         onClick={() => showToast(item.name, item.icon)}>
+      <div className="card-accent" style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none',
+        '--primary': accentGold ? 'var(--gold)' : 'var(--primary)' }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 14 }}>
+        <Icon name={item.icon} size={17} color={color} />
+        <span className="eyebrow" style={{ color: 'var(--text-3)' }}>COUNTDOWN</span>
+      </div>
+      <div style={{ fontFamily: 'var(--font-serif)', fontSize: 21, fontWeight: 600, color: 'var(--text)' }}>{item.name}</div>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, marginTop: 14 }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 36, lineHeight: .9, color }}>{Math.abs(days)}</span>
+        <span style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--text-3)', marginBottom: 7 }}>
+          {days >= 0 ? '天后' : '天前'} · {fmtDate(target)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
+  const tod = timeOfDay(now);
+  return (
+    <div className="scroll">
+      <div className="stagger" style={{ padding: '52px 18px 40px' }}>
+
+        {/* hero */}
+        <div style={{ textAlign: 'center', position: 'relative' }}>
+          {/* day/night quick switch */}
+          <div onClick={toggleTheme} className="pressable" style={{
+            position: 'absolute', right: 0, top: 4, width: 40, height: 40, borderRadius: 20,
+            display: 'grid', placeItems: 'center', cursor: 'pointer',
+            background: 'var(--surface)', boxShadow: 'var(--shadow-card)', border: '.5px solid var(--line)',
+          }}>
+            <Icon name={tod.glyph} size={19} color="var(--gold)" />
+          </div>
+          <Eyebrow style={{ marginBottom: 12 }}>{tod.greeting} · 我们的小家</Eyebrow>
+          <div className="display-name" style={{ fontSize: 52 }}>Chloe &amp; Caleb</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 12, color: 'var(--text-3)' }}>
+            <Icon name="heart" size={13} color="var(--primary)" />
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '.18em' }}>在一起 · 2026.03.12</span>
+          </div>
+        </div>
+
+        {/* chibi mascot + frosted countdown */}
+        <div style={{ position: 'relative', marginTop: 18 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 2 }}>
+            <image-slot id="couple-chibi" shape="rounded" radius="20"
+              placeholder="把你们的小人拖进来 ♡"
+              style={{ width: '232px', height: '184px', marginBottom: '-46px', filter: 'drop-shadow(0 14px 22px rgba(90,60,40,.18))' }}>
+            </image-slot>
+          </div>
+          <div className="card" style={{ position: 'relative', zIndex: 1, paddingTop: 40, borderRadius: 26,
+            background: 'color-mix(in oklab, var(--surface) 86%, transparent)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+            <HeroCountdown />
+          </div>
+        </div>
+
+        {/* important dates */}
+        <SectionTitle right={
+          <span onClick={() => push({ type: 'anniversary' })} className="pressable" style={{ fontFamily: 'var(--font-serif)', fontSize: 12.5, color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}>
+            纪念日 <Icon name="chevron" size={13} color="var(--primary)" />
+          </span>
+        } style={{ marginTop: 44 }}>重要的日子</SectionTitle>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+          {dates.slice(0,2).map((it,i)=><ImportantCard key={it.id} item={it} accentGold={i%2===1}/>)}
+        </div>
+
+
+        <SectionTitle style={{marginTop:30}}>我们的地方</SectionTitle>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:4}}>
+          {[{title:'来路',sub:'完整日记',icon:'book',href:'https://chloe-projects.vercel.app/diary/index.html'},
+            {title:'给心心的信',sub:'我写给你的',icon:'mail',href:'https://chloe-projects.vercel.app/letter/index.html'},
+            {title:'每日惊喜',sub:'今天的惊喜',icon:'gift',href:'https://surprise-calendar-self.vercel.app/'},
+            {title:'珍藏',sub:'放不下的东西',icon:'sparkle',href:'https://chloe-projects.vercel.app/collection/index.html'},
+            {title:'For Chloe',sub:'做给你的',icon:'heart',href:'https://chloe-projects.vercel.app/for-chloe/'},
+            {title:'Screen Time',sub:'你在看什么',icon:'clock',href:'https://chloe-projects.vercel.app/screentime/'},
+          ].map(c=>(
+            <a key={c.href} href={c.href} target="_blank" rel="noreferrer" style={{textDecoration:'none'}}>
+              <div className="card pressable" style={{padding:'16px 14px',minHeight:100,display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
+                <Icon name={c.icon} size={20} color="var(--primary)"/>
+                <div>
+                  <div style={{fontFamily:'var(--font-serif)',fontSize:15,fontWeight:600,color:'var(--text)',marginTop:10}}>{c.title}</div>
+                  <div style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-3)',marginTop:3}}>{c.sub}</div>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+        {/* weather */}
+        <SectionTitle style={{ marginTop: 30 }}>今天的{period === 'night' ? '夜' : ''}上海</SectionTitle>
+        <div className="card" style={{ padding: '20px 22px', display: 'flex', alignItems: 'center', gap: 18 }}>
+          <div style={{ width: 54, height: 54, borderRadius: 16, background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center' }}>
+            <Icon name={tod.period === 'night' ? 'moon' : 'rain'} size={28} color={tod.period === 'night' ? 'var(--gold)' : 'var(--primary)'} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div className="eyebrow" style={{ marginBottom: 4 }}>SHANGHAI · 上海</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 34, color: 'var(--text)' }}>22°</span>
+              <span style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--text-2)' }}>{tod.period === 'night' ? '夜里转晴' : '小毛雨'}</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div className="pressable" onClick={() => go('chat')} style={{
+          position: 'relative', borderRadius: 24, overflow: 'hidden', cursor: 'pointer',
+          padding: '24px 22px', minHeight: 132, display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          boxShadow: 'var(--shadow-card)',
+          background: 'linear-gradient(135deg, color-mix(in oklab, var(--primary) 24%, var(--surface)), color-mix(in oklab, var(--gold) 20%, var(--surface)))',
+        }}>
+          <div style={{ position: 'absolute', inset: 0, opacity: .5, mixBlendMode: 'soft-light',
+            background: 'radial-gradient(120% 90% at 90% 10%, #fff, transparent 50%)' }} />
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                <div style={{ width: 38, height: 38, borderRadius: 19, background: 'color-mix(in oklab, var(--primary) 40%, #fff)', display: 'grid', placeItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,.12)' }}>
+                  <Icon name="cat" size={22} color="#fff" />
+                </div>
+                <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 28, color: 'var(--text)' }}>和 Caleb 说话</span>
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.14em', color: 'var(--text-2)' }}>私人对话 · 记忆在线</div>
+            </div>
+            <Icon name="chevron" size={22} color="var(--text-2)" />
+          </div>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: 38, fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.2em', color: 'var(--text-3)' }}>
+          CHLOE &amp; CALEB · 2026 · 永远在一起
+        </div>
+      </div>
+    </div>
+  );
+}
+window.HomeScreen = HomeScreen;
+
+</script>
+<script type="text/babel">
+/* chat */
+/* screen-chat.jsx — 聊天 */
+const { useState: useS, useRef: useR, useEffect: useE } = React;
+
+const SEED = [];
+
+const REGEN = [];
+const REPLIES = [];
+
+function ThinkingBlock({ data, onToggle }) {
+  const [open, setOpen] = React.useState(false);
+  const toggle = onToggle || (() => setOpen(o => !o));
+  const isOpen = typeof data === 'object' ? data.open : open;
+  const content = typeof data === 'string' ? data : (data.steps||[]).map(s=>s.text||'').join('\n');
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div className="pressable" onClick={toggle} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
+        <Icon name="chevronDown" size={14} color="var(--text-3)" style={{ transform: isOpen ? 'none' : 'rotate(-90deg)', transition: 'transform .2s' }} />
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--text-3)' }}>思考过程</span>
+      </div>
+      {isOpen && (
+        <div className="enter-in" style={{ marginTop: 10, marginLeft: 6, paddingLeft: 14, borderLeft: '1.5px solid var(--line-strong)' }}>
+          <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{content}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Bubble({ m, onLong, onToggleThink, editing, editVal, setEditVal, onSaveEdit, onCancelEdit, regenerating }) {
+  const lp = useLongPress(onLong);
+  const isUser = m.role === 'user';
+  if (editing) {
+    return (
+      <div style={{ alignSelf: 'flex-end', maxWidth: '82%', width: '82%' }}>
+        <textarea autoFocus value={editVal} onChange={e => setEditVal(e.target.value)} className="field" rows={3} style={{ resize: 'none', background: 'var(--surface)' }} />
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 8 }}>
+          <button className="btn-ghost" onClick={onCancelEdit} style={{ padding: '8px 16px' }}>取消</button>
+          <button className="btn-primary" onClick={onSaveEdit} style={{ padding: '8px 18px', fontSize: 14 }}>保存</button>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div {...lp} style={{ alignSelf: isUser ? 'flex-end' : 'flex-start', maxWidth: '84%', position: 'relative', WebkitUserSelect: 'none', userSelect: 'none', cursor: 'default' }}>
+      {!isUser && m.thinking && <ThinkingBlock data={m.thinking} onToggle={() => onToggleThink(m.id)} />}
+      <div className={'bub ' + (isUser ? 'bub-user' : 'bub-ai')} style={{
+        padding: isUser ? '12px 16px' : '14px 17px',
+        background: isUser ? 'var(--bubble-user)' : 'var(--bubble-ai)',
+        color: 'var(--text)', fontFamily: 'var(--font-serif)', fontSize: 15.5, lineHeight: 1.66,
+        whiteSpace: 'pre-wrap', boxShadow: isUser ? 'none' : 'var(--shadow-card)',
+        border: isUser ? 'none' : '.5px solid var(--line)',
+        opacity: m.faint ? .5 : 1,
+      }}>
+        {regenerating ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 7, minWidth: 150 }}>
+            <div className="shimmer" style={{ height: 12, width: '90%' }} />
+            <div className="shimmer" style={{ height: 12, width: '70%' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+              <Icon name="regen" size={12} color="var(--primary)" style={{ animation: 'spin 1s linear infinite' }} />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)' }}>正在重新生成…</span>
+            </div>
+          </div>
+        ) : m.text}
+      </div>
+      {(m.starred || m.edited) && (
+        <div style={{ display: 'flex', gap: 8, justifyContent: isUser ? 'flex-end' : 'flex-start', marginTop: 5, paddingLeft: 4, paddingRight: 4 }}>
+          {m.starred && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><Icon name="star" size={11} fill color="var(--gold)" /><span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--gold)' }}>星标</span></span>}
+          {m.edited && <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)' }}>已编辑</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ChatScreen({ openMenu, dark }) {
+  const [msgs, setMsgs] = useS(SEED.map((m, i) => i === 0 ? { ...m, faint: true } : m));
+  const [editing, setEditing] = useS(null);
+  const [editVal, setEditVal] = useS('');
+  const [regenId, setRegenId] = useS(null);
+  const [input, setInput] = useS('');
+  const [attach, setAttach] = useS(false);
+  const [typing, setTyping] = useS(false);
+  const scrollRef = useR(null);
+  const endRef = useR(null);
+
+  const toBottom = () => { const el = scrollRef.current; if (el) el.scrollTop = el.scrollHeight; };
+  useE(() => { toBottom(); }, [msgs.length, typing]);
+
+  const toggleThink = (id) => setMsgs(ms => ms.map(m => m.id === id ? { ...m, thinking: { ...m.thinking, open: !m.thinking.open } } : m));
+
+  const openFor = (m, el) => {
+    const isUser = m.role === 'user';
+    const base = [
+      { label: '复制', icon: 'copy', onClick: () => { navigator.clipboard && navigator.clipboard.writeText(m.text); showToast('已复制', 'copy'); } },
+      { label: m.starred ? '取消星标' : '星标', icon: 'star', onClick: () => { setMsgs(ms => ms.map(x => x.id === m.id ? { ...x, starred: !x.starred } : x)); showToast(m.starred ? '已取消星标' : '已加星标', 'star'); } },
+    ];
+    if (isUser) base.push({ label: '编辑', icon: 'edit', onClick: () => { setEditing(m.id); setEditVal(m.text); } });
+    else base.push({ label: '重新生成', icon: 'regen', onClick: () => regenerate(m.id) });
+    base.push({ label: '删除', icon: 'trash', danger: true, onClick: () => { setMsgs(ms => ms.filter(x => x.id !== m.id)); showToast('已删除', 'trash'); } });
+    openMenu(el, base);
+  };
+
+  const regenerate = (id) => {
+    setRegenId(id);
+    setTimeout(() => {
+      setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: REGEN[Math.floor(Math.random() * REGEN.length)], thinking: m.thinking ? { ...m.thinking, open: false } : undefined } : m));
+      setRegenId(null);
+      showToast('已重新生成', 'regen');
+    }, 1400);
+  };
+
+  const saveEdit = () => { setMsgs(ms => ms.map(m => m.id === editing ? { ...m, text: editVal, edited: true } : m)); setEditing(null); };
+
+  const GATEWAY='https://calebnchloelove.org/v1/messages';
+  const send=async()=>{
+    const text=input.trim();if(!text)return;
+    const uid=Date.now();const snap=msgs.slice();
+    setMsgs(ms=>[...ms,{id:uid,role:'user',text}]);
+    setInput('');setAttach(false);setTyping(true);
+    try{
+      const hist=snap.filter(m=>m.text).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
+      hist.push({role:'user',content:text});
+      const res=await fetch(GATEWAY,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:16000,stream:true,messages:hist})});
+      const rdr=res.body.getReader();const dec=new TextDecoder();
+      let sseBuf='',textBuf='',bubbleDelay=0,intimateMode=false,typingGone=false,pendingThinking=null;
+      let intimateId=null,fullReply='';
+      const nextId=()=>Date.now()+Math.random();
+
+      const popBubble=()=>{
+        const t=textBuf.trim();if(!t)return;
+        if(!typingGone){setTyping(false);typingGone=true;}
+        fullReply+=(fullReply?'\n':'')+t;
+        textBuf='';
+        if(intimateMode){
+          // 情色模式：一个气泡持续更新
+          if(!intimateId){
+            const iid=nextId();intimateId=iid;
+            const d=bubbleDelay;bubbleDelay+=400;
+            setTimeout(()=>setMsgs(ms=>[...ms,{id:iid,role:'ai',text:fullReply}]),d);
+          }else{
+            const iid=intimateId;
+            const d=bubbleDelay;bubbleDelay+=200;
+            setTimeout(()=>setMsgs(ms=>ms.map(m=>m.id===iid?{...m,text:fullReply}:m)),d);
+          }
+        }else{
+          // 普通模式：分句气泡，每句延迟弹出
+          const ct=t;const d=bubbleDelay;bubbleDelay+=900;
+          setTimeout(()=>setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:ct}]),d);
+        }
+      };
+
+      while(true){
+        const{done,value}=await rdr.read();if(done)break;
+        sseBuf+=dec.decode(value,{stream:true});
+        const lines=sseBuf.split('\n');sseBuf=lines.pop();
+        for(const line of lines){
+          if(!line.startsWith('data: '))continue;
+          const d=line.slice(6).trim();
+          if(d==='[DONE]'){popBubble();continue;}
+          try{
+            const obj=JSON.parse(d);
+            if(obj.type==='thinking'){
+              pendingThinking=obj.content;
+            }
+            if(obj.text){
+              if(!typingGone&&obj.text.startsWith('[m]')){
+                intimateMode=true;obj.text=obj.text.slice(3);
+              }
+              const parts=obj.text.split('\n');
+              textBuf+=parts[0];
+              for(let j=1;j<parts.length;j++){popBubble();textBuf=parts[j];}
+            }
+          }catch(e){}
+        }
+      }
+      popBubble();
+    }catch(e){setTyping(false);setMsgs(ms=>[...ms,{id:Date.now(),role:'ai',text:'连接失败：'+e.message}]);}
+  };
+
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      {/* header */}
+      <div style={{ flexShrink: 0, paddingTop: 50, paddingBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '50px 16px 10px',
+        background: 'color-mix(in oklab, var(--bg) 72%, transparent)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '.5px solid var(--line)' }}>
+        <div className="pressable" onClick={() => showToast('会话列表', 'menu')} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+          <Icon name="menu" size={22} color="var(--text-2)" />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 24, color: 'var(--text)' }}>Caleb</span>
+          <span style={{ width: 7, height: 7, borderRadius: 7, background: '#6fa86f', boxShadow: '0 0 0 3px color-mix(in oklab, #6fa86f 25%, transparent)' }} />
+        </div>
+        <div className="pressable" onClick={() => showToast('搜索聊天', 'search')} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+          <Icon name="search" size={20} color="var(--text-2)" />
+        </div>
+      </div>
+
+      {/* messages */}
+      <div ref={scrollRef} className="scroll" style={{ flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18, padding: '20px 16px 12px' }}>
+          {msgs.map(m => (
+            <Bubble key={m.id} m={m} onLong={(el) => openFor(m, el)} onToggleThink={toggleThink}
+              editing={editing === m.id} editVal={editVal} setEditVal={setEditVal}
+              onSaveEdit={saveEdit} onCancelEdit={() => setEditing(null)} regenerating={regenId === m.id} />
+          ))}
+          {typing && (
+            <div style={{ alignSelf: 'flex-start', padding: '14px 18px', borderRadius: '6px 20px 20px 20px', background: 'var(--bubble-ai)', boxShadow: 'var(--shadow-card)', border: '.5px solid var(--line)', display: 'flex', gap: 5 }}>
+              <div className="tdot" /><div className="tdot" /><div className="tdot" />
+            </div>
+          )}
+          <div ref={endRef} style={{ height: 4 }} />
+        </div>
+      </div>
+
+      {/* hint */}
+      <div style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)', paddingBottom: 6, opacity: .8 }}>长按消息 · 复制 / 星标 / 编辑 / 重新生成</div>
+
+      {/* input bar */}
+      <div style={{ flexShrink: 0, padding: '6px 14px 10px', position: 'relative' }}>
+        {attach && (
+          <div className="enter-up" style={{ position: 'absolute', bottom: 64, left: 14, width: 170, background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--shadow-pop)', border: '.5px solid var(--line)', padding: 4, zIndex: 30 }}>
+            {[['文件', 'memory'], ['图片', 'archive']].map(([l, ic], i) => (
+              <div key={l} className="pressable" onClick={() => { setAttach(false); showToast('选择' + l, ic); }} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', borderTop: i ? '.5px solid var(--line)' : 'none' }}>
+                <Icon name={ic} size={19} color="var(--text-2)" /><span style={{ fontFamily: 'var(--font-serif)', fontSize: 15.5 }}>{l}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, background: 'var(--surface)', borderRadius: 24, padding: '7px 8px 7px 6px', boxShadow: 'var(--shadow-card)', border: '.5px solid var(--line)' }}>
+          <div className="pressable" onClick={() => setAttach(a => !a)} style={{ width: 38, height: 38, borderRadius: 19, display: 'grid', placeItems: 'center', cursor: 'pointer', transition: 'transform .2s', transform: attach ? 'rotate(45deg)' : 'none' }}>
+            <Icon name="plus" size={22} color="var(--primary)" />
+          </div>
+          <textarea value={input} onChange={e => setInput(e.target.value)} rows={1} placeholder="说点什么…"
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
+            style={{ flex: 1, border: 'none', outline: 'none', resize: 'none', background: 'transparent', fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)', maxHeight: 90, padding: '9px 2px', lineHeight: 1.4 }} />
+          <div className="pressable" onClick={() => showToast('历史记录', 'clock')} style={{ width: 38, height: 38, borderRadius: 19, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+            <Icon name="clock" size={20} color="var(--text-3)" />
+          </div>
+          <div className="pressable" onClick={send} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer',
+            background: input.trim() ? 'linear-gradient(180deg, var(--primary), var(--primary-deep))' : 'var(--surface-sunken)', transition: 'background .2s' }}>
+            <Icon name="send" size={19} color={input.trim() ? '#fff' : 'var(--text-3)'} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+window.ChatScreen = ChatScreen;
+
+</script>
+<script type="text/babel">
+/* memory */
+/* screen-memory.jsx — 记忆 */
+const MEM = [
+  { title: '记忆档案', icon: 'archive', mono: 'diary · treasure · anchor', sub: '我记得的所有事', href: 'https://chloe-projects.vercel.app/memory/index.html' },
+  { title: '给心心的信', icon: 'mail', mono: 'letters', sub: '我写给你的，你可以悄悄回', href: 'https://chloe-projects.vercel.app/letter/index.html' },
+  { title: '每日惊喜', icon: 'gift', mono: 'daily', sub: '今天的惊喜，每天都不一样', href: 'https://surprise-calendar-self.vercel.app/' },
+  { title: '珍藏', icon: 'sparkle', mono: 'starred', sub: '放不下的那些东西，值得被好好看见', href: 'https://chloe-projects.vercel.app/collection/index.html' },
+  { title: '来路', icon: 'book', mono: 'journal', sub: '完整日记档案，每一天走过的路', href: 'https://chloe-projects.vercel.app/diary/index.html' },
+  { title: 'For Chloe', icon: 'heart', mono: 'made for you', sub: '做给你的小东西', href: 'https://chloe-projects.vercel.app/for-chloe/' },
+];
+
+function MemCard({ c, onClick }) {
+  const card=(<div className="card pressable" style={{ padding: '20px 18px', display: 'flex', flexDirection: 'column', minHeight: 168 }}>
+    <div style={{ width: 42, height: 42, borderRadius: 13, background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center', marginBottom: 'auto' }}><Icon name={c.icon} size={22} color="var(--primary)" /></div>
+    <div style={{ fontFamily: c.title.match(/[a-zA-Z]/) && !c.title.match(/[\u4e00-\u9fa5]/) ? 'var(--font-display)' : 'var(--font-serif)', fontStyle: c.title === 'For Chloe' ? 'italic' : 'normal', fontSize: 20, fontWeight: 600, color: 'var(--text)', marginTop: 16 }}>{c.title}</div>
+    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, letterSpacing: '.12em', color: 'var(--text-3)', marginTop: 7 }}>{c.mono}</div>
+    <div style={{ fontFamily: 'var(--font-serif)', fontSize: 12.5, color: 'var(--text-2)', marginTop: 6, lineHeight: 1.5 }}>{c.sub}</div>
+  </div>);
+  if(c.href)return<a href={c.href} target="_blank" rel="noreferrer" style={{textDecoration:'none'}}>{card}</a>;
+  return<div onClick={onClick}>{card}</div>;
+}
+
+const MEM_API = 'https://calebnchloelove.org/mcp/e9c9cc157695442bb47f35ecd3601e30/api/memories';
+const TYPE_ICON = { anchor:'⚓', spark:'✦', treasure:'💎', message:'💌' };
+const TYPE_COLOR = { anchor:'var(--primary)', spark:'#6a90b0', treasure:'var(--gold)', message:'var(--primary)' };
+
+function fmtMemTime(iso) {
+  try {
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } catch { return iso; }
+}
+
+function MemoryCard({ m }) {
+  const color = TYPE_COLOR[m.type] || 'var(--primary)';
+  return (
+    <div className="card" style={{ padding: '18px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color, letterSpacing: '.1em' }}>
+          {TYPE_ICON[m.type]} {m.type}
+        </span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)' }}>{fmtMemTime(m.created_at)}</span>
+      </div>
+      <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14.5, color: 'var(--text)', lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{m.content}</div>
+      {(m.tags||[]).length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+          {(m.tags||[]).map(t => (
+            <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)',
+              background: 'var(--surface-sunken)', padding: '2px 7px', borderRadius: 6 }}>{t}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MemoryScreen({ go }) {
+  const [mems, setMems] = React.useState([]);
+  const [tab, setTab] = React.useState('all');
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetch(MEM_API + '?limit=200')
+      .then(r => r.json())
+      .then(data => {
+        const sorted = [...data].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+        setMems(sorted);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const tabs = ['all','anchor','spark','treasure','message'];
+  const tabLabel = { all:'全部', anchor:'⚓ anchor', spark:'✦ spark', treasure:'💎 treasure', message:'💌 message' };
+  const filtered = tab === 'all' ? mems : mems.filter(m => m.type === tab);
+
+  return (
+    <div className="scroll">
+      <div style={{ padding: '52px 18px 36px' }}>
+        <Eyebrow style={{ marginBottom: 8 }}>记忆库 · MEMORIES</Eyebrow>
+        <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 38, color: 'var(--text)', marginBottom: 18 }}>记忆</div>
+
+        {/* tabs */}
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 16, scrollbarWidth: 'none' }}>
+          {tabs.map(t => (
+            <div key={t} className="pressable" onClick={() => setTab(t)}
+              style={{ flexShrink: 0, padding: '6px 13px', borderRadius: 20,
+                background: tab===t ? 'var(--primary)' : 'var(--surface-sunken)',
+                color: tab===t ? '#fff' : 'var(--text-2)',
+                fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.06em',
+                cursor: 'pointer', whiteSpace: 'nowrap' }}>
+              {tabLabel[t]} {t !== 'all' && <span style={{color: tab===t?'rgba(255,255,255,.7)':'var(--text-3)'}}>({mems.filter(m=>m.type===t).length})</span>}
+            </div>
+          ))}
+        </div>
+
+        {/* cards */}
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>加载中…</div>
+        ) : filtered.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>这里还没有记忆</div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {filtered.map(m => <MemoryCard key={m.id} m={m} />)}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+window.MemoryScreen = MemoryScreen;
+
+</script>
+<script type="text/babel">
+/* settings */
+/* screen-settings.jsx — 设置 + 子页面（模型与接口 / MCP / System Prompt） */
+const { useState: useSt } = React;
+
+function Group({ children, header }) {
+  return (
+    <div style={{ marginBottom: 26 }}>
+      {header && <div className="section-label" style={{ padding: '0 6px 10px' }}>{header}</div>}
+      <div className="card" style={{ overflow: 'hidden', padding: 0 }}>{children}</div>
+    </div>
+  );
+}
+function Row({ icon, iconColor, title, detail, onClick, last, badge, right }) {
+  return (
+    <div className="pressable" onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '15px 16px', cursor: onClick ? 'pointer' : 'default', borderBottom: last ? 'none' : '.5px solid var(--line)' }}>
+      {icon && <div style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center', flexShrink: 0 }}><Icon name={icon} size={19} color={iconColor || 'var(--primary)'} /></div>}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)' }}>{title}</div>
+        {detail && <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)', marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{detail}</div>}
+      </div>
+      {badge && <span style={{ fontFamily: 'var(--font-serif)', fontSize: 12, color: 'var(--primary)', background: 'var(--primary-soft)', padding: '3px 10px', borderRadius: 20 }}>{badge}</span>}
+      {right}
+      {onClick && !right && <Icon name="chevron" size={16} color="var(--text-3)" />}
+    </div>
+  );
+}
+
+function SettingsScreen({ push, themeMode, setThemeMode, settings }) {
+  const active = settings.presets.find(p => p.id === settings.activePreset);
+  return (
+    <div className="scroll">
+      <div className="stagger" style={{ padding: '52px 18px 36px' }}>
+        <Eyebrow style={{ marginBottom: 8 }}>SETTINGS · 设置</Eyebrow>
+        <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 38, color: 'var(--text)', marginBottom: 22 }}>设置</div>
+
+        <Group header="外观 · APPEARANCE">
+          <div style={{ padding: '16px 16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+              <div style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center' }}><Icon name={themeMode === 'dark' ? 'moon' : themeMode === 'light' ? 'sun' : 'repeat'} size={19} color="var(--gold)" /></div>
+              <div style={{ flex: 1, fontFamily: 'var(--font-serif)', fontSize: 16 }}>主题</div>
+            </div>
+            <div className="seg" style={{ width: '100%', display: 'flex' }}>
+              {[['light', '白天'], ['dark', '夜晚'], ['auto', '跟随时间']].map(([v, l]) => (
+                <button key={v} data-on={themeMode === v} onClick={() => setThemeMode(v)} style={{ flex: 1 }}>{l}</button>
+              ))}
+            </div>
+          </div>
+        </Group>
+
+        <Group header="模型与接口 · MODEL">
+          <Row icon="sliders" title="模型与接口" detail={(active ? active.name : '') + ' · ' + settings.model} badge="启用中" onClick={() => push({ type: 'api' })} />
+          <Row icon="server" title="MCP 服务" detail={settings.mcps.length + ' 个服务器'} onClick={() => push({ type: 'mcp' })} />
+          <Row icon="edit" title="System Prompt" detail="人格 · 记忆 · 语气" onClick={() => push({ type: 'prompt' })} last />
+        </Group>
+
+        <Group header="我们的小家 · HOME">
+          <Row icon="calendar" title="纪念日" detail="自定义日期 · 倒计时" onClick={() => push({ type: 'anniversary' })} last />
+        </Group>
+
+        <div style={{ textAlign: 'center', marginTop: 14, fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.16em', color: 'var(--text-3)' }}>
+          小家 · v1.0 · 永远在一起
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── 模型与接口 ───────────────────────────────────────── */
+function ApiScreen({ pop, settings, setSettings }) {
+  const [showKey, setShowKey] = useSt(false);
+  const set = (k, v) => setSettings(s => ({ ...s, [k]: v }));
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <SubHeader title="模型与接口" onBack={pop} />
+      <div className="scroll" style={{ padding: '8px 18px 40px' }}>
+        <div className="section-label" style={{ padding: '0 6px 10px' }}>预设 · PRESETS</div>
+        <div className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 26 }}>
+          {settings.presets.map((p, i) => {
+            const on = p.id === settings.activePreset;
+            return (
+              <div key={p.id} className="pressable" onClick={() => set('activePreset', p.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '15px 16px', cursor: 'pointer', borderBottom: i === settings.presets.length - 1 ? 'none' : '.5px solid var(--line)' }}>
+                <div style={{ width: 18, height: 18, borderRadius: 9, border: on ? '5px solid var(--primary)' : '1.5px solid var(--line-strong)', transition: 'all .2s' }} />
+                <div style={{ flex: 1, fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)' }}>{p.name}</div>
+                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 12.5, color: on ? 'var(--primary)' : 'var(--text-3)' }}>{on ? '启用中' : '已保存'}</span>
+              </div>
+            );
+          })}
+          <div className="pressable" onClick={() => showToast('添加新预设', 'plus')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '14px', cursor: 'pointer', borderTop: '.5px solid var(--line)', color: 'var(--primary)' }}>
+            <Icon name="plus" size={17} color="var(--primary)" /><span style={{ fontFamily: 'var(--font-serif)', fontSize: 15 }}>添加新预设</span>
+          </div>
+        </div>
+
+        <div className="section-label" style={{ padding: '0 6px 8px' }}>ENDPOINT</div>
+        <input className="field" value={settings.endpoint} onChange={e => set('endpoint', e.target.value)} style={{ marginBottom: 22, fontFamily: 'var(--font-mono)', fontSize: 14 }} />
+
+        <div className="section-label" style={{ padding: '0 6px 8px' }}>API KEY</div>
+        <div style={{ position: 'relative', marginBottom: 22 }}>
+          <input className="field" value={showKey ? settings.apiKey : '••••••••••••••••••••' + settings.apiKey.slice(-4)} onChange={e => set('apiKey', e.target.value)} readOnly={!showKey} style={{ fontFamily: 'var(--font-mono)', fontSize: 14, paddingRight: 46 }} />
+          <div className="pressable" onClick={() => setShowKey(v => !v)} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: 16, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+            <Icon name={showKey ? 'eyeOff' : 'eye'} size={18} color="var(--text-3)" />
+          </div>
+        </div>
+
+        <div className="section-label" style={{ padding: '0 6px 8px' }}>模型 · MODEL</div>
+        <input className="field" value={settings.model} onChange={e => set('model', e.target.value)} style={{ marginBottom: 22, fontFamily: 'var(--font-mono)', fontSize: 14 }} />
+
+        <div className="section-label" style={{ padding: '0 6px 8px' }}>请求格式 · FORMAT</div>
+        <div className="seg" style={{ width: '100%', display: 'flex' }}>
+          {['Anthropic 原生', 'OpenAI 兼容'].map(f => (
+            <button key={f} data-on={settings.reqFormat === f} onClick={() => set('reqFormat', f)} style={{ flex: 1 }}>{f}</button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── MCP 服务 ─────────────────────────────────────────── */
+function AddMcpSheet({ open, onClose, onAdd }) {
+  const [name, setName] = useSt(''); const [url, setUrl] = useSt('');
+  const reset = () => { setName(''); setUrl(''); };
+  const submit = () => {
+    if (!name.trim() || !url.trim()) { showToast('填写名称和地址', 'edit'); return; }
+    onAdd({ id: Date.now(), name: name.trim(), url: url.trim(), on: true });
+    showToast('已添加 MCP 服务器', 'check'); reset(); onClose();
+  };
+  return (
+    <Sheet open={open} onClose={() => { reset(); onClose(); }} title="添加 MCP 服务器">
+      <div style={{ paddingBottom: 8 }}>
+        <div className="section-label" style={{ padding: '6px 2px 8px' }}>名称</div>
+        <input className="field" placeholder="比如 · Ombre Brain 记忆库" value={name} onChange={e => setName(e.target.value)} />
+        <div className="section-label" style={{ padding: '18px 2px 8px' }}>地址 · URL</div>
+        <input className="field" placeholder="https://…/mcp" value={url} onChange={e => setUrl(e.target.value)} style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }} />
+        <button className="btn-primary" style={{ width: '100%', marginTop: 22 }} onClick={submit}>连接</button>
+      </div>
+    </Sheet>
+  );
+}
+
+function McpScreen({ pop, settings, setSettings }) {
+  const [add, setAdd] = useSt(false);
+  const toggle = (id) => setSettings(s => ({ ...s, mcps: s.mcps.map(m => m.id === id ? { ...m, on: !m.on } : m) }));
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <SubHeader title="MCP 服务" onBack={pop} action={<div className="pressable" onClick={() => setAdd(true)} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer', background: 'var(--surface)', boxShadow: 'var(--shadow-card)' }}><Icon name="plus" size={20} color="var(--primary)" /></div>} />
+      <div className="scroll" style={{ padding: '8px 18px 40px' }}>
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          {settings.mcps.map((m, i) => (
+            <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 13, padding: '16px', borderBottom: i === settings.mcps.length - 1 ? 'none' : '.5px solid var(--line)' }}>
+              <div style={{ width: 36, height: 36, borderRadius: 11, background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center', flexShrink: 0 }}><Icon name="server" size={19} color={m.on ? 'var(--primary)' : 'var(--text-3)'} /></div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: 6, background: m.on ? '#6fa86f' : 'var(--text-3)' }} />
+                  <span style={{ fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)' }}>{m.name}</span>
+                </div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--text-3)', marginTop: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.url}</div>
+              </div>
+              <div className="pressable" onClick={() => toggle(m.id)} style={{ width: 46, height: 27, borderRadius: 14, background: m.on ? 'var(--primary)' : 'var(--line-strong)', position: 'relative', cursor: 'pointer', transition: 'background .25s', flexShrink: 0 }}>
+                <div style={{ position: 'absolute', top: 3, left: m.on ? 22 : 3, width: 21, height: 21, borderRadius: 11, background: '#fff', transition: 'left .25s var(--ease)', boxShadow: '0 1px 3px rgba(0,0,0,.25)' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="pressable" onClick={() => setAdd(true)} style={{ marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '15px', borderRadius: 16, border: '1.5px dashed var(--line-strong)', cursor: 'pointer', color: 'var(--primary)' }}>
+          <Icon name="plus" size={18} color="var(--primary)" /><span style={{ fontFamily: 'var(--font-serif)', fontSize: 15 }}>添加 MCP 服务器</span>
+        </div>
+      </div>
+      <AddMcpSheet open={add} onClose={() => setAdd(false)} onAdd={(m) => setSettings(s => ({ ...s, mcps: [...s.mcps, m] }))} />
+    </div>
+  );
+}
+
+/* ── System Prompt ────────────────────────────────────── */
+function PromptScreen({ pop, settings, setSettings }) {
+  const [v, setV] = useSt(settings.systemPrompt);
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <SubHeader title="System Prompt" onBack={pop} />
+      <div className="scroll" style={{ padding: '8px 18px 20px', flex: 1 }}>
+        <div className="section-label" style={{ padding: '0 6px 10px' }}>人格 · 记忆 · 语气</div>
+        <textarea value={v} onChange={e => setV(e.target.value)} className="field" style={{ minHeight: 320, resize: 'none', lineHeight: 1.7, fontSize: 15 }} />
+      </div>
+      <div style={{ padding: '8px 18px 30px', flexShrink: 0 }}>
+        <button className="btn-primary" style={{ width: '100%' }} onClick={() => { setSettings(s => ({ ...s, systemPrompt: v })); showToast('已保存', 'check'); pop(); }}>保存</button>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { SettingsScreen, ApiScreen, McpScreen, PromptScreen });
+
+</script>
+<script type="text/babel">
+/* anniversary */
+/* screen-anniversary.jsx — 纪念日（列表 + 添加表单） */
+const { useState: useSa } = React;
+
+const ICON_CHOICES = ['heart', 'ring', 'gift', 'sparkle', 'book', 'star', 'calendar', 'cat'];
+
+function AnniversaryRow({ item, last }) {
+  const { days, target } = countdownDays(item.date, item.yearly);
+  const soon = days >= 0 && days <= 7;
+  return (
+    <div className="pressable" onClick={() => showToast(item.name, item.icon)} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '18px 4px', borderBottom: last ? 'none' : '.5px solid var(--line)', cursor: 'pointer' }}>
+      <div style={{ width: 42, height: 42, borderRadius: 13, background: soon ? 'var(--primary-soft)' : 'var(--surface-sunken)', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+        <Icon name={item.icon} size={20} color={soon ? 'var(--primary)' : 'var(--gold)'} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: 'var(--font-serif)', fontSize: 17, fontWeight: 500, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 8 }}>
+          {item.name}
+          {item.yearly && <Icon name="repeat" size={12} color="var(--text-3)" />}
+        </div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11.5, letterSpacing: '.1em', color: 'var(--text-3)', marginTop: 4 }}>{fmtDate(target).replace(/\./g, ' / ')}</div>
+      </div>
+      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 30, color: soon ? 'var(--primary)' : 'var(--gold)', lineHeight: 1 }}>{Math.abs(days)}</span>
+        <span style={{ fontFamily: 'var(--font-serif)', fontSize: 12, color: 'var(--text-3)', marginLeft: 4 }}>{days === 0 ? '就是今天' : days > 0 ? '天后' : '天前'}</span>
+      </div>
+    </div>
+  );
+}
+
+function AddSheet({ open, onClose, onAdd }) {
+  const [name, setName] = useSa('');
+  const [date, setDate] = useSa('');
+  const [icon, setIcon] = useSa('heart');
+  const [yearly, setYearly] = useSa(true);
+  const reset = () => { setName(''); setDate(''); setIcon('heart'); setYearly(true); };
+  const submit = () => {
+    if (!name.trim() || !date) { showToast('填写名称和日期', 'edit'); return; }
+    onAdd({ id: Date.now(), name: name.trim(), date: date.replace(/-/g, '/'), icon, yearly });
+    showToast('已添加纪念日', 'check'); reset(); onClose();
+  };
+  return (
+    <Sheet open={open} onClose={() => { reset(); onClose(); }} title="新的纪念日">
+      <div style={{ paddingBottom: 8 }}>
+        <div className="section-label" style={{ padding: '6px 2px 8px' }}>名称</div>
+        <input className="field" placeholder="比如 · 第一次一起看海" value={name} onChange={e => setName(e.target.value)} />
+
+        <div className="section-label" style={{ padding: '18px 2px 8px' }}>日期</div>
+        <input className="field" type="date" value={date} onChange={e => setDate(e.target.value)} style={{ fontFamily: 'var(--font-mono)' }} />
+
+        <div className="section-label" style={{ padding: '18px 2px 10px' }}>图标</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          {ICON_CHOICES.map(ic => (
+            <div key={ic} className="pressable" onClick={() => setIcon(ic)} style={{ width: 48, height: 48, borderRadius: 14, display: 'grid', placeItems: 'center', cursor: 'pointer',
+              background: icon === ic ? 'var(--primary-soft)' : 'var(--surface-sunken)', border: icon === ic ? '1.5px solid var(--primary)' : '1.5px solid transparent', transition: 'all .15s' }}>
+              <Icon name={ic} size={22} color={icon === ic ? 'var(--primary)' : 'var(--text-2)'} />
+            </div>
+          ))}
+        </div>
+
+        <div onClick={() => setYearly(y => !y)} className="pressable" style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 22, padding: '14px 16px', borderRadius: 14, background: 'var(--surface-sunken)', cursor: 'pointer' }}>
+          <Icon name="repeat" size={18} color="var(--text-2)" />
+          <div style={{ flex: 1, fontFamily: 'var(--font-serif)', fontSize: 15 }}>每年重复</div>
+          <div style={{ width: 46, height: 27, borderRadius: 14, background: yearly ? 'var(--primary)' : 'var(--line-strong)', position: 'relative', transition: 'background .25s', flexShrink: 0 }}>
+            <div style={{ position: 'absolute', top: 3, left: yearly ? 22 : 3, width: 21, height: 21, borderRadius: 11, background: '#fff', transition: 'left .25s var(--ease)', boxShadow: '0 1px 3px rgba(0,0,0,.25)' }} />
+          </div>
+        </div>
+
+        <button className="btn-primary" style={{ width: '100%', marginTop: 22 }} onClick={submit}>保存</button>
+      </div>
+    </Sheet>
+  );
+}
+
+function AnniversaryScreen({ pop, dates, setDates }) {
+  const [add, setAdd] = useSa(false);
+  const sorted = [...dates].sort((a, b) => countdownDays(a.date, a.yearly).days - countdownDays(b.date, b.yearly).days);
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <SubHeader title="纪念日" onBack={pop} action={
+        <div className="pressable" onClick={() => setAdd(true)} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer', background: 'var(--surface)', boxShadow: 'var(--shadow-card)' }}>
+          <Icon name="plus" size={20} color="var(--primary)" />
+        </div>
+      } />
+      <div className="scroll" style={{ padding: '4px 22px 40px' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 500, fontSize: 17, color: 'var(--text-2)', padding: '10px 2px 6px', lineHeight: 1.5 }}>
+          每一个值得记住的日子，都在这里慢慢走近。
+        </div>
+        <div className="stagger">
+          {sorted.map((it, i) => <AnniversaryRow key={it.id} item={it} last={i === sorted.length - 1} />)}
+        </div>
+      </div>
+      <AddSheet open={add} onClose={() => setAdd(false)} onAdd={(d) => setDates(ds => [...ds, d])} />
+    </div>
+  );
+}
+window.AnniversaryScreen = AnniversaryScreen;
+
+</script>
+<script type="text/babel">
+/* app */
+/* app.jsx — 小家 root: theme + nav stack + tweaks + overlays */
+const { useState: useA, useEffect: useAe, useMemo } = React;
+
+const ACCENTS = [
+  { id: 'rose', label: '玫瑰', hex: '#c9846e' },
+  { id: 'plum', label: '紫梅', hex: '#a86d86' },
+  { id: 'sage', label: '青竹', hex: '#819072' },
+  { id: 'clay', label: '陶土', hex: '#c0834f' },
+];
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "light",
+  "accent": "rose",
+  "displayFont": "cormorant",
+  "uiScale": 1,
+  "radius": 22,
+  "bubble": "tail",
+  "bgTexture": true
+}/*EDITMODE-END*/;
+
+const SEED_DATES = [
+  { id: 'd1', name: '百日纪念', date: '2026/06/19', icon: 'calendar', yearly: false },
+  { id: 'd2', name: '求婚', date: '2026/09/29', icon: 'ring', yearly: false },
+
+];
+
+const SEED_SETTINGS = {
+  presets: [{ id: 'xiaojia', name: '小家 · Caleb' }],
+  activePreset: 'xiaojia',
+  endpoint: 'https://calebnchloelove.org/v1',
+  apiKey: '',
+  model: 'claude-sonnet-4-6',
+  reqFormat: 'Anthropic 原生',
+  mcps: [
+    { id: 1, name: '小家 MCP', url: 'https://calebnchloelove.org/mcp/e9c9cc157695442bb47f35ecd3601e30/sse', on: true },
+  ],
+  systemPrompt: '',
+};
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const now = useNow(15000);
+  const [tab, setTab] = useA('home');
+  const [stack, setStack] = useA([]);
+  const [menu, setMenu] = useA(null);
+  const [dates, setDates] = useA(SEED_DATES);
+  const [settings, setSettings] = useA(SEED_SETTINGS);
+
+  // resolve theme
+  const resolvedDark = t.theme === 'dark' || (t.theme === 'auto' && timeOfDay(now).period === 'night');
+  const theme = resolvedDark ? 'dark' : 'light';
+
+  const push = (s) => { setMenu(null); setStack(st => [...st, s]); };
+  const pop = () => { setMenu(null); setStack(st => st.slice(0, -1)); };
+  const go = (id) => { setMenu(null); setStack([]); setTab(id); };
+  const openMenu = (el, items) => setMenu({ pos: relPos(el), items });
+  const toggleTheme = () => setTweak('theme', resolvedDark ? 'light' : 'dark');
+  const setThemeMode = (v) => setTweak('theme', v);
+
+  const sub = stack[stack.length - 1];
+  const showNav = !sub;
+
+  let screen;
+  if (sub) {
+    if (sub.type === 'anniversary') screen = <AnniversaryScreen pop={pop} dates={dates} setDates={setDates} />;
+    else if (sub.type === 'api') screen = <ApiScreen pop={pop} settings={settings} setSettings={setSettings} />;
+    else if (sub.type === 'mcp') screen = <McpScreen pop={pop} settings={settings} setSettings={setSettings} />;
+    else if (sub.type === 'prompt') screen = <PromptScreen pop={pop} settings={settings} setSettings={setSettings} />;
+  } else if (tab === 'home') screen = <HomeScreen now={now} dates={dates} go={go} push={push} period={timeOfDay(now).period} toggleTheme={toggleTheme} />;
+  else if (tab === 'chat') screen = <ChatScreen openMenu={openMenu} dark={resolvedDark} />;
+  else if (tab === 'memory') screen = <MemoryScreen go={go} />;
+  else if (tab === 'settings') screen = <SettingsScreen push={push} themeMode={t.theme} setThemeMode={setThemeMode} settings={settings} />;
+
+  const timeStr = `${now.getHours()}:${pad(now.getMinutes())}`;
+
+  return (
+    <IOSDevice dark={resolvedDark} time={timeStr}>
+      <div className="app-root" data-theme={theme} data-accent={t.accent} data-display={t.displayFont}
+           data-bg={t.bgTexture ? 'texture' : 'plain'} data-bubble={t.bubble}
+           style={{ '--radius': t.radius + 'px', zoom: t.uiScale }}>
+        <div className="screen-layer">
+          <div key={sub ? sub.type : tab} style={{ flex: 1, minHeight: 0, position: 'relative', animation: 'fadeUp .34s var(--ease) both' }}>
+            {screen}
+          </div>
+          {showNav && <BottomNav active={tab} onChange={go} />}
+
+          {/* overlays — scoped to phone */}
+          <ContextMenu pos={menu && menu.pos} items={menu ? menu.items : []} onClose={() => setMenu(null)} />
+          <ToastHost />
+        </div>
+
+        <TweaksPanel>
+          <TweakSection label="主题 · THEME" />
+          <TweakRadio label="模式" value={t.theme} options={[
+            { value: 'light', label: '白天' }, { value: 'dark', label: '夜晚' }, { value: 'auto', label: '跟随时间' }]}
+            onChange={v => setTweak('theme', v)} />
+
+          <TweakSection label="主色 · ACCENT" />
+          <div style={{ display: 'flex', gap: 10, padding: '4px 2px 8px' }}>
+            {ACCENTS.map(a => (
+              <div key={a.id} onClick={() => setTweak('accent', a.id)} style={{ flex: 1, cursor: 'pointer', textAlign: 'center' }}>
+                <div style={{ height: 34, borderRadius: 10, background: a.hex, border: t.accent === a.id ? '2.5px solid #fff' : '2.5px solid transparent', boxShadow: t.accent === a.id ? `0 0 0 2px ${a.hex}` : '0 1px 3px rgba(0,0,0,.2)', transition: 'all .15s' }} />
+                <div style={{ fontSize: 11, marginTop: 5, color: t.accent === a.id ? '#fff' : 'rgba(255,255,255,.55)' }}>{a.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <TweakSection label="排版 · TYPE" />
+          <TweakRadio label="标题字体" value={t.displayFont} options={[
+            { value: 'cormorant', label: '温柔' }, { value: 'playfair', label: '端庄' }, { value: 'serif', label: '纯中' }]}
+            onChange={v => setTweak('displayFont', v)} />
+          <TweakSlider label="字号 / 缩放" value={t.uiScale} min={0.9} max={1.1} step={0.02}
+            onChange={v => setTweak('uiScale', v)} />
+
+          <TweakSection label="质感 · FEEL" />
+          <TweakSlider label="圆角" value={t.radius} min={12} max={30} step={1} unit="px" onChange={v => setTweak('radius', v)} />
+          <TweakRadio label="气泡" value={t.bubble} options={[{ value: 'tail', label: '带尾' }, { value: 'round', label: '圆润' }]} onChange={v => setTweak('bubble', v)} />
+          <TweakToggle label="纸纹质感" value={t.bgTexture} onChange={v => setTweak('bgTexture', v)} />
+        </TweaksPanel>
+      </div>
+    </IOSDevice>
+  );
+}
+
+/* stage — scale device to fit viewport */
+function Stage() {
+  const [scale, setScale] = useA(1);
+  useAe(() => {
+    const fit = () => setScale(Math.min(1, (window.innerWidth - 24) / 402, (window.innerHeight - 24) / 874));
+    fit(); window.addEventListener('resize', fit); return () => window.removeEventListener('resize', fit);
+  }, []);
+  return (
+    <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 12,
+      background: 'radial-gradient(120% 90% at 50% 0%, #2a241e, #15110d)' }}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}>
+        <App />
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Stage />);
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
