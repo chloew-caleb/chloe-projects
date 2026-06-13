@@ -1508,6 +1508,11 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
 
         {/* hero */}
         <div style={{ textAlign: 'center', position: 'relative' }}>
+          {/* chibi */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
+            <img src="/images/chibi.png" alt="Chloe & Caleb"
+              style={{ width: '72%', maxWidth: 320, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }} />
+          </div>
           {/* day/night quick switch */}
           <div onClick={toggleTheme} className="pressable" style={{
             position: 'absolute', right: 0, top: 4, width: 40, height: 40, borderRadius: 20,
