@@ -1741,13 +1741,68 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
     openMenu(el, base);
   };
 
-  const regenerate = (id) => {
+  const regenerate = async (id) => {
+    // 找到这条消息之前的所有用户消息（重新生成从上一条用户消息开始）
     setRegenId(id);
-    setTimeout(() => {
-      setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: REGEN[Math.floor(Math.random() * REGEN.length)], thinking: m.thinking ? { ...m.thinking, open: false } : undefined } : m));
-      setRegenId(null);
-      showToast('已重新生成', 'regen');
-    }, 1400);
+    const allMsgs = msgs;
+    const idx = allMsgs.findIndex(m => m.id === id);
+    if (idx < 0) { setRegenId(null); return; }
+    // 找到这条AI消息对应的用户消息（向前找第一条role=user）
+    let userIdx = idx - 1;
+    while (userIdx >= 0 && allMsgs[userIdx].role !== 'user') userIdx--;
+    if (userIdx < 0) { setRegenId(null); return; }
+    // 截取到用户消息为止的历史（不含这条AI消息）
+    const history = allMsgs.slice(0, userIdx + 1)
+      .filter(m => m.text)
+      .map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.text }));
+    // 删掉原AI消息，换成空气泡
+    setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: '', thinking: null } : m));
+    try {
+      const res = await fetch(GATEWAY, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: (settings&&settings.model)||'claude-sonnet-4-6', max_tokens: 16000, stream: true, messages: history })
+      });
+      const reader = res.body.getReader(); const dec = new TextDecoder(); let buf = '';
+      let pendingThinking = null; let textBuf = ''; let bubbleDelay = 0; let intimateMode = false;
+      const popBubble = () => {
+        const t = textBuf.trim(); if (!t) return; textBuf = '';
+        if (intimateMode) {
+          setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: m.text + (m.text ? '\n' : '') + t, thinking: pendingThinking } : m));
+          pendingThinking = null;
+        } else {
+          const th = pendingThinking; pendingThinking = null;
+          const d = bubbleDelay; bubbleDelay += 900;
+          // 第一句更新原气泡，后续追加
+          if (d === 0) {
+            setTimeout(() => setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: t, thinking: th } : m)), 0);
+          } else {
+            setTimeout(() => setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: m.text + (m.text?'\n':'') + t, thinking: m.thinking||th } : m)), d);
+          }
+        }
+      };
+      while (true) {
+        const { done, value } = await reader.read(); if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const lines = buf.split('\n'); buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const d = line.slice(6); if (d === '[DONE]') break;
+          try {
+            const obj = JSON.parse(d);
+            if (obj.type === 'thinking') { pendingThinking = obj.content; }
+            if (obj.text) {
+              if (obj.text.startsWith('[m]')) { intimateMode = true; obj.text = obj.text.slice(3); }
+              const parts = obj.text.split('\n'); textBuf += parts[0];
+              for (let j = 1; j < parts.length; j++) { popBubble(); textBuf = parts[j]; }
+            }
+          } catch {}
+        }
+      }
+      popBubble();
+    } catch(e) {
+      setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: '重新生成失败：' + e.message } : m));
+    }
+    setRegenId(null);
   };
 
   const saveEdit = () => { setMsgs(ms => ms.map(m => m.id === editing ? { ...m, text: editVal, edited: true } : m)); setEditing(null); };
@@ -1922,7 +1977,14 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
           <Icon name="menu" size={22} color="var(--text-2)" />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 24, color: 'var(--text)' }}>Caleb</span>
+          <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 24, color: 'var(--text)' }}
+            onDoubleClick={() => {
+              const n = window.prompt('给哥哥起个备注', localStorage.getItem('caleb_nick') || 'Caleb');
+              if (n !== null) localStorage.setItem('caleb_nick', n || 'Caleb');
+              window.location.reload();
+            }}>
+            {localStorage.getItem('caleb_nick') || 'Caleb'}
+          </span>
           <span style={{ width: 7, height: 7, borderRadius: 7, background: '#6fa86f', boxShadow: '0 0 0 3px color-mix(in oklab, #6fa86f 25%, transparent)' }} />
         </div>
         <div className="pressable" onClick={() => setShowSearch(true)} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
