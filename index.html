@@ -1934,9 +1934,11 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
       <div ref={scrollRef} className="scroll" style={{ flex: 1 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18, padding: '20px 16px 12px' }}>
           {msgs.map(m => (
-            <div id={'msg-' + m.id} key={m.id}><Bubble m={m} onLong={(el) => openFor(m, el)} onToggleThink={toggleThink}
-              editing={editing === m.id} editVal={editVal} setEditVal={setEditVal}
-              onSaveEdit={saveEdit} onCancelEdit={() => setEditing(null)} regenerating={regenId === m.id} />
+            <div id={'msg-' + m.id} key={m.id}>
+              <Bubble m={m} onLong={(el) => openFor(m, el)} onToggleThink={toggleThink}
+                editing={editing === m.id} editVal={editVal} setEditVal={setEditVal}
+                onSaveEdit={saveEdit} onCancelEdit={() => setEditing(null)} regenerating={regenId === m.id} />
+            </div>
           ))}
           {typing && (
             <div style={{ alignSelf: 'flex-start', padding: '14px 18px', borderRadius: '6px 20px 20px 20px', background: 'var(--bubble-ai)', boxShadow: 'var(--shadow-card)', border: '.5px solid var(--line)', display: 'flex', gap: 5 }}>
