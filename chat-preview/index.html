@@ -1700,7 +1700,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
   const endRef = useR(null);
   const fileRef = useR(null);
   const [pendingImg, setPendingImg] = useS(null);
-  const [msgQueue, setMsgQueue] = useS([]); // 延迟发送队列 // {base64, mime, name}
+  const [msgQueue, setMsgQueue] = useS([]); // 延迟发送队列 [{id, text}] // {base64, mime, name}
   const [showSessions, setShowSessions] = useS(false);
   const [showSearch, setShowSearch] = useS(false);
   const [searchQ, setSearchQ] = useS('');
@@ -1773,7 +1773,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
           pendingThinking = null;
         } else {
           const th = pendingThinking ? { content: pendingThinking, open: false } : null; pendingThinking = null;
-          const d = bubbleDelay; bubbleDelay += 900;
+          const d = bubbleDelay; bubbleDelay += 1000;
           if (d === 0) {
             setTimeout(() => setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: t, thinking: th } : m)), 0);
           } else {
@@ -1809,19 +1809,12 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
   const saveEdit = () => { setMsgs(ms => ms.map(m => m.id === editing ? { ...m, text: editVal, edited: true } : m)); setEditing(null); };
 
   const GATEWAY='https://calebnchloelove.org/v1/messages';
-  const send=async(textOverride, segments)=>{
-    const rawText = textOverride !== undefined ? textOverride : input.trim();
+  const send=async(rawText, segs)=>{
     if(!rawText)return;
-    const segs = segments || [rawText];
-    const uid=Date.now();const snap=msgs.slice();
-    // 每段作为独立气泡显示
-    let newMsgs = [...snap];
-    segs.forEach((seg, i) => newMsgs.push({id: uid+i, role:'user', text: seg}));
-    setMsgs(newMsgs);
-    if (textOverride === undefined) setInput('');
+    const snap=msgs.slice();
     setAttach(false);setTyping(true);
     try{
-      const hist=newMsgs.slice(0, -segs.length).filter(m=>m.text).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
+      const hist=snap.filter(m=>m.text&&!m.queued).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
       if (pendingImg) {
         hist.push({ role: 'user', content: [
           { type: 'image', source: { type: 'base64', media_type: pendingImg.mime, data: pendingImg.base64 } },
@@ -1967,19 +1960,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
         </div>
       )}
 
-      {/* 发送队列预览 */}
-      {msgQueue.length > 0 && (
-        <div style={{ flexShrink: 0, padding: '6px 14px 2px', borderTop: '.5px solid var(--line)' }}>
-          {msgQueue.map((t, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0' }}>
-              <span style={{ flex: 1, fontFamily: 'var(--font-serif)', fontSize: 13, color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t}</span>
-              <div className="pressable" onClick={() => setMsgQueue(q => q.filter((_, j) => j !== i))} style={{ cursor: 'pointer', padding: 2 }}>
-                <Icon name="close" size={12} color="var(--text-3)" />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+
       {/* 图片预览条 */}
       {pendingImg && (
         <div style={{ flexShrink: 0, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface-sunken)', borderTop: '.5px solid var(--line)' }}>
@@ -2050,20 +2031,39 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
             <Icon name="plus" size={22} color="var(--primary)" />
           </div>
           <textarea value={input} onChange={e => setInput(e.target.value)} rows={1} placeholder="说点什么…"
-            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); const t = input.trim(); if (t) { setMsgQueue(q => [...q, t]); setInput(''); } } }}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const t = input.trim();
+                if (t) {
+                  const qid = Date.now();
+                  setMsgs(ms => [...ms, { id: qid, role: 'user', text: t, queued: true }]);
+                  setMsgQueue(q => [...q, { id: qid, text: t }]);
+                  setInput('');
+                }
+              }
+            }}
             style={{ flex: 1, border: 'none', outline: 'none', resize: 'none', background: 'transparent', fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)', maxHeight: 90, padding: '9px 2px', lineHeight: 1.4 }} />
           <div className="pressable" onClick={() => (() => { if(window.confirm('清空本次对话记录？')) setMsgs([]); })()} style={{ width: 38, height: 38, borderRadius: 19, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
             <Icon name="clock" size={20} color="var(--text-3)" />
           </div>
           <div className="pressable" onClick={() => {
-              const allText = [...msgQueue, input.trim()].filter(Boolean);
-              if (!allText.length) return;
+              const curInput = input.trim();
+              let queuedItems = [...msgQueue];
+              // 如果输入框还有内容，也加进去
+              if (curInput) {
+                const qid = Date.now();
+                setMsgs(ms => [...ms, { id: qid, role: 'user', text: curInput, queued: true }]);
+                queuedItems.push({ id: qid, text: curInput });
+                setInput('');
+              }
+              if (!queuedItems.length) return;
               setMsgQueue([]);
-              setInput('');
-              // 把队列里每段作为独立用户气泡，合并成一条API请求
-              const combined = allText.join('\n');
-              const fakeInput = combined;
-              send(fakeInput, allText);
+              // 把queued标记去掉
+              const ids = queuedItems.map(q => q.id);
+              setMsgs(ms => ms.map(m => ids.includes(m.id) ? { ...m, queued: false } : m));
+              const combined = queuedItems.map(q => q.text).join('\n');
+              send(combined, queuedItems.map(q => q.text));
             }} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer',
             background: input.trim() ? 'linear-gradient(180deg, var(--primary), var(--primary-deep))' : 'var(--surface-sunken)', transition: 'background .2s' }}>
             <Icon name="send" size={19} color={input.trim() ? '#fff' : 'var(--text-3)'} />
