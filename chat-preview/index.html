@@ -1733,7 +1733,6 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
       .catch(() => setHistLoaded(true));
   }, []);
 
-  const _seed_placeholder = SEED.map((m, i) => i === 0 ? { ...m, faint: true } : m));
   const [editing, setEditing] = useS(null);
   const [editVal, setEditVal] = useS('');
   const [regenId, setRegenId] = useS(null);
