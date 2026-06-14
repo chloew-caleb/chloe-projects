@@ -1727,7 +1727,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
       const hist=snap.filter(m=>m.text).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
       hist.push({role:'user',content:text});
       const res=await fetch(GATEWAY,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:16000,stream:true,messages:hist})});
+        body:JSON.stringify({model:(settings&&settings.model)||'claude-sonnet-4-6',max_tokens:16000,stream:true,messages:hist})});
       const rdr=res.body.getReader();const dec=new TextDecoder();
       let sseBuf='',textBuf='',bubbleDelay=0,intimateMode=false,typingGone=false,pendingThinking=null;
       let intimateId=null,fullReply='';
