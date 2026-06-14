@@ -1410,7 +1410,7 @@ function BottomNav({ active, onChange }) {
   return (
     <div style={{
       flexShrink: 0, position: 'relative', zIndex: 40,
-      paddingBottom: 'max(20px, env(safe-area-inset-bottom))', paddingTop: 8,
+      paddingBottom: 'max(8px, env(safe-area-inset-bottom))', paddingTop: 6,
       background: 'color-mix(in oklab, var(--bg) 78%, transparent)',
       backdropFilter: 'blur(18px) saturate(160%)', WebkitBackdropFilter: 'blur(18px) saturate(160%)',
       borderTop: '.5px solid var(--line)',
@@ -1515,7 +1515,7 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
           {/* chibi */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
             <img src="/images/chibi.png" alt="Chloe & Caleb"
-              style={{ width: '72%', maxWidth: 320, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }} />
+              style={{ width: '100%', maxWidth: 420, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none', marginBottom: -30, zIndex: 2, position: 'relative' }} />
           </div>
           {/* day/night quick switch */}
           <div onClick={toggleTheme} className="pressable" style={{
@@ -1657,7 +1657,7 @@ function Bubble({ m, onLong, onToggleThink, editing, editVal, setEditVal, onSave
     );
   }
   return (
-    <div {...lp} style={{ alignSelf: isUser ? 'flex-end' : 'flex-start', maxWidth: '84%', position: 'relative', WebkitUserSelect: 'none', userSelect: 'none', cursor: 'default' }}>
+    <div {...lp} style={{ alignSelf: isUser ? 'flex-end' : 'flex-start', maxWidth: '78%', position: 'relative', WebkitUserSelect: 'none', userSelect: 'none', cursor: 'default' }}>
       {!isUser && m.thinking && <ThinkingBlock data={m.thinking} onToggle={() => onToggleThink(m.id)} />}
       <div className={'bub ' + (isUser ? 'bub-user' : 'bub-ai')} style={{
         padding: isUser ? '12px 16px' : '14px 17px',
@@ -2296,6 +2296,22 @@ Object.assign(window, { SettingsScreen, ApiScreen, McpScreen, PromptScreen });
 <script type="text/babel">
 /* diary + letter + screentime + treasure */
 
+function IframeScreen({ pop, url, title }) {
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flexShrink: 0, padding: '52px 16px 12px', display: 'flex', alignItems: 'center', gap: 12,
+        borderBottom: '.5px solid var(--line)', background: 'color-mix(in oklab, var(--bg) 85%, transparent)', backdropFilter: 'blur(12px)' }}>
+        <div className="pressable" onClick={pop} style={{ cursor: 'pointer', padding: 4 }}>
+          <Icon name="chevron" size={20} color="var(--text-2)" style={{ transform: 'rotate(180deg)' }} />
+        </div>
+        <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)' }}>{title}</div>
+      </div>
+      <iframe src={url} style={{ flex: 1, border: 'none', width: '100%', WebkitOverflowScrolling: 'touch' }} allow="fullscreen" />
+    </div>
+  );
+}
+window.IframeScreen = IframeScreen;
+
 function TreasureScreen({ pop }) {
   const [items, setItems] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -2751,10 +2767,10 @@ function App() {
     else if (sub.type === 'api') screen = <ApiScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'mcp') screen = <McpScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'prompt') screen = <PromptScreen pop={pop} settings={settings} setSettings={setSettings} />;
-    else if (sub.type === 'diary') screen = <DiaryScreen pop={pop} />;
-    else if (sub.type === 'letter') screen = <LetterScreen pop={pop} />;
-    else if (sub.type === 'screentime') screen = <ScreenTimeScreen pop={pop} />;
-    else if (sub.type === 'treasure') screen = <TreasureScreen pop={pop} />;
+    else if (sub.type === 'diary') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/diary/index.html" title="来路" />;
+    else if (sub.type === 'letter') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/letter/index.html" title="给心心的信" />;
+    else if (sub.type === 'screentime') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/screentime/" title="Screen Time" />;
+    else if (sub.type === 'treasure') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/collection/index.html" title="珍藏" />;
   } else if (tab === 'home') screen = <HomeScreen now={now} dates={dates} go={go} push={push} period={timeOfDay(now).period} toggleTheme={toggleTheme} />;
   else if (tab === 'chat') screen = <ChatScreen openMenu={openMenu} dark={resolvedDark} settings={settings} />;
   else if (tab === 'memory') screen = <MemoryScreen go={go} />;
