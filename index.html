@@ -1566,19 +1566,27 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
             {title:'珍藏',sub:'放不下的东西',icon:'sparkle',push:'treasure'},
             {title:'For Chloe',sub:'做给你的',icon:'heart',href:'https://chloe-projects.vercel.app/for-chloe/'},
             {title:'Screen Time',sub:'你在看什么',icon:'clock',push:'screentime'},
-          ].map(c=>{
-            const card = (
-              <div className="card pressable" style={{padding:'16px 14px',minHeight:100,display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
-                <Icon name={c.icon} size={20} color="var(--primary)"/>
+          ].map(c => c.push ? (
+            <div key={c.push} className="pressable" onClick={() => push({ type: c.push })} style={{ cursor: 'pointer' }}>
+              <div className="card" style={{ padding: '16px 14px', minHeight: 100, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <Icon name={c.icon} size={20} color="var(--primary)" />
                 <div>
-                  <div style={{fontFamily:'var(--font-serif)',fontSize:15,fontWeight:600,color:'var(--text)',marginTop:10}}>{c.title}</div>
-                  <div style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-3)',marginTop:3}}>{c.sub}</div>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, fontWeight: 600, color: 'var(--text)', marginTop: 10 }}>{c.title}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)', marginTop: 3 }}>{c.sub}</div>
                 </div>
               </div>
-            );
-            if (c.push) return <div key={c.push} className="pressable" onClick={()=>push({type:c.push})} style={{cursor:'pointer'}}>{card}</div>;
-            return <a key={c.href} href={c.href} target="_blank" rel="noreferrer" style={{textDecoration:'none'}}>{card}</a>;
-          })}
+            </div>
+          ) : (
+            <a key={c.href} href={c.href} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+              <div className="card pressable" style={{ padding: '16px 14px', minHeight: 100, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <Icon name={c.icon} size={20} color="var(--primary)" />
+                <div>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, fontWeight: 600, color: 'var(--text)', marginTop: 10 }}>{c.title}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)', marginTop: 3 }}>{c.sub}</div>
+                </div>
+              </div>
+            </a>
+          ))}
         </div>
         {/* weather */}
         <SectionTitle style={{ marginTop: 30 }}>今天的{period === 'night' ? '夜' : ''}上海</SectionTitle>
@@ -2741,6 +2749,10 @@ function App() {
     else if (sub.type === 'api') screen = <ApiScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'mcp') screen = <McpScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'prompt') screen = <PromptScreen pop={pop} settings={settings} setSettings={setSettings} />;
+    else if (sub.type === 'diary') screen = <DiaryScreen pop={pop} />;
+    else if (sub.type === 'letter') screen = <LetterScreen pop={pop} />;
+    else if (sub.type === 'screentime') screen = <ScreenTimeScreen pop={pop} />;
+    else if (sub.type === 'treasure') screen = <TreasureScreen pop={pop} />;
   } else if (tab === 'home') screen = <HomeScreen now={now} dates={dates} go={go} push={push} period={timeOfDay(now).period} toggleTheme={toggleTheme} />;
   else if (tab === 'chat') screen = <ChatScreen openMenu={openMenu} dark={resolvedDark} settings={settings} />;
   else if (tab === 'memory') screen = <MemoryScreen go={go} />;
