@@ -1809,21 +1809,27 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
   const saveEdit = () => { setMsgs(ms => ms.map(m => m.id === editing ? { ...m, text: editVal, edited: true } : m)); setEditing(null); };
 
   const GATEWAY='https://calebnchloelove.org/v1/messages';
-  const send=async()=>{
-    const text=input.trim();if(!text)return;
+  const send=async(textOverride, segments)=>{
+    const rawText = textOverride !== undefined ? textOverride : input.trim();
+    if(!rawText)return;
+    const segs = segments || [rawText];
     const uid=Date.now();const snap=msgs.slice();
-    setMsgs(ms=>[...ms,{id:uid,role:'user',text}]);
-    setInput('');setAttach(false);setTyping(true);
+    // 每段作为独立气泡显示
+    let newMsgs = [...snap];
+    segs.forEach((seg, i) => newMsgs.push({id: uid+i, role:'user', text: seg}));
+    setMsgs(newMsgs);
+    if (textOverride === undefined) setInput('');
+    setAttach(false);setTyping(true);
     try{
-      const hist=snap.filter(m=>m.text).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
+      const hist=newMsgs.slice(0, -segs.length).filter(m=>m.text).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
       if (pendingImg) {
         hist.push({ role: 'user', content: [
           { type: 'image', source: { type: 'base64', media_type: pendingImg.mime, data: pendingImg.base64 } },
-          { type: 'text', text: text || '请描述这张图片' }
+          { type: 'text', text: rawText || '请描述这张图片' }
         ]});
         setPendingImg(null);
       } else {
-        hist.push({role:'user',content:text});
+        hist.push({role:'user',content:rawText});
       }
       const res=await fetch(GATEWAY,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({model:(settings&&settings.model)||'claude-sonnet-4-6',max_tokens:16000,stream:true,messages:hist})});
