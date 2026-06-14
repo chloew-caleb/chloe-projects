@@ -46,7 +46,7 @@
   --primary-soft: color-mix(in oklab, var(--primary) 12%, transparent);
   --primary-tint: color-mix(in oklab, var(--primary) 7%, var(--surface));
   --gold-soft: color-mix(in oklab, var(--gold) 16%, transparent);
-  --bubble-user: color-mix(in oklab, var(--primary) 14%, #fff);
+  --bubble-user: color-mix(in oklab, var(--primary) 35%, #fff);
   --bubble-ai: #ffffff;
   --shadow-card: 0 1px 2px rgba(70,55,40,.04), 0 8px 24px -10px rgba(90,68,45,.14);
   --shadow-pop: 0 12px 40px -8px rgba(60,44,30,.28), 0 2px 8px rgba(60,44,30,.1);
@@ -230,7 +230,7 @@
 
 /* chat bubble corner styles (driven by data-bubble) */
 .bub { border-radius: 20px; }
-[data-bubble="tail"] .bub-user { border-radius: 20px 20px 7px 20px; }
+[data-bubble="tail"] .bub-user { border-radius: 20px 20px 7px 20px; border: 1px solid color-mix(in oklab, var(--primary) 25%, transparent); }
 [data-bubble="tail"] .bub-ai   { border-radius: 7px 20px 20px 20px; }
 [data-bubble="round"] .bub-user,
 [data-bubble="round"] .bub-ai  { border-radius: 22px; }
@@ -1515,7 +1515,7 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
           {/* chibi */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
             <img src="/images/chibi.png" alt="Chloe & Caleb"
-              style={{ width: '100%', maxWidth: 420, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none', marginBottom: -30, zIndex: 2, position: 'relative' }} />
+              style={{ width: '75%', maxWidth: 280, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none', marginBottom: -10, zIndex: 2, position: 'relative' }} />
           </div>
           {/* day/night quick switch */}
           <div onClick={toggleTheme} className="pressable" style={{
@@ -1768,11 +1768,11 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
       const popBubble = () => {
         const t = textBuf.trim(); if (!t) return; textBuf = '';
         if (intimateMode) {
-          const intTh = pendingThinking ? { content: pendingThinking, open: false } : undefined;
+          const intTh = pendingThinking ? { content: pendingThinking, open: true } : undefined;
           setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: m.text + (m.text ? '\n' : '') + t, thinking: m.thinking || intTh } : m));
           pendingThinking = null;
         } else {
-          const th = pendingThinking ? { content: pendingThinking, open: false } : null; pendingThinking = null;
+          const th = pendingThinking ? { content: pendingThinking, open: true } : null; pendingThinking = null;
           const d = bubbleDelay; bubbleDelay += 1000;
           if (d === 0) {
             setTimeout(() => setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: t, thinking: th } : m)), 0);
@@ -1997,7 +1997,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
       <div ref={scrollRef} className="scroll" style={{ flex: 1 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18, padding: '20px 16px 12px' }}>
           {msgs.map(m => (
-            <div id={'msg-' + m.id} key={m.id}>
+            <div id={'msg-' + m.id} key={m.id} style={{ display: 'flex', flexDirection: 'column' }}>
               <Bubble m={m} onLong={(el) => openFor(m, el)} onToggleThink={toggleThink}
                 editing={editing === m.id} editVal={editVal} setEditVal={setEditVal}
                 onSaveEdit={saveEdit} onCancelEdit={() => setEditing(null)} regenerating={regenId === m.id} />
@@ -2390,7 +2390,7 @@ Object.assign(window, { SettingsScreen, ApiScreen, McpScreen, PromptScreen });
 function IframeScreen({ pop, url, title }) {
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ flexShrink: 0, padding: '52px 16px 12px', display: 'flex', alignItems: 'center', gap: 12,
+      <div style={{ flexShrink: 0, padding: '14px 16px 10px', display: 'flex', alignItems: 'center', gap: 12,
         borderBottom: '.5px solid var(--line)', background: 'color-mix(in oklab, var(--bg) 85%, transparent)', backdropFilter: 'blur(12px)' }}>
         <div className="pressable" onClick={pop} style={{ cursor: 'pointer', padding: 4 }}>
           <Icon name="chevron" size={20} color="var(--text-2)" style={{ transform: 'rotate(180deg)' }} />
