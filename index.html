@@ -1403,7 +1403,7 @@ function SubHeader({ title, onBack, action, dark }) {
 /* ── Bottom navigation ────────────────────────────────── */
 const NAV = [
   { id: 'home', label: '主页', icon: 'home' },
-  { id: 'chat', label: '聊天', icon: 'chat' },
+  { id: 'chat', label: '聊天', icon: 'chat', disabled: true },
   { id: 'memory', label: '记忆', icon: 'memory' },
   { id: 'settings', label: '设置', icon: 'settings' },
 ];
@@ -1420,9 +1420,10 @@ function BottomNav({ active, onChange }) {
         {NAV.map(n => {
           const on = active === n.id;
           return (
-            <div key={n.id} className="pressable" onClick={() => onChange(n.id)} style={{
+            <div key={n.id} className={n.disabled ? '' : 'pressable'} onClick={() => !n.disabled && onChange(n.id)} style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-              padding: '4px 0', cursor: 'pointer',
+              padding: '4px 0', cursor: n.disabled ? 'default' : 'pointer',
+              opacity: n.disabled ? 0.3 : 1,
             }}>
               <div style={{ transition: 'transform .25s var(--ease)', transform: on ? 'translateY(-1px)' : 'none', position: 'relative' }}>
                 <Icon name={n.icon} size={24} stroke={on ? 1.9 : 1.5} fill={on && n.icon === 'chat'} color={on ? 'var(--primary)' : 'var(--text-3)'} />
