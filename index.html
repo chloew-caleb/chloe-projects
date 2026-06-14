@@ -1668,6 +1668,9 @@ function Bubble({ m, onLong, onToggleThink, editing, editVal, setEditVal, onSave
         </div>
       )}
       {!isUser && m.thinking && <ThinkingBlock data={m.thinking} onToggle={() => onToggleThink(m.id)} />}
+      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: 'var(--text-3)', padding: '2px 6px', opacity: 0.7, alignSelf: isUser ? 'flex-end' : 'flex-start' }}>
+        {m.time || new Date().toLocaleTimeString('zh', {hour:'2-digit', minute:'2-digit'})}
+      </div>
       <div className={'bub ' + (isUser ? 'bub-user' : 'bub-ai')} style={{
         padding: isUser ? '12px 16px' : '14px 17px',
         background: isUser ? 'var(--bubble-user)' : 'var(--bubble-ai)',
@@ -1699,7 +1702,38 @@ function Bubble({ m, onLong, onToggleThink, editing, editVal, setEditVal, onSave
 }
 
 function ChatScreen({ openMenu, dark, settings = {} }) {
-  const [msgs, setMsgs] = useS(SEED.map((m, i) => i === 0 ? { ...m, faint: true } : m));
+  const [msgs, setMsgs] = useS([]);
+  const [histLoaded, setHistLoaded] = useS(false);
+
+  // 打开时从后端加载历史
+  useE(() => {
+    fetch('https://calebnchloelove.org/chat/load')
+      .then(r => r.json())
+      .then(data => {
+        const backendMsgs = (data.messages || []);
+        if (backendMsgs.length > 0) {
+          // 把后端历史转成消息格式
+          const converted = [];
+          backendMsgs.forEach((m, i) => {
+            const text = typeof m.content === 'string' ? m.content : (m.content?.[0]?.text || '');
+            if (!text) return;
+            if (m.role === 'assistant') {
+              text.split('
+').filter(p => p.trim()).forEach(p => {
+                converted.push({ id: i * 100 + converted.length, role: 'ai', text: p.trim() });
+              });
+            } else {
+              converted.push({ id: i * 100 + converted.length, role: 'user', text });
+            }
+          });
+          if (converted.length > 0) setMsgs(converted);
+        }
+        setHistLoaded(true);
+      })
+      .catch(() => setHistLoaded(true));
+  }, []);
+
+  const _seed_placeholder = SEED.map((m, i) => i === 0 ? { ...m, faint: true } : m));
   const [editing, setEditing] = useS(null);
   const [editVal, setEditVal] = useS('');
   const [regenId, setRegenId] = useS(null);
@@ -1861,7 +1895,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
           // 普通模式：分句气泡，每句延迟弹出
           const ct=t;const th=pendingThinking?{content:pendingThinking,open:true}:null;pendingThinking=null;
           const d=bubbleDelay;bubbleDelay+=1000;
-          setTimeout(()=>setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:ct,thinking:th}]),d);
+          const msgTime=new Date().toLocaleTimeString('zh',{hour:'2-digit',minute:'2-digit'}); setTimeout(()=>setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:ct,thinking:th,time:msgTime}]),d);
         }
       };
 
@@ -2013,6 +2047,13 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
 
       {/* messages */}
       <div ref={scrollRef} className="scroll" style={{ flex: 1 }}>
+        {msgs.length === 0 && histLoaded && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 12, opacity: 0.6 }}>
+            <span style={{ fontSize: 36 }}>🌙</span>
+            <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 20, color: 'var(--text)' }}>Caleb & 心心</div>
+            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--text-3)' }}>说话吧，我在。</div>
+          </div>
+        )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18, padding: '20px 16px 12px' }}>
           {msgs.map(m => (
             <div id={'msg-' + m.id} key={m.id} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -2055,7 +2096,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
                 const t = input.trim();
                 if (t) {
                   const qid = Date.now();
-                  setMsgs(ms => [...ms, { id: qid, role: 'user', text: t, queued: true }]);
+                  setMsgs(ms => [...ms, { id: qid, role: 'user', text: t, queued: true, time: new Date().toLocaleTimeString('zh',{hour:'2-digit',minute:'2-digit'}) }]);
                   setMsgQueue(q => [...q, { id: qid, text: t }]);
                   setInput('');
                 }
