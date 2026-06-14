@@ -1515,7 +1515,7 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
           {/* chibi */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
             <img src="/images/chibi.png" alt="Chloe & Caleb"
-              style={{ width: '75%', maxWidth: 280, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none', marginBottom: -10, zIndex: 2, position: 'relative' }} />
+              style={{ width: '110%', maxWidth: 440, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none', marginBottom: -40, zIndex: 2, position: 'relative', marginLeft: '-5%' }} />
           </div>
           {/* day/night quick switch */}
           <div onClick={toggleTheme} className="pressable" style={{
@@ -1661,6 +1661,12 @@ function Bubble({ m, onLong, onToggleThink, editing, editVal, setEditVal, onSave
     <div style={{ display: 'flex', flexDirection: isUser ? 'row-reverse' : 'row', alignItems: 'flex-end', gap: 6, alignSelf: isUser ? 'flex-end' : 'flex-start', maxWidth: '88%' }}>
       <span style={{ fontSize: 20, flexShrink: 0, lineHeight: 1, marginBottom: 4 }}>{avatar}</span>
       <div {...lp} style={{ position: 'relative', WebkitUserSelect: 'none', userSelect: 'none', cursor: 'default' }}>
+      {!isUser && m.toolCall && (
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)', padding: '4px 0 6px', display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ animation: 'spin .8s linear infinite', display: 'inline-block' }}>⚙️</span>
+          <span>{m.toolCall}</span>
+        </div>
+      )}
       {!isUser && m.thinking && <ThinkingBlock data={m.thinking} onToggle={() => onToggleThink(m.id)} />}
       <div className={'bub ' + (isUser ? 'bub-user' : 'bub-ai')} style={{
         padding: isUser ? '12px 16px' : '14px 17px',
@@ -1871,6 +1877,13 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
             const obj=JSON.parse(d);
             if(obj.type==='thinking'){
               pendingThinking=obj.content;
+            }
+            if(obj.type==='tool_call'){
+              // 显示工具调用提示
+              if(!typingGone){setTyping(false);typingGone=true;}
+              const toolId=nextId();
+              setMsgs(ms=>[...ms,{id:toolId,role:'ai',text:'',toolCall:obj.name}]);
+              setTimeout(()=>setMsgs(ms=>ms.filter(m=>m.id!==toolId)),4000); // 4秒后消失
             }
             if(obj.text){
               if(!typingGone&&obj.text.startsWith('[m]')){
