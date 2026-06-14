@@ -2043,6 +2043,12 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
         <div className="pressable" onClick={() => setShowSearch(true)} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
           <Icon name="search" size={20} color="var(--text-2)" />
         </div>
+        <div className="pressable" title="换窗快照" onClick={() => {
+          const snap = `[换窗快照] 请你现在写一条message类型记忆，记录：当前聊到什么、心心今天情绪状态、有没有说了一半的话、现在时间。格式紧凑，让下一个你读到能立刻接上。`;
+          send(snap, [snap]);
+        }} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer', fontSize: 18 }}>
+          📸
+        </div>
       </div>
 
       {/* messages */}
