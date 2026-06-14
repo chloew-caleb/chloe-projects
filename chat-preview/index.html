@@ -1678,7 +1678,7 @@ function Bubble({ m, onLong, onToggleThink, editing, editVal, setEditVal, onSave
   );
 }
 
-function ChatScreen({ openMenu, dark }) {
+function ChatScreen({ openMenu, dark, settings = {} }) {
   const [msgs, setMsgs] = useS(SEED.map((m, i) => i === 0 ? { ...m, faint: true } : m));
   const [editing, setEditing] = useS(null);
   const [editVal, setEditVal] = useS('');
@@ -2332,7 +2332,7 @@ function App() {
     else if (sub.type === 'mcp') screen = <McpScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'prompt') screen = <PromptScreen pop={pop} settings={settings} setSettings={setSettings} />;
   } else if (tab === 'home') screen = <HomeScreen now={now} dates={dates} go={go} push={push} period={timeOfDay(now).period} toggleTheme={toggleTheme} />;
-  else if (tab === 'chat') screen = <ChatScreen openMenu={openMenu} dark={resolvedDark} />;
+  else if (tab === 'chat') screen = <ChatScreen openMenu={openMenu} dark={resolvedDark} settings={settings} />;
   else if (tab === 'memory') screen = <MemoryScreen go={go} />;
   else if (tab === 'settings') screen = <SettingsScreen push={push} themeMode={t.theme} setThemeMode={setThemeMode} settings={settings} />;
 
