@@ -1718,8 +1718,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
             const text = typeof m.content === 'string' ? m.content : (m.content?.[0]?.text || '');
             if (!text) return;
             if (m.role === 'assistant') {
-              text.split('
-').filter(p => p.trim()).forEach(p => {
+              text.split(/\n/).filter(p => p.trim()).forEach(p => {
                 converted.push({ id: i * 100 + converted.length, role: 'ai', text: p.trim() });
               });
             } else {
