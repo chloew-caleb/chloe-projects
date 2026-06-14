@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <title>小家 · Chloe &amp; Caleb</title>
   <meta name="theme-color" content="#c9846e">
   <meta name="mobile-web-app-capable" content="yes">
@@ -1410,7 +1410,7 @@ function BottomNav({ active, onChange }) {
   return (
     <div style={{
       flexShrink: 0, position: 'relative', zIndex: 40,
-      paddingBottom: 26, paddingTop: 8,
+      paddingBottom: 'max(20px, env(safe-area-inset-bottom))', paddingTop: 8,
       background: 'color-mix(in oklab, var(--bg) 78%, transparent)',
       backdropFilter: 'blur(18px) saturate(160%)', WebkitBackdropFilter: 'blur(18px) saturate(160%)',
       borderTop: '.5px solid var(--line)',
@@ -1839,7 +1839,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
           <textarea value={input} onChange={e => setInput(e.target.value)} rows={1} placeholder="说点什么…"
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
             style={{ flex: 1, border: 'none', outline: 'none', resize: 'none', background: 'transparent', fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)', maxHeight: 90, padding: '9px 2px', lineHeight: 1.4 }} />
-          <div className="pressable" onClick={() => showToast('历史记录', 'clock')} style={{ width: 38, height: 38, borderRadius: 19, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+          <div className="pressable" onClick={() => (() => { if(window.confirm('清空本次对话记录？')) setMsgs([]); })()} style={{ width: 38, height: 38, borderRadius: 19, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
             <Icon name="clock" size={20} color="var(--text-3)" />
           </div>
           <div className="pressable" onClick={send} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer',
@@ -2344,7 +2344,7 @@ function App() {
            data-bg={t.bgTexture ? 'texture' : 'plain'} data-bubble={t.bubble}
            style={{ '--radius': t.radius + 'px', zoom: t.uiScale }}>
         <div className="screen-layer">
-          <div key={sub ? sub.type : tab} style={{ flex: 1, minHeight: 0, position: 'relative', animation: 'fadeUp .34s var(--ease) both' }}>
+          <div key={sub ? sub.type : tab} style={{ flex: 1, minHeight: 0, position: 'relative', display: 'flex', flexDirection: 'column', animation: 'fadeUp .34s var(--ease) both' }}>
             {screen}
           </div>
           {showNav && <BottomNav active={tab} onChange={go} />}
