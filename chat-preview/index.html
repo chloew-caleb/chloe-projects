@@ -85,7 +85,8 @@
 [data-display="serif"]     { --font-display: 'Noto Serif SC', serif; }
 
 /* ── base ──────────────────────────────────────────────── */
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+textarea, input, [contenteditable] { -webkit-user-select: text !important; user-select: text !important; }
 .app-root {
   font-family: var(--font-serif);
   color: var(--text);
