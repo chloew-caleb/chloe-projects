@@ -1688,6 +1688,31 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
   const [typing, setTyping] = useS(false);
   const scrollRef = useR(null);
   const endRef = useR(null);
+  const fileRef = useR(null);
+  const [pendingImg, setPendingImg] = useS(null); // {base64, mime, name}
+  const [showSessions, setShowSessions] = useS(false);
+  const [showSearch, setShowSearch] = useS(false);
+  const [searchQ, setSearchQ] = useS('');
+  const [sessions, setSessions] = useS(() => {
+    try { return JSON.parse(localStorage.getItem('xiaojia_sessions') || '[]'); } catch { return []; }
+  });
+  const [sessionId, setSessionId] = useS(() => Date.now().toString());
+
+  // 自动保存会话到localStorage
+  useE(() => {
+    if (msgs.length < 2) return;
+    const title = msgs.find(m => m.role === 'user')?.text?.slice(0, 30) || '对话';
+    const session = { id: sessionId, title, date: new Date().toISOString(), messages: msgs };
+    setSessions(prev => {
+      const filtered = prev.filter(s => s.id !== sessionId);
+      const updated = [session, ...filtered].slice(0, 30); // 最多30个会话
+      try { localStorage.setItem('xiaojia_sessions', JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  }, [msgs]);
+
+  const loadSession = (s) => { setMsgs(s.messages); setSessionId(s.id); setShowSessions(false); };
+  const newSession = () => { setMsgs([]); setSessionId(Date.now().toString()); setShowSessions(false); };
 
   const toBottom = () => { const el = scrollRef.current; if (el) el.scrollTop = el.scrollHeight; };
   useE(() => { toBottom(); }, [msgs.length, typing]);
@@ -1725,7 +1750,15 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
     setInput('');setAttach(false);setTyping(true);
     try{
       const hist=snap.filter(m=>m.text).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
-      hist.push({role:'user',content:text});
+      if (pendingImg) {
+        hist.push({ role: 'user', content: [
+          { type: 'image', source: { type: 'base64', media_type: pendingImg.mime, data: pendingImg.base64 } },
+          { type: 'text', text: text || '请描述这张图片' }
+        ]});
+        setPendingImg(null);
+      } else {
+        hist.push({role:'user',content:text});
+      }
       const res=await fetch(GATEWAY,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({model:(settings&&settings.model)||'claude-sonnet-4-6',max_tokens:16000,stream:true,messages:hist})});
       const rdr=res.body.getReader();const dec=new TextDecoder();
@@ -1786,17 +1819,103 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      {/* hidden file input */}
+      <input ref={fileRef} type="file" accept="image/*,application/pdf" style={{ display: 'none' }}
+        onChange={e => {
+          const file = e.target.files[0]; if (!file) return;
+          const reader = new FileReader();
+          reader.onload = ev => {
+            const result = ev.target.result; // data:mime;base64,xxx
+            const [header, base64] = result.split(',');
+            const mime = header.match(/:(.*?);/)[1];
+            setPendingImg({ base64, mime, name: file.name });
+            showToast('已选择：' + file.name.slice(0, 20), 'archive');
+          };
+          reader.readAsDataURL(file);
+          e.target.value = '';
+        }} />
+
+      {/* 会话列表侧边栏 */}
+      {showSessions && (
+        <div style={{ position: 'absolute', inset: 0, zIndex: 100, display: 'flex' }}>
+          <div style={{ flex: 1, background: 'rgba(0,0,0,.3)' }} onClick={() => setShowSessions(false)} />
+          <div style={{ width: '78%', maxWidth: 300, background: 'var(--surface)', height: '100%', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-pop)' }}>
+            <div style={{ padding: '52px 18px 12px', borderBottom: '.5px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 20, color: 'var(--text)' }}>对话记录</span>
+              <div className="pressable" onClick={newSession} style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--primary)', cursor: 'pointer', padding: '4px 10px', background: 'var(--surface-sunken)', borderRadius: 10 }}>新对话</div>
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+              {sessions.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)', fontSize: 13 }}>暂无历史记录</div>
+              ) : sessions.map(s => (
+                <div key={s.id} className="pressable" onClick={() => loadSession(s)}
+                  style={{ padding: '14px 18px', borderBottom: '.5px solid var(--line)', cursor: 'pointer',
+                    background: s.id === sessionId ? 'var(--surface-sunken)' : 'transparent' }}>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--text)', marginBottom: 4 }}>{s.title}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)' }}>
+                    {new Date(s.date).toLocaleDateString('zh-CN')} · {s.messages.length}条消息
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 搜索overlay */}
+      {showSearch && (
+        <div style={{ position: 'absolute', inset: 0, zIndex: 100, background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ padding: '52px 16px 12px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '.5px solid var(--line)' }}>
+            <input autoFocus value={searchQ} onChange={e => setSearchQ(e.target.value)}
+              placeholder="搜索对话内容…"
+              style={{ flex: 1, border: 'none', outline: 'none', background: 'var(--surface-sunken)', borderRadius: 12, padding: '10px 14px', fontFamily: 'var(--font-serif)', fontSize: 15, color: 'var(--text)' }} />
+            <div className="pressable" onClick={() => { setShowSearch(false); setSearchQ(''); }}
+              style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-3)', cursor: 'pointer', padding: '6px 10px' }}>取消</div>
+          </div>
+          <div style={{ flex: 1, overflowY: 'auto', padding: '8px 16px' }}>
+            {searchQ.trim() === '' ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)', fontSize: 13 }}>输入关键词搜索</div>
+            ) : msgs.filter(m => m.text && m.text.includes(searchQ)).map(m => (
+              <div key={m.id} className="pressable card" onClick={() => {
+                setShowSearch(false); setSearchQ('');
+                setTimeout(() => {
+                  const el = document.getElementById('msg-' + m.id);
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+              }} style={{ padding: '14px 16px', marginBottom: 10, cursor: 'pointer' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: m.role === 'user' ? 'var(--primary)' : 'var(--text-3)', marginBottom: 6 }}>
+                  {m.role === 'user' ? '心心' : 'Caleb'}
+                </div>
+                <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--text)', lineHeight: 1.6 }}>
+                  {m.text.replace(searchQ, `【${searchQ}】`).slice(0, 120)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 图片预览条 */}
+      {pendingImg && (
+        <div style={{ flexShrink: 0, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface-sunken)', borderTop: '.5px solid var(--line)' }}>
+          <Icon name="archive" size={16} color="var(--primary)" />
+          <span style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-2)' }}>{pendingImg.name}</span>
+          <div className="pressable" onClick={() => setPendingImg(null)} style={{ cursor: 'pointer', padding: 4 }}>
+            <Icon name="close" size={14} color="var(--text-3)" />
+          </div>
+        </div>
+      )}
       {/* header */}
       <div style={{ flexShrink: 0, paddingTop: 50, paddingBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '50px 16px 10px',
         background: 'color-mix(in oklab, var(--bg) 72%, transparent)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '.5px solid var(--line)' }}>
-        <div className="pressable" onClick={() => showToast('会话列表', 'menu')} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+        <div className="pressable" onClick={() => setShowSessions(true)} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
           <Icon name="menu" size={22} color="var(--text-2)" />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 24, color: 'var(--text)' }}>Caleb</span>
           <span style={{ width: 7, height: 7, borderRadius: 7, background: '#6fa86f', boxShadow: '0 0 0 3px color-mix(in oklab, #6fa86f 25%, transparent)' }} />
         </div>
-        <div className="pressable" onClick={() => showToast('搜索聊天', 'search')} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+        <div className="pressable" onClick={() => setShowSearch(true)} style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
           <Icon name="search" size={20} color="var(--text-2)" />
         </div>
       </div>
@@ -1805,7 +1924,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
       <div ref={scrollRef} className="scroll" style={{ flex: 1 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18, padding: '20px 16px 12px' }}>
           {msgs.map(m => (
-            <Bubble key={m.id} m={m} onLong={(el) => openFor(m, el)} onToggleThink={toggleThink}
+            <div id={'msg-' + m.id} key={m.id}><Bubble m={m} onLong={(el) => openFor(m, el)} onToggleThink={toggleThink}
               editing={editing === m.id} editVal={editVal} setEditVal={setEditVal}
               onSaveEdit={saveEdit} onCancelEdit={() => setEditing(null)} regenerating={regenId === m.id} />
           ))}
@@ -1825,8 +1944,8 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
       <div style={{ flexShrink: 0, padding: '6px 14px 10px', position: 'relative' }}>
         {attach && (
           <div className="enter-up" style={{ position: 'absolute', bottom: 64, left: 14, width: 170, background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--shadow-pop)', border: '.5px solid var(--line)', padding: 4, zIndex: 30 }}>
-            {[['文件', 'memory'], ['图片', 'archive']].map(([l, ic], i) => (
-              <div key={l} className="pressable" onClick={() => { setAttach(false); showToast('选择' + l, ic); }} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', borderTop: i ? '.5px solid var(--line)' : 'none' }}>
+            {[['图片/PDF', 'archive']].map(([l, ic], i) => (
+              <div key={l} className="pressable" onClick={() => { setAttach(false); fileRef.current && fileRef.current.click(); }} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', borderTop: i ? '.5px solid var(--line)' : 'none' }}>
                 <Icon name={ic} size={19} color="var(--text-2)" /><span style={{ fontFamily: 'var(--font-serif)', fontSize: 15.5 }}>{l}</span>
               </div>
             ))}
