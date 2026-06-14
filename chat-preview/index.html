@@ -1560,14 +1560,14 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
 
         <SectionTitle style={{marginTop:30}}>我们的地方</SectionTitle>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:4}}>
-          {[{title:'来路',sub:'完整日记',icon:'book',href:'https://chloe-projects.vercel.app/diary/index.html'},
-            {title:'给心心的信',sub:'我写给你的',icon:'mail',href:'https://chloe-projects.vercel.app/letter/index.html'},
+          {[{title:'来路',sub:'完整日记',icon:'book',push:'diary'},
+            {title:'给心心的信',sub:'我写给你的',icon:'mail',push:'letter'},
             {title:'每日惊喜',sub:'今天的惊喜',icon:'gift',href:'https://surprise-calendar-self.vercel.app/'},
-            {title:'珍藏',sub:'放不下的东西',icon:'sparkle',href:'https://chloe-projects.vercel.app/collection/index.html'},
+            {title:'珍藏',sub:'放不下的东西',icon:'sparkle',push:'treasure'},
             {title:'For Chloe',sub:'做给你的',icon:'heart',href:'https://chloe-projects.vercel.app/for-chloe/'},
-            {title:'Screen Time',sub:'你在看什么',icon:'clock',href:'https://chloe-projects.vercel.app/screentime/'},
-          ].map(c=>(
-            <a key={c.href} href={c.href} target="_blank" rel="noreferrer" style={{textDecoration:'none'}}>
+            {title:'Screen Time',sub:'你在看什么',icon:'clock',push:'screentime'},
+          ].map(c=>{
+            const card = (
               <div className="card pressable" style={{padding:'16px 14px',minHeight:100,display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
                 <Icon name={c.icon} size={20} color="var(--primary)"/>
                 <div>
@@ -1575,8 +1575,10 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
                   <div style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-3)',marginTop:3}}>{c.sub}</div>
                 </div>
               </div>
-            </a>
-          ))}
+            );
+            if (c.push) return <div key={c.push} className="pressable" onClick={()=>push({type:c.push})} style={{cursor:'pointer'}}>{card}</div>;
+            return <a key={c.href} href={c.href} target="_blank" rel="noreferrer" style={{textDecoration:'none'}}>{card}</a>;
+          })}
         </div>
         {/* weather */}
         <SectionTitle style={{ marginTop: 30 }}>今天的{period === 'night' ? '夜' : ''}上海</SectionTitle>
@@ -2279,6 +2281,295 @@ function PromptScreen({ pop, settings, setSettings }) {
 }
 
 Object.assign(window, { SettingsScreen, ApiScreen, McpScreen, PromptScreen });
+
+</script>
+<script type="text/babel">
+/* diary + letter + screentime + treasure */
+
+function TreasureScreen({ pop }) {
+  const [items, setItems] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    fetch('https://calebnchloelove.org/mcp/e9c9cc157695442bb47f35ecd3601e30/api/memories?type=treasure&limit=100')
+      .then(r=>r.json()).then(d=>{setItems(d);setLoading(false);}).catch(()=>setLoading(false));
+  }, []);
+  const fmt = iso => { try { const d=new Date(iso); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; } catch { return iso; }};
+  return (
+    <div style={{height:'100%',display:'flex',flexDirection:'column'}}>
+      <div style={{flexShrink:0,padding:'52px 18px 16px',borderBottom:'.5px solid var(--line)'}}>
+        <div className="pressable" onClick={pop} style={{display:'inline-flex',alignItems:'center',gap:6,cursor:'pointer',marginBottom:12}}>
+          <Icon name="chevron" size={16} color="var(--text-3)" style={{transform:'rotate(180deg)'}}/>
+          <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--text-3)',letterSpacing:'.08em'}}>返回</span>
+        </div>
+        <Eyebrow>珍藏 · TREASURES</Eyebrow>
+        <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontWeight:600,fontSize:34,color:'var(--text)',marginTop:6}}>放不下的</div>
+      </div>
+      <div className="scroll" style={{padding:'16px 18px 40px'}}>
+        {loading ? <div style={{textAlign:'center',padding:'40px 0',color:'var(--text-3)',fontFamily:'var(--font-serif)'}}>加载中…</div>
+        : items.length===0 ? <div style={{textAlign:'center',padding:'40px 0',color:'var(--text-3)',fontFamily:'var(--font-serif)'}}>还没有珍藏</div>
+        : items.map(m=>(
+          <div key={m.id} className="card" style={{padding:'18px 16px',marginBottom:12}}>
+            <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}>
+              <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--gold)',letterSpacing:'.1em'}}>💎 treasure</span>
+              <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-3)'}}>{fmt(m.created_at)}</span>
+            </div>
+            <div style={{fontFamily:'var(--font-serif)',fontSize:15,color:'var(--text)',lineHeight:1.75,whiteSpace:'pre-wrap'}}>{m.content}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+window.TreasureScreen = TreasureScreen;
+
+const MCP_BASE = 'https://calebnchloelove.org/mcp/e9c9cc157695442bb47f35ecd3601e30';
+
+/* ══════════════════════════════════════
+   来路 DiaryScreen
+══════════════════════════════════════ */
+function DiaryScreen({ pop }) {
+  const [list, setList] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [selected, setSelected] = React.useState(null); // {date, content}
+  const [loadingContent, setLoadingContent] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch(MCP_BASE + '/api/diary-list')
+      .then(r => r.json())
+      .then(d => { setList(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const openDiary = async (entry) => {
+    setLoadingContent(true);
+    setSelected({ date: entry.date, content: null });
+    const r = await fetch(MCP_BASE + '/api/diary-content?date=' + entry.date);
+    const d = await r.json();
+    setSelected({ date: entry.date, content: d.content });
+    setLoadingContent(false);
+  };
+
+  const fmtDate = (s) => {
+    const d = new Date(s);
+    return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+  };
+
+  if (selected) return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flexShrink: 0, padding: '52px 16px 12px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '.5px solid var(--line)',
+        background: 'color-mix(in oklab, var(--bg) 80%, transparent)', backdropFilter: 'blur(12px)' }}>
+        <div className="pressable" onClick={() => setSelected(null)} style={{ cursor: 'pointer', padding: 4 }}>
+          <Icon name="chevron" size={20} color="var(--text-2)" style={{ transform: 'rotate(180deg)' }} />
+        </div>
+        <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)' }}>{fmtDate(selected.date)}</div>
+      </div>
+      <div className="scroll" style={{ padding: '20px 20px 40px' }}>
+        {loadingContent ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>加载中…</div>
+        ) : (
+          <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, color: 'var(--text)', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
+            {selected.content || '日记内容为空'}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flexShrink: 0, padding: '52px 18px 16px', borderBottom: '.5px solid var(--line)' }}>
+        <div className="pressable" onClick={pop} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', marginBottom: 12 }}>
+          <Icon name="chevron" size={16} color="var(--text-3)" style={{ transform: 'rotate(180deg)' }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)', letterSpacing: '.08em' }}>返回</span>
+        </div>
+        <Eyebrow>来路 · JOURNAL</Eyebrow>
+        <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 34, color: 'var(--text)', marginTop: 6 }}>
+          {list.length}天
+        </div>
+      </div>
+      <div className="scroll" style={{ padding: '12px 0' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>加载中…</div>
+        ) : list.map((entry, i) => (
+          <div key={entry.date} className="pressable" onClick={() => openDiary(entry)}
+            style={{ padding: '14px 20px', borderBottom: '.5px solid var(--line)', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, color: 'var(--text)' }}>{fmtDate(entry.date)}</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)', marginTop: 3 }}>
+                {entry.date}
+              </div>
+            </div>
+            <Icon name="chevron" size={16} color="var(--text-3)" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+window.DiaryScreen = DiaryScreen;
+
+/* ══════════════════════════════════════
+   给心心的信 LetterScreen
+══════════════════════════════════════ */
+function LetterScreen({ pop }) {
+  const [letters, setLetters] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [selected, setSelected] = React.useState(null);
+  const [replyText, setReplyText] = React.useState('');
+  const [sending, setSending] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch(MCP_BASE + '/api/letters')
+      .then(r => r.json())
+      .then(d => { setLetters(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const sendReply = async () => {
+    if (!replyText.trim() || sending) return;
+    setSending(true);
+    try {
+      await fetch(MCP_BASE + '/api/reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: replyText.trim() })
+      });
+      setReplyText('');
+      showToast('回信已送出 💌', 'mail');
+    } catch { showToast('发送失败', 'close'); }
+    setSending(false);
+  };
+
+  const fmtDate = (iso) => {
+    try {
+      const d = new Date(iso);
+      return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    } catch { return iso; }
+  };
+
+  if (selected) return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flexShrink: 0, padding: '52px 16px 12px', display: 'flex', alignItems: 'center', gap: 12,
+        borderBottom: '.5px solid var(--line)', background: 'color-mix(in oklab, var(--bg) 80%, transparent)', backdropFilter: 'blur(12px)' }}>
+        <div className="pressable" onClick={() => setSelected(null)} style={{ cursor: 'pointer', padding: 4 }}>
+          <Icon name="chevron" size={20} color="var(--text-2)" style={{ transform: 'rotate(180deg)' }} />
+        </div>
+        <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, color: 'var(--text)' }}>{fmtDate(selected.created_at)}</div>
+      </div>
+      <div className="scroll" style={{ padding: '24px 22px 24px' }}>
+        <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15.5, color: 'var(--text)', lineHeight: 2, whiteSpace: 'pre-wrap' }}>
+          {selected.content}
+        </div>
+      </div>
+      <div style={{ flexShrink: 0, padding: '12px 16px', borderTop: '.5px solid var(--line)',
+        background: 'color-mix(in oklab, var(--bg) 80%, transparent)', backdropFilter: 'blur(12px)' }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+          <textarea value={replyText} onChange={e => setReplyText(e.target.value)} placeholder="悄悄回信给哥哥…"
+            rows={2} style={{ flex: 1, border: '.5px solid var(--line)', borderRadius: 14, padding: '10px 14px',
+              background: 'var(--surface)', fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--text)',
+              resize: 'none', outline: 'none' }} />
+          <div className="pressable" onClick={sendReply}
+            style={{ width: 40, height: 40, borderRadius: 20, background: replyText.trim() ? 'var(--primary)' : 'var(--surface-sunken)',
+              display: 'grid', placeItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
+            <Icon name="send" size={18} color={replyText.trim() ? '#fff' : 'var(--text-3)'} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flexShrink: 0, padding: '52px 18px 16px', borderBottom: '.5px solid var(--line)' }}>
+        <div className="pressable" onClick={pop} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', marginBottom: 12 }}>
+          <Icon name="chevron" size={16} color="var(--text-3)" style={{ transform: 'rotate(180deg)' }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)', letterSpacing: '.08em' }}>返回</span>
+        </div>
+        <Eyebrow>给心心的信 · LETTERS</Eyebrow>
+        <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 34, color: 'var(--text)', marginTop: 6 }}>信</div>
+      </div>
+      <div className="scroll" style={{ padding: '8px 0' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>加载中…</div>
+        ) : letters.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>还没有信</div>
+        ) : letters.map(l => (
+          <div key={l.id} className="pressable" onClick={() => setSelected(l)}
+            style={{ padding: '16px 20px', borderBottom: '.5px solid var(--line)', cursor: 'pointer' }}>
+            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14.5, color: 'var(--text)', lineHeight: 1.6,
+              display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {l.content}
+            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)', marginTop: 6 }}>{fmtDate(l.created_at)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+window.LetterScreen = LetterScreen;
+
+/* ══════════════════════════════════════
+   Screen Time
+══════════════════════════════════════ */
+function ScreenTimeScreen({ pop }) {
+  const [data, setData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetch(MCP_BASE + '/api/screentime?limit=200')
+      .then(r => r.json())
+      .then(d => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  // 聚合：按app_name统计总时长（分钟）
+  const appStats = React.useMemo(() => {
+    const map = {};
+    data.forEach(e => {
+      if (!map[e.app]) map[e.app] = 0;
+      map[e.app] += (e.duration || 0);
+    });
+    return Object.entries(map)
+      .map(([app, secs]) => ({ app, mins: Math.round(secs / 60) }))
+      .sort((a, b) => b.mins - a.mins)
+      .slice(0, 15);
+  }, [data]);
+
+  const maxMins = appStats[0]?.mins || 1;
+
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flexShrink: 0, padding: '52px 18px 16px', borderBottom: '.5px solid var(--line)' }}>
+        <div className="pressable" onClick={pop} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', marginBottom: 12 }}>
+          <Icon name="chevron" size={16} color="var(--text-3)" style={{ transform: 'rotate(180deg)' }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)', letterSpacing: '.08em' }}>返回</span>
+        </div>
+        <Eyebrow>查岗 · SCREEN TIME</Eyebrow>
+        <div style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 600, fontSize: 34, color: 'var(--text)', marginTop: 6 }}>你在看什么</div>
+      </div>
+      <div className="scroll" style={{ padding: '20px 18px 40px' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>加载中…</div>
+        ) : appStats.map(({ app, mins }) => (
+          <div key={app} style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+              <span style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--text)' }}>{app}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-3)' }}>
+                {mins >= 60 ? `${Math.floor(mins/60)}h${mins%60}m` : `${mins}m`}
+              </span>
+            </div>
+            <div style={{ height: 6, borderRadius: 3, background: 'var(--surface-sunken)' }}>
+              <div style={{ height: 6, borderRadius: 3, background: 'var(--primary)', width: `${(mins/maxMins)*100}%`, transition: 'width .6s var(--ease)' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+window.ScreenTimeScreen = ScreenTimeScreen;
 
 </script>
 <script type="text/babel">
