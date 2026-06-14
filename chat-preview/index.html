@@ -1849,8 +1849,9 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
           }
         }else{
           // 普通模式：分句气泡，每句延迟弹出
-          const ct=t;const d=bubbleDelay;bubbleDelay+=900;
-          setTimeout(()=>setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:ct}]),d);
+          const ct=t;const th=pendingThinking?{content:pendingThinking,open:true}:null;pendingThinking=null;
+          const d=bubbleDelay;bubbleDelay+=1000;
+          setTimeout(()=>setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:ct,thinking:th}]),d);
         }
       };
 
@@ -2066,7 +2067,8 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
               send(combined, queuedItems.map(q => q.text));
             }} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer',
             background: input.trim() ? 'linear-gradient(180deg, var(--primary), var(--primary-deep))' : 'var(--surface-sunken)', transition: 'background .2s' }}>
-            <Icon name="send" size={19} color={input.trim() ? '#fff' : 'var(--text-3)'} />
+            <Icon name="send" size={19} color={input.trim()||msgQueue.length ? '#fff' : 'var(--text-3)'} />
+                {msgQueue.length > 0 && <span style={{ position: 'absolute', top: -3, right: -3, background: 'var(--primary)', color: '#fff', borderRadius: 8, fontSize: 10, fontFamily: 'var(--font-mono)', padding: '1px 4px', minWidth: 16, textAlign: 'center', lineHeight: '14px' }}>{msgQueue.length}</span>}
           </div>
         </div>
       </div>
