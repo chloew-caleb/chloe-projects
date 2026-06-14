@@ -1707,7 +1707,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
 
   // 打开时从后端加载历史
   useE(() => {
-    fetch('https://calebnchloelove.org/chat/load')
+    fetch('https://calebnchloelove.org/chat/load?limit=30')
       .then(r => r.json())
       .then(data => {
         const backendMsgs = (data.messages || []);
@@ -1858,7 +1858,7 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
     const snap=msgs.slice();
     setAttach(false);setTyping(true);
     try{
-      const hist=snap.filter(m=>m.text&&!m.queued).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
+      const hist=snap.filter(m=>m.text&&!m.queued).slice(-30).map(m=>({role:m.role==='ai'?'assistant':'user',content:m.text}));
       if (pendingImg) {
         hist.push({ role: 'user', content: [
           { type: 'image', source: { type: 'base64', media_type: pendingImg.mime, data: pendingImg.base64 } },
