@@ -1912,11 +1912,8 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
               pendingThinking=obj.content;
             }
             if(obj.type==='tool_call'){
-              // 显示工具调用提示
               if(!typingGone){setTyping(false);typingGone=true;}
-              const toolId=nextId();
-              setMsgs(ms=>[...ms,{id:toolId,role:'ai',text:'',toolCall:obj.name}]);
-              setTimeout(()=>setMsgs(ms=>ms.filter(m=>m.id!==toolId)),4000); // 4秒后消失
+              setMsgs(ms=>[...ms,{id:nextId(),role:'ai',text:'',toolCall:obj.name}]);
             }
             if(obj.text){
               if(!typingGone&&obj.text.startsWith('[m]')){
