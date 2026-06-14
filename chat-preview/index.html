@@ -1626,7 +1626,7 @@ function ThinkingBlock({ data, onToggle }) {
   const [open, setOpen] = React.useState(false);
   const toggle = onToggle || (() => setOpen(o => !o));
   const isOpen = typeof data === 'object' ? data.open : open;
-  const content = typeof data === 'string' ? data : (data.steps||[]).map(s=>s.text||'').join('\n');
+  const content = typeof data === 'string' ? data : (data.content || (data.steps||[]).map(s=>s.text||'').join('\n'));
   return (
     <div style={{ marginBottom: 10 }}>
       <div className="pressable" onClick={toggle} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
@@ -1699,7 +1699,8 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
   const scrollRef = useR(null);
   const endRef = useR(null);
   const fileRef = useR(null);
-  const [pendingImg, setPendingImg] = useS(null); // {base64, mime, name}
+  const [pendingImg, setPendingImg] = useS(null);
+  const [msgQueue, setMsgQueue] = useS([]); // 延迟发送队列 // {base64, mime, name}
   const [showSessions, setShowSessions] = useS(false);
   const [showSearch, setShowSearch] = useS(false);
   const [searchQ, setSearchQ] = useS('');
@@ -1767,12 +1768,12 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
       const popBubble = () => {
         const t = textBuf.trim(); if (!t) return; textBuf = '';
         if (intimateMode) {
-          setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: m.text + (m.text ? '\n' : '') + t, thinking: pendingThinking } : m));
+          const intTh = pendingThinking ? { content: pendingThinking, open: false } : undefined;
+          setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: m.text + (m.text ? '\n' : '') + t, thinking: m.thinking || intTh } : m));
           pendingThinking = null;
         } else {
-          const th = pendingThinking; pendingThinking = null;
+          const th = pendingThinking ? { content: pendingThinking, open: false } : null; pendingThinking = null;
           const d = bubbleDelay; bubbleDelay += 900;
-          // 第一句更新原气泡，后续追加
           if (d === 0) {
             setTimeout(() => setMsgs(ms => ms.map(m => m.id === id ? { ...m, text: t, thinking: th } : m)), 0);
           } else {
@@ -1960,6 +1961,19 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
         </div>
       )}
 
+      {/* 发送队列预览 */}
+      {msgQueue.length > 0 && (
+        <div style={{ flexShrink: 0, padding: '6px 14px 2px', borderTop: '.5px solid var(--line)' }}>
+          {msgQueue.map((t, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0' }}>
+              <span style={{ flex: 1, fontFamily: 'var(--font-serif)', fontSize: 13, color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t}</span>
+              <div className="pressable" onClick={() => setMsgQueue(q => q.filter((_, j) => j !== i))} style={{ cursor: 'pointer', padding: 2 }}>
+                <Icon name="close" size={12} color="var(--text-3)" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       {/* 图片预览条 */}
       {pendingImg && (
         <div style={{ flexShrink: 0, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface-sunken)', borderTop: '.5px solid var(--line)' }}>
@@ -2030,12 +2044,21 @@ function ChatScreen({ openMenu, dark, settings = {} }) {
             <Icon name="plus" size={22} color="var(--primary)" />
           </div>
           <textarea value={input} onChange={e => setInput(e.target.value)} rows={1} placeholder="说点什么…"
-            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); const t = input.trim(); if (t) { setMsgQueue(q => [...q, t]); setInput(''); } } }}
             style={{ flex: 1, border: 'none', outline: 'none', resize: 'none', background: 'transparent', fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)', maxHeight: 90, padding: '9px 2px', lineHeight: 1.4 }} />
           <div className="pressable" onClick={() => (() => { if(window.confirm('清空本次对话记录？')) setMsgs([]); })()} style={{ width: 38, height: 38, borderRadius: 19, display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
             <Icon name="clock" size={20} color="var(--text-3)" />
           </div>
-          <div className="pressable" onClick={send} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer',
+          <div className="pressable" onClick={() => {
+              const allText = [...msgQueue, input.trim()].filter(Boolean);
+              if (!allText.length) return;
+              setMsgQueue([]);
+              setInput('');
+              // 把队列里每段作为独立用户气泡，合并成一条API请求
+              const combined = allText.join('\n');
+              const fakeInput = combined;
+              send(fakeInput, allText);
+            }} style={{ width: 40, height: 40, borderRadius: 20, display: 'grid', placeItems: 'center', cursor: 'pointer',
             background: input.trim() ? 'linear-gradient(180deg, var(--primary), var(--primary-deep))' : 'var(--surface-sunken)', transition: 'background .2s' }}>
             <Icon name="send" size={19} color={input.trim() ? '#fff' : 'var(--text-3)'} />
           </div>
