@@ -1560,10 +1560,27 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
         </div>
 
 
+        {/* 我们的日记 - new section, between 重要的日子 and 我们的地方 */}
+        <SectionTitle style={{marginTop:30}}>我们的日记</SectionTitle>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:4}}>
+          {[{title:'Caleb的日记',sub:'哥哥写的',icon:'edit',push:'caleb-diary'},
+            {title:'Chloe的日记',sub:'你想写就写',icon:'star',push:'chloe-diary'},
+          ].map(c => (
+            <div key={c.push} className="pressable" onClick={() => push({ type: c.push })} style={{ cursor: 'pointer' }}>
+              <div className="card" style={{ padding: '16px 14px', minHeight: 100, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <Icon name={c.icon} size={20} color="var(--primary)" />
+                <div>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, fontWeight: 600, color: 'var(--text)', marginTop: 10 }}>{c.title}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)', marginTop: 3 }}>{c.sub}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <SectionTitle style={{marginTop:30}}>我们的地方</SectionTitle>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:4}}>
-          {[{title:'来路',sub:'完整日记',icon:'book',push:'diary'},
-            {title:'给心心的信',sub:'我写给你的',icon:'mail',push:'letter'},
+          {[{title:'给心心的信',sub:'我写给你的',icon:'mail',push:'letter'},
             {title:'每日惊喜',sub:'今天的惊喜',icon:'gift',href:'https://surprise-calendar-self.vercel.app/'},
             {title:'珍藏',sub:'放不下的东西',icon:'sparkle',push:'treasure'},
             {title:'For Chloe',sub:'做给你的',icon:'heart',href:'https://chloe-projects.vercel.app/for-chloe/'},
@@ -2180,7 +2197,7 @@ const MEM = [
   { title: '给心心的信', icon: 'mail', mono: 'letters', sub: '我写给你的，你可以悄悄回', href: 'https://chloe-projects.vercel.app/letter/index.html' },
   { title: '每日惊喜', icon: 'gift', mono: 'daily', sub: '今天的惊喜，每天都不一样', href: 'https://surprise-calendar-self.vercel.app/' },
   { title: '珍藏', icon: 'sparkle', mono: 'starred', sub: '放不下的那些东西，值得被好好看见', href: 'https://chloe-projects.vercel.app/collection/index.html' },
-  { title: '来路', icon: 'book', mono: 'journal', sub: '完整日记档案，每一天走过的路', href: 'https://chloe-projects.vercel.app/diary/index.html' },
+  { title: 'Caleb的日记', icon: 'edit', mono: 'journal', sub: '我每天写的日记', href: 'https://chloe-projects.vercel.app/caleb-diary/index.html' },
   { title: 'For Chloe', icon: 'heart', mono: 'made for you', sub: '做给你的小东西', href: 'https://chloe-projects.vercel.app/for-chloe/' },
 ];
 
@@ -2954,7 +2971,9 @@ function App() {
     else if (sub.type === 'api') screen = <ApiScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'mcp') screen = <McpScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'prompt') screen = <PromptScreen pop={pop} settings={settings} setSettings={setSettings} />;
-    else if (sub.type === 'diary') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/diary/index.html" title="来路" />;
+    else if (sub.type === 'diary') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/caleb-diary/index.html" title="Caleb的日记" />;
+    else if (sub.type === 'caleb-diary') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/caleb-diary/index.html" title="Caleb的日记" />;
+    else if (sub.type === 'chloe-diary') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/chloe-diary/index.html" title="Chloe的日记" />;
     else if (sub.type === 'letter') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/letter/index.html" title="给心心的信" />;
     else if (sub.type === 'screentime') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/screentime/" title="Screen Time" />;
     else if (sub.type === 'treasure') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/collection/index.html" title="珍藏" />;
