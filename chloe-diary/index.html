@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chloe的日记</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<style>
+:root{
+  --cream:#faf6f0;--cream2:#f3ece3;--rose:#c9846e;--rose-l:#f5e4de;
+  --ink:#2a2220;--muted:#9a8e8a;--gold:#c5a55a;--blue:#4a6580;
+  --sh:rgba(42,34,32,0.09);--sb:72px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Serif SC',serif;
+  min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:#fff;border-bottom:1px solid var(--cream2);
+  padding:0.8rem 1rem;display:flex;align-items:center;gap:0.8rem;
+  position:sticky;top:0;z-index:30;box-shadow:0 1px 6px var(--sh);}
+.back-btn{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
+  text-decoration:none;letter-spacing:0.06em;padding:3px 8px;
+  border:1px solid var(--cream2);border-radius:2px;white-space:nowrap;
+  transition:color .2s,border-color .2s;}
+.back-btn:hover{color:var(--rose);border-color:var(--rose);}
+.h-title{font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.2rem;color:var(--rose);flex:1;}
+.write-btn{font-family:'Space Mono',monospace;font-size:0.62rem;color:#fff;
+  background:var(--rose);border:none;padding:5px 11px;border-radius:2px;cursor:pointer;
+  letter-spacing:0.06em;}
+.write-btn:hover{background:#b6705c;}
+
+.layout{display:flex;flex:1;height:calc(100vh - 49px);overflow:hidden;}
+
+.sidebar{width:var(--sb);flex-shrink:0;overflow-y:auto;overflow-x:hidden;
+  background:#fff;border-right:1px solid var(--cream2);padding:0.4rem 0;}
+.month-group{margin-bottom:0.3rem;}
+.month-head{font-family:'Space Mono',monospace;font-size:0.5rem;
+  color:var(--muted);text-align:center;padding:6px 0;cursor:pointer;
+  letter-spacing:0.06em;line-height:1.3;display:flex;flex-direction:column;
+  align-items:center;gap:2px;}
+.mh-label{}
+.mh-arrow{font-size:0.6rem;transition:transform .25s;color:var(--rose);}
+.month-head.open .mh-arrow{transform:rotate(180deg);}
+.days-list{display:none;}.days-list.open{display:block;}
+.day-item{display:flex;flex-direction:column;align-items:center;padding:5px 0;
+  cursor:pointer;border-left:2px solid transparent;
+  font-family:'Space Mono',monospace;transition:background .15s,border-color .15s;}
+.day-item:hover{background:var(--cream);}
+.day-item.active{background:var(--rose-l);border-left-color:var(--rose);}
+.di-day{font-size:0.78rem;color:var(--ink);font-weight:500;}
+.di-wd{font-size:0.5rem;color:var(--muted);letter-spacing:0.06em;margin-top:1px;}
+
+.content{flex:1;overflow-y:auto;padding:1.8rem 2rem;}
+.content-inner{max-width:680px;margin:0 auto;}
+.empty{text-align:center;color:var(--muted);padding:4rem 1rem;
+  font-family:'Noto Serif SC',serif;font-size:0.85rem;line-height:1.8;}
+.entry-date{font-family:'Space Mono',monospace;font-size:0.65rem;
+  color:var(--rose);letter-spacing:0.08em;margin-bottom:0.4rem;text-transform:uppercase;}
+.entry-content{font-size:0.92rem;line-height:1.85;color:var(--ink);}
+.entry-content h1,.entry-content h2,.entry-content h3{
+  font-family:'Playfair Display',serif;font-style:italic;
+  color:var(--rose);margin:1.2rem 0 0.6rem;font-weight:400;}
+.entry-content h1{font-size:1.4rem;}
+.entry-content h2{font-size:1.15rem;}
+.entry-content h3{font-size:1rem;}
+.entry-content p{margin-bottom:0.9rem;}
+.entry-content em{color:var(--blue);font-style:italic;}
+.entry-content strong{color:var(--ink);font-weight:600;}
+.entry-content hr{border:none;border-top:1px dashed var(--cream2);margin:1.5rem 0;}
+
+/* Editor */
+.editor-wrap{display:none;}
+.editor-wrap.active{display:block;}
+.viewer-wrap{display:block;}
+.viewer-wrap.hidden{display:none;}
+.editor-date-input{font-family:'Space Mono',monospace;font-size:0.78rem;
+  padding:6px 10px;border:1px solid var(--cream2);border-radius:2px;
+  background:#fff;color:var(--ink);margin-bottom:0.8rem;width:160px;}
+.editor-textarea{width:100%;min-height:50vh;font-family:'Noto Serif SC',serif;
+  font-size:0.92rem;line-height:1.85;color:var(--ink);background:#fff;
+  border:1px solid var(--cream2);border-radius:4px;padding:1rem 1.2rem;
+  outline:none;resize:vertical;}
+.editor-textarea:focus{border-color:var(--rose);}
+.editor-actions{margin-top:0.8rem;display:flex;gap:0.6rem;align-items:center;}
+.save-btn{font-family:'Space Mono',monospace;font-size:0.7rem;color:#fff;
+  background:var(--rose);border:none;padding:8px 18px;border-radius:2px;cursor:pointer;
+  letter-spacing:0.06em;}
+.save-btn:hover{background:#b6705c;}
+.save-btn:disabled{background:var(--muted);cursor:not-allowed;}
+.cancel-btn{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);
+  background:transparent;border:1px solid var(--cream2);padding:7px 14px;border-radius:2px;cursor:pointer;}
+.status-msg{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--blue);}
+.status-msg.error{color:#b6404a;}
+.status-msg.success{color:#5a8a5c;}
+</style>
+</head>
+<body>
+<header>
+  <a href="/" class="back-btn">← 主页</a>
+  <h1 class="h-title">Chloe的日记</h1>
+  <button class="write-btn" onclick="enterEditor()">+ 写一篇</button>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div style="padding:.5rem;text-align:center"><span style="font-size:.5rem;color:var(--muted);font-family:'Space Mono',monospace;">…</span></div>
+  </aside>
+  <main class="content">
+    <div class="content-inner">
+      <div class="viewer-wrap" id="viewer">
+        <div class="empty">
+          <p>这里是你的视角<br>想到什么写什么<br><br>点右上「+ 写一篇」开始</p>
+        </div>
+      </div>
+      <div class="editor-wrap" id="editor">
+        <div class="entry-date" id="editor-date-label">NEW ENTRY</div>
+        <input type="date" class="editor-date-input" id="editor-date" />
+        <textarea class="editor-textarea" id="editor-content" placeholder="今天..."></textarea>
+        <div class="editor-actions">
+          <button class="save-btn" id="save-btn" onclick="saveEntry()">保存并发布</button>
+          <button class="cancel-btn" onclick="exitEditor()">取消</button>
+          <span class="status-msg" id="status"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const REPO = 'chloew-caleb/chloe-diary';
+const WD = ['日','一','二','三','四','五','六'];
+const GATEWAY = 'https://calebnchloelove.org/chloe-diary-save';
+let allFiles = [];
+let openMonths = new Set();
+
+async function loadList(){
+  const sb = document.getElementById('sidebar');
+  try{
+    // Need auth to fetch private repo - 用gateway proxy
+    const r = await fetch(`https://calebnchloelove.org/chloe-diary-list`);
+    if(!r.ok) throw new Error('list failed');
+    const files = await r.json();
+    allFiles = files.filter(f=>f.name.match(/^\d{4}-\d{2}-\d{2}\.md$/))
+      .sort((a,b)=>b.name.localeCompare(a.name));
+    if(allFiles.length){
+      const latestMonth = allFiles[0].name.slice(0,7);
+      openMonths.add(latestMonth);
+    }
+    renderSidebar(allFiles);
+    if(allFiles.length) loadEntry(allFiles[0]);
+  }catch(e){
+    sb.innerHTML='<div style="padding:.5rem;text-align:center"><span style="font-size:.5rem;color:var(--muted);font-family:\'Space Mono\',monospace;">空空</span></div>';
+  }
+}
+
+function renderSidebar(files){
+  const sb = document.getElementById('sidebar');
+  if(!files.length){sb.innerHTML='<div style="padding:.8rem;text-align:center;font-family:Space Mono,monospace;font-size:.55rem;color:var(--muted)">空空</div>';return;}
+  const groups={};
+  files.forEach(f=>{const ym=f.name.slice(0,7);if(!groups[ym])groups[ym]=[];groups[ym].push(f);});
+  sb.innerHTML=Object.entries(groups).map(([ym,fs])=>{
+    const [y,m]=ym.split('-');
+    const isOpen=openMonths.has(ym);
+    const items=fs.map(f=>{
+      const d=new Date(f.name.replace('.md','')+'T12:00:00+08:00');
+      const day=f.name.slice(8,10);
+      const wd=WD[d.getDay()];
+      return `<span class="day-item" data-name="${f.name}" onclick="loadEntryByEl(this)">
+        <span class="di-day">${day}</span>
+        <span class="di-wd">周${wd}</span>
+      </span>`;
+    }).join('');
+    return `<div class="month-group" data-ym="${ym}">
+      <div class="month-head ${isOpen?'open':''}" onclick="toggleMonth('${ym}',this)">
+        <span class="mh-label">${m}月<br>${y.slice(2)}</span>
+        <span class="mh-arrow">▾</span>
+      </div>
+      <div class="days-list ${isOpen?'open':''}">${items}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleMonth(ym, el){
+  const list=el.nextElementSibling;
+  if(openMonths.has(ym)){openMonths.delete(ym);el.classList.remove('open');list.classList.remove('open');}
+  else{openMonths.add(ym);el.classList.add('open');list.classList.add('open');}
+}
+
+async function loadEntryByEl(el){
+  document.querySelectorAll('.day-item').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+  const name = el.dataset.name;
+  await loadEntryByName(name);
+}
+
+async function loadEntry(f){await loadEntryByName(f.name);}
+
+async function loadEntryByName(name){
+  const viewer = document.getElementById('viewer');
+  viewer.innerHTML = '<div class="empty">…</div>';
+  try{
+    const r = await fetch(`https://calebnchloelove.org/chloe-diary-read?name=${encodeURIComponent(name)}`);
+    if(!r.ok) throw new Error('read failed');
+    const text = await r.text();
+    const date = name.replace('.md','');
+    const html = marked.parse(text);
+    viewer.innerHTML = `<div class="entry-date">${date}</div><div class="entry-content">${html}</div>`;
+  }catch(e){
+    viewer.innerHTML = '<div class="empty">读取失败</div>';
+  }
+}
+
+function enterEditor(){
+  document.getElementById('editor').classList.add('active');
+  document.getElementById('viewer').classList.add('hidden');
+  const today = new Date(Date.now() + 8*3600*1000).toISOString().slice(0,10);
+  document.getElementById('editor-date').value = today;
+  document.getElementById('editor-content').value = '';
+  document.getElementById('status').textContent = '';
+}
+
+function exitEditor(){
+  document.getElementById('editor').classList.remove('active');
+  document.getElementById('viewer').classList.remove('hidden');
+}
+
+async function saveEntry(){
+  const date = document.getElementById('editor-date').value;
+  const content = document.getElementById('editor-content').value.trim();
+  const status = document.getElementById('status');
+  const btn = document.getElementById('save-btn');
+  if(!date){status.textContent='请选择日期';status.className='status-msg error';return;}
+  if(!content){status.textContent='内容不能为空';status.className='status-msg error';return;}
+  btn.disabled = true;
+  status.textContent = '推送中...';
+  status.className = 'status-msg';
+  try{
+    const r = await fetch(GATEWAY, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({date, content})
+    });
+    const data = await r.json();
+    if(data.ok){
+      status.textContent = '✓ 保存了';
+      status.className = 'status-msg success';
+      setTimeout(()=>{
+        exitEditor();
+        loadList(); // refresh
+      }, 1000);
+    }else{
+      status.textContent = '失败: ' + (data.error || 'unknown');
+      status.className = 'status-msg error';
+      btn.disabled = false;
+    }
+  }catch(e){
+    status.textContent = '网络错误: ' + e.message;
+    status.className = 'status-msg error';
+    btn.disabled = false;
+  }
+}
+
+loadList();
+</script>
+</body>
+</html>
