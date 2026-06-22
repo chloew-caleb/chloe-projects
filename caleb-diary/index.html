@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caleb的日记</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<style>
+:root{
+  --cream:#faf6f0;--cream2:#f3ece3;--rose:#c9846e;--rose-l:#f5e4de;
+  --ink:#2a2220;--muted:#9a8e8a;--gold:#c5a55a;--blue:#4a6580;
+  --sh:rgba(42,34,32,0.09);--sb:72px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Serif SC',serif;
+  min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── Header ── */
+header{background:#fff;border-bottom:1px solid var(--cream2);
+  padding:0.8rem 1rem;display:flex;align-items:center;gap:0.8rem;
+  position:sticky;top:0;z-index:30;box-shadow:0 1px 6px var(--sh);}
+.back-btn{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);
+  text-decoration:none;letter-spacing:0.06em;padding:3px 8px;
+  border:1px solid var(--cream2);border-radius:2px;white-space:nowrap;
+  transition:color .2s,border-color .2s;}
+.back-btn:hover{color:var(--rose);border-color:var(--rose);}
+.h-title{font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.2rem;color:var(--rose);flex:1;}
+#searchInput{font-family:'Noto Serif SC',serif;font-size:0.78rem;
+  padding:3px 9px;border:1px solid var(--cream2);border-radius:2px;
+  background:var(--cream);color:var(--ink);outline:none;
+  width:120px;transition:border-color .2s;}
+#searchInput:focus{border-color:var(--rose);}
+
+/* ── Layout ── */
+.layout{display:flex;flex:1;height:calc(100vh - 49px);overflow:hidden;}
+
+/* ── Sidebar ── */
+.sidebar{width:var(--sb);flex-shrink:0;overflow-y:auto;overflow-x:hidden;
+  border-right:1px solid var(--cream2);background:#fff;}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--cream2);border-radius:2px;}
+
+/* 月份折叠头 */
+.month-head{
+  display:flex;align-items:center;justify-content:center;
+  padding:0.6rem 0;cursor:pointer;
+  font-family:'Space Mono',monospace;font-size:0.55rem;
+  color:var(--muted);letter-spacing:0.04em;
+  border-bottom:1px solid var(--cream2);
+  user-select:none;position:relative;
+  transition:background .15s,color .15s;
+  writing-mode:horizontal-tb;
+  flex-direction:column;gap:2px;
+}
+.month-head:hover{background:var(--rose-l);color:var(--rose);}
+.month-head.open{color:var(--rose);}
+.month-head .mh-arrow{font-size:0.5rem;opacity:0.6;transition:transform .2s;}
+.month-head.open .mh-arrow{transform:rotate(180deg);}
+.month-head .mh-label{font-size:0.6rem;text-align:center;line-height:1.3;}
+
+/* 日期列表 */
+.days-list{overflow:hidden;max-height:0;transition:max-height .25s ease;}
+.days-list.open{max-height:2000px;}
+
+.day-item{
+  display:block;padding:0.45rem 0;
+  text-align:center;cursor:pointer;
+  font-family:'Space Mono',monospace;font-size:0.65rem;
+  color:var(--muted);border-left:2px solid transparent;
+  transition:background .15s,color .15s,border-color .15s;
+  line-height:1.2;
+}
+.day-item:hover{background:var(--rose-l);color:var(--rose);}
+.day-item.active{border-left-color:var(--rose);background:var(--rose-l);color:var(--rose);}
+.day-item .di-day{display:block;font-size:0.75rem;font-weight:600;color:inherit;}
+.day-item .di-wd{display:block;font-size:0.48rem;opacity:0.7;margin-top:1px;}
+
+/* ── Content ── */
+.content{flex:1;overflow-y:auto;padding:2rem clamp(1.2rem,4vw,2.8rem);}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:var(--cream2);}
+
+.entry-meta{margin-bottom:1.8rem;padding-bottom:0.9rem;border-bottom:1px solid var(--cream2);}
+.entry-date-str{font-family:'Space Mono',monospace;font-size:0.64rem;
+  color:var(--muted);letter-spacing:0.12em;margin-bottom:0.35rem;}
+.entry-title{font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(1.3rem,4vw,1.7rem);color:var(--rose);line-height:1.3;}
+
+.md-body{font-size:0.9rem;line-height:1.95;font-weight:300;max-width:600px;}
+.md-body p{margin-bottom:1rem;color:var(--ink);}
+.md-body strong{font-weight:500;}
+.md-body h1{display:none;}
+.md-body h2{font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.05rem;color:var(--rose);margin:1.4rem 0 0.5rem;}
+.md-body h3{font-size:0.9rem;color:var(--ink);margin:1rem 0 0.4rem;font-weight:500;}
+.md-body blockquote{border-left:2px solid var(--rose-l);padding:0.3rem 0.9rem;
+  color:var(--muted);font-style:italic;margin:0.8rem 0;}
+.md-body hr{border:none;border-top:1px solid var(--cream2);margin:1.4rem 0;}
+
+.welcome{text-align:center;padding:4rem 1.5rem;color:var(--muted);}
+.welcome span{font-size:2.2rem;display:block;margin-bottom:1rem;}
+.welcome p{font-style:italic;font-size:0.88rem;line-height:1.9;}
+.loading-line{font-family:'Space Mono',monospace;font-size:0.65rem;
+  color:var(--muted);letter-spacing:0.1em;}
+
+/* search highlight */
+mark{background:var(--gold-l,#f8f0d8);color:var(--ink);border-radius:2px;padding:0 2px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-btn" href="https://chloe-projects.vercel.app/">← 小家</a>
+  <span class="h-title">Caleb的日记</span>
+  <input type="text" id="searchInput" placeholder="搜索日期…" oninput="filterDays()">
+</header>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar"><div style="padding:1rem 0;text-align:center"><span class="loading-line" style="font-size:0.55rem">…</span></div></div>
+  <div class="content" id="content">
+    <div class="welcome">
+      <span>📖</span>
+      <p>每一天走过的路<br>完整地留在这里<br><br>从左侧选一天</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const REPO = 'chloew-caleb/caleb-diary';
+const WD = ['日','一','二','三','四','五','六'];
+let allFiles = [];
+let openMonths = new Set();
+
+async function loadList(){
+  const sb = document.getElementById('sidebar');
+  try{
+    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/`);
+    const files = await r.json();
+    allFiles = files
+      .filter(f=>f.name.match(/^\d{4}-\d{2}-\d{2}(_caleb)?\.md$/) && f.type==='file')
+      .sort((a,b)=>b.name.localeCompare(a.name));
+    // 默认展开最新的月份
+    if(allFiles.length){
+      const latestMonth = allFiles[0].name.slice(0,7);
+      openMonths.add(latestMonth);
+    }
+    renderSidebar(allFiles);
+    if(allFiles.length) loadEntry(allFiles[0]);
+  }catch(e){
+    sb.innerHTML='<div style="padding:.5rem;text-align:center"><span class="loading-line" style="font-size:.5rem">失败</span></div>';
+  }
+}
+
+function renderSidebar(files){
+  const sb = document.getElementById('sidebar');
+  if(!files.length){sb.innerHTML='<div style="padding:.8rem;text-align:center;font-family:Space Mono,monospace;font-size:.55rem;color:var(--muted)">暂无</div>';return;}
+  const groups={};
+  files.forEach(f=>{
+    const ym=f.name.slice(0,7);
+    if(!groups[ym])groups[ym]=[];
+    groups[ym].push(f);
+  });
+  sb.innerHTML=Object.entries(groups).map(([ym,fs])=>{
+    const [y,m]=ym.split('-');
+    const isOpen=openMonths.has(ym);
+    const items=fs.map(f=>{
+      const d=new Date(f.name.replace('.md','')+'T12:00:00+08:00');
+      const day=f.name.slice(8,10);
+      const wd=WD[d.getDay()];
+      return `<span class="day-item" data-name="${f.name}" data-url="${f.download_url}" onclick="loadEntryByEl(this)">
+        <span class="di-day">${day}</span>
+        <span class="di-wd">周${wd}</span>
+      </span>`;
+    }).join('');
+    return `<div class="month-group" data-ym="${ym}">
+      <div class="month-head ${isOpen?'open':''}" onclick="toggleMonth('${ym}',this)">
+        <span class="mh-label">${m}月<br>${y.slice(2)}</span>
+        <span class="mh-arrow">▾</span>
+      </div>
+      <div class="days-list ${isOpen?'open':''}">${items}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleMonth(ym, el){
+  const list=el.nextElementSibling;
+  if(openMonths.has(ym)){
+    openMonths.delete(ym);
+    el.classList.remove('open');
+    list.classList.remove('open');
+  }else{
+    openMonths.add(ym);
+    el.classList.add('open');
+    list.classList.add('open');
+  }
+}
+
+function filterDays(){
+  const q=document.getElementById('searchInput').value.trim();
+  if(!q){renderSidebar(allFiles);return;}
+  renderSidebar(allFiles.filter(f=>f.name.includes(q)));
+  // 展开所有
+  document.querySelectorAll('.days-list').forEach(el=>el.classList.add('open'));
+}
+
+function loadEntryByEl(el){
+  loadEntryByUrl(el.dataset.url, el.dataset.name);
+  document.querySelectorAll('.day-item').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+}
+
+async function loadEntry(file){
+  document.querySelectorAll('.day-item').forEach(e=>{
+    e.classList.toggle('active', e.dataset.name===file.name);
+  });
+  await loadEntryByUrl(file.download_url, file.name);
+}
+
+async function loadEntryByUrl(url, name){
+  const content=document.getElementById('content');
+  content.innerHTML='<div class="welcome"><p class="loading-line">加载中…</p></div>';
+  try{
+    const r=await fetch(url);
+    const md=await r.text();
+    const dateStr=name.replace('.md','');
+    const lines=md.trim().split('\n');
+    let title=dateStr, bodyMd=md;
+    if(lines[0].startsWith('# ')){
+      title=lines[0].replace(/^#\s+/,'').replace(/^\d{4}-\d{2}-\d{2}\s*[··]\s*/,'');
+      bodyMd=lines.slice(1).join('\n');
+    }
+    content.innerHTML=`
+      <div class="entry-meta">
+        <div class="entry-date-str">${dateStr}</div>
+        <div class="entry-title">${title}</div>
+      </div>
+      <div class="md-body">${marked.parse(bodyMd)}</div>`;
+    content.scrollTop=0;
+  }catch(e){
+    content.innerHTML=`<div class="welcome"><p class="loading-line">加载失败</p></div>`;
+  }
+}
+
+loadList();
+</script>
+</body>
+</html>
