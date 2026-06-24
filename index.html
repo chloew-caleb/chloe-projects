@@ -2224,20 +2224,35 @@ function fmtMemTime(iso) {
   } catch { return iso; }
 }
 
+// 防御：tags 可能是 array / JSON-string / 双重编码的 JSON-string
+function normalizeTags(t) {
+  if (Array.isArray(t)) return t;
+  if (typeof t === 'string') {
+    try {
+      const p = JSON.parse(t);
+      if (Array.isArray(p)) return p;
+      if (typeof p === 'string') return normalizeTags(p);
+      return [];
+    } catch { return []; }
+  }
+  return [];
+}
+
 function MemoryCard({ m }) {
   const color = TYPE_COLOR[m.type] || 'var(--primary)';
+  const tags = normalizeTags(m.tags);
   return (
     <div className="card" style={{ padding: '18px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color, letterSpacing: '.1em' }}>
-          {TYPE_ICON[m.type]} {m.type}
+          {TYPE_ICON[m.type] || '·'} {m.type}
         </span>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)' }}>{fmtMemTime(m.created_at)}</span>
       </div>
       <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14.5, color: 'var(--text)', lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{m.content}</div>
-      {(m.tags||[]).length > 0 && (
+      {tags.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-          {(m.tags||[]).map(t => (
+          {tags.map(t => (
             <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)',
               background: 'var(--surface-sunken)', padding: '2px 7px', borderRadius: 6 }}>{t}</span>
           ))}
