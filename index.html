@@ -2213,8 +2213,8 @@ function MemCard({ c, onClick }) {
 }
 
 const MEM_API = 'https://calebnchloelove.org/mcp/e9c9cc157695442bb47f35ecd3601e30/api/memories';
-const TYPE_ICON = { anchor:'⚓', spark:'✦', treasure:'💎', message:'💌' };
-const TYPE_COLOR = { anchor:'var(--primary)', spark:'#6a90b0', treasure:'var(--gold)', message:'var(--primary)' };
+const TYPE_ICON = { anchor:'⚓', spark:'✦', treasure:'💎', message:'💌', preference:'🤍' };
+const TYPE_COLOR = { anchor:'var(--primary)', spark:'#6a90b0', treasure:'var(--gold)', message:'var(--primary)', preference:'#c9846e' };
 
 function fmtMemTime(iso) {
   try {
@@ -2251,20 +2251,32 @@ function MemoryScreen({ go }) {
   const [mems, setMems] = React.useState([]);
   const [tab, setTab] = React.useState('all');
   const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  const [retryKey, setRetryKey] = React.useState(0);
 
   React.useEffect(() => {
-    fetch(MEM_API + '?limit=200')
-      .then(r => r.json())
+    setLoading(true); setError(null);
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 10000);
+    fetch(MEM_API + '?limit=300', { signal: ctrl.signal })
+      .then(r => { if (!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
       .then(data => {
-        const sorted = [...data].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+        clearTimeout(tid);
+        const arr = Array.isArray(data) ? data : [];
+        const sorted = [...arr].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
         setMems(sorted);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-  }, []);
+      .catch(err => {
+        clearTimeout(tid);
+        setError(err.name === 'AbortError' ? '超时了' : '加载失败');
+        setLoading(false);
+      });
+    return () => { clearTimeout(tid); ctrl.abort(); };
+  }, [retryKey]);
 
-  const tabs = ['all','anchor','spark','treasure','message'];
-  const tabLabel = { all:'全部', anchor:'⚓ anchor', spark:'✦ spark', treasure:'💎 treasure', message:'💌 message' };
+  const tabs = ['all','anchor','spark','treasure','message','preference'];
+  const tabLabel = { all:'全部', anchor:'⚓ anchor', spark:'✦ spark', treasure:'💎 treasure', message:'💌 message', preference:'🤍 preference' };
   const filtered = tab === 'all' ? mems : mems.filter(m => m.type === tab);
 
   return (
@@ -2290,6 +2302,11 @@ function MemoryScreen({ go }) {
         {/* cards */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>加载中…</div>
+        ) : error ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>
+            {error}
+            <div onClick={() => setRetryKey(k => k+1)} className="pressable" style={{ marginTop: 12, display: 'inline-block', padding: '6px 14px', borderRadius: 20, background: 'var(--surface-sunken)', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: 12 }}>重新加载</div>
+          </div>
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-3)', fontFamily: 'var(--font-serif)' }}>这里还没有记忆</div>
         ) : (
