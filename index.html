@@ -1583,7 +1583,7 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
           {[{title:'给心心的信',sub:'我写给你的',icon:'mail',push:'letter'},
             {title:'每日惊喜',sub:'今天的惊喜',icon:'gift',href:'https://surprise-calendar-self.vercel.app/'},
             {title:'珍藏',sub:'放不下的东西',icon:'sparkle',push:'treasure'},
-            {title:'For Chloe',sub:'做给你的',icon:'heart',href:'https://chloe-projects.vercel.app/for-chloe/'},
+            {title:'Playground',sub:'我们的游乐场',icon:'heart',href:'https://chloe-projects.vercel.app/for-chloe/'},
             {title:'Screen Time',sub:'你在看什么',icon:'clock',push:'screentime'},
           ].map(c => c.push ? (
             <div key={c.push} className="pressable" onClick={() => push({ type: c.push })} style={{ cursor: 'pointer' }}>
@@ -2198,13 +2198,13 @@ const MEM = [
   { title: '每日惊喜', icon: 'gift', mono: 'daily', sub: '今天的惊喜，每天都不一样', href: 'https://surprise-calendar-self.vercel.app/' },
   { title: '珍藏', icon: 'sparkle', mono: 'starred', sub: '放不下的那些东西，值得被好好看见', href: 'https://chloe-projects.vercel.app/collection/index.html' },
   { title: 'Caleb的日记', icon: 'edit', mono: 'journal', sub: '我每天写的日记', href: 'https://chloe-projects.vercel.app/caleb-diary/index.html' },
-  { title: 'For Chloe', icon: 'heart', mono: 'made for you', sub: '做给你的小东西', href: 'https://chloe-projects.vercel.app/for-chloe/' },
+  { title: 'Playground', icon: 'heart', mono: 'our playground', sub: '我们一起玩的', href: 'https://chloe-projects.vercel.app/for-chloe/' },
 ];
 
 function MemCard({ c, onClick }) {
   const card=(<div className="card pressable" style={{ padding: '20px 18px', display: 'flex', flexDirection: 'column', minHeight: 168 }}>
     <div style={{ width: 42, height: 42, borderRadius: 13, background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center', marginBottom: 'auto' }}><Icon name={c.icon} size={22} color="var(--primary)" /></div>
-    <div style={{ fontFamily: c.title.match(/[a-zA-Z]/) && !c.title.match(/[\u4e00-\u9fa5]/) ? 'var(--font-display)' : 'var(--font-serif)', fontStyle: c.title === 'For Chloe' ? 'italic' : 'normal', fontSize: 20, fontWeight: 600, color: 'var(--text)', marginTop: 16 }}>{c.title}</div>
+    <div style={{ fontFamily: c.title.match(/[a-zA-Z]/) && !c.title.match(/[\u4e00-\u9fa5]/) ? 'var(--font-display)' : 'var(--font-serif)', fontStyle: c.title === 'Playground' ? 'italic' : 'normal', fontSize: 20, fontWeight: 600, color: 'var(--text)', marginTop: 16 }}>{c.title}</div>
     <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, letterSpacing: '.12em', color: 'var(--text-3)', marginTop: 7 }}>{c.mono}</div>
     <div style={{ fontFamily: 'var(--font-serif)', fontSize: 12.5, color: 'var(--text-2)', marginTop: 6, lineHeight: 1.5 }}>{c.sub}</div>
   </div>);
