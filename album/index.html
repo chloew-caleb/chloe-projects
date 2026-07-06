@@ -83,7 +83,7 @@ function renderGrid() {
     return;
   }
   grid.innerHTML = items.map(function(item, idx) {
-    var src = withToken('/album/img/' + item.key);
+    var src = GATEWAY + withToken('/album/img/' + item.key);
     return '<div class="item" onclick="openLightbox(' + idx + ')">'
       + '<img src="' + src + '" loading="lazy">'
       + '<button class="del" onclick="event.stopPropagation();deleteItem(' + item.id + ')">✕</button>'
@@ -93,7 +93,7 @@ function renderGrid() {
 
 function openLightbox(idx) {
   var item = items[idx];
-  var src = withToken('/album/img/' + item.key);
+  var src = GATEWAY + withToken('/album/img/' + item.key);
   document.getElementById('lbImg').src = src;
   var dt = item.created_at ? item.created_at.replace('T', ' ').slice(0, 16) : '';
   var cap = item.caption || '';
