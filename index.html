@@ -1585,7 +1585,7 @@ function HomeScreen({ now, dates, go, push, period, toggleTheme }) {
             {title:'每日惊喜',sub:'今天的惊喜',icon:'gift',href:'https://surprise-calendar-self.vercel.app/'},
             {title:'珍藏',sub:'放不下的东西',icon:'sparkle',push:'treasure'},
             {title:'Playground',sub:'我们的游乐场',icon:'heart',href:'https://chloe-projects.vercel.app/for-chloe/'},
-            {title:'相册',sub:'一起翻看的旧照片',icon:'camera',href:'https://calebnchloelove.org/album/'},
+            {title:'相册',sub:'一起翻看的旧照片',icon:'camera',href:'https://chloe-projects.vercel.app/album/'},
             {title:'Screen Time',sub:'你在看什么',icon:'clock',push:'screentime'},
           ].map(c => c.push ? (
             <div key={c.push} className="pressable" onClick={() => push({ type: c.push })} style={{ cursor: 'pointer' }}>
