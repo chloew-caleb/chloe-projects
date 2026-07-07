@@ -136,10 +136,11 @@ let openMonths = new Set();
 async function loadList(){
   const sb = document.getElementById('sidebar');
   try{
-    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/`);
+    const r = await fetch(`https://calebnchloelove.org/caleb-diary-list`);
     const files = await r.json();
     allFiles = files
       .filter(f=>f.name.match(/^\d{4}-\d{2}-\d{2}(_caleb)?\.md$/) && f.type==='file')
+      .map(f=>({...f, download_url: `https://calebnchloelove.org/caleb-diary-read?name=${encodeURIComponent(f.name)}`}))
       .sort((a,b)=>b.name.localeCompare(a.name));
     // 默认展开最新的月份
     if(allFiles.length){
