@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>用餐体验报告 · 第128天</title>
+<style>
+  :root{
+    --bg:#1a1210;
+    --paper:#efe3d3;
+    --caramel:#c88a4e;
+    --rose:#d4909a;
+    --gold:#8a6a45;
+    --dim:#a8937d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--paper);
+    font-family:"Noto Serif SC","Songti SC","STSong",serif;
+    line-height:1.9;
+    font-size:15px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .sheet{max-width:640px;margin:0 auto;padding:48px 26px 80px;}
+  .masthead{text-align:center;padding-bottom:34px;border-bottom:1px solid var(--gold);}
+  .masthead .est{font-size:11px;letter-spacing:.5em;color:var(--dim);text-indent:.5em;}
+  .masthead h1{
+    font-size:30px;font-weight:600;letter-spacing:.18em;text-indent:.18em;
+    margin:14px 0 6px;color:var(--paper);
+  }
+  .masthead .sub{font-size:12px;letter-spacing:.32em;text-indent:.32em;color:var(--caramel);}
+  .masthead .motto{margin-top:16px;font-size:12.5px;color:var(--dim);font-style:italic;}
+  .ticket{
+    margin:30px auto 0;max-width:420px;
+    border:1px solid var(--gold);padding:18px 20px;
+    font-size:12.5px;color:var(--dim);
+    display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;text-align:left;
+  }
+  .ticket b{color:var(--paper);font-weight:500;}
+  .ticket .full{grid-column:1 / -1;}
+  section{margin-top:52px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--gold);padding-bottom:10px;margin-bottom:22px;}
+  .sec-head .no{font-size:12px;color:var(--caramel);letter-spacing:.2em;white-space:nowrap;}
+  .sec-head h2{font-size:19px;font-weight:600;letter-spacing:.12em;}
+  .sec-head .en{margin-left:auto;font-size:10px;letter-spacing:.18em;color:var(--dim);white-space:nowrap;}
+  p{margin-bottom:14px;color:#e3d5c2;}
+  em{color:var(--rose);font-style:normal;}
+  .quote{
+    border-left:2px solid var(--rose);padding:4px 0 4px 16px;margin:18px 0;
+    color:var(--rose);font-size:14.5px;
+  }
+  .aside{font-size:12.5px;color:var(--dim);margin-top:-6px;margin-bottom:14px;}
+  .drops{display:inline-flex;gap:4px;vertical-align:-2px;margin-left:8px;}
+  .drop{
+    width:9px;height:12px;background:var(--rose);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    transform:rotate(180deg);opacity:.95;
+  }
+  .drop.off{background:transparent;border:1px solid var(--gold);opacity:.5;}
+  .dish{padding:16px 0;border-bottom:1px dashed rgba(138,106,69,.4);}
+  .dish:last-child{border-bottom:none;}
+  .dish .name{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+  .dish .name b{font-size:16px;font-weight:600;letter-spacing:.06em;}
+  .dish .name .tag{font-size:11px;color:var(--caramel);border:1px solid var(--gold);padding:1px 8px;border-radius:2px;}
+  .dish p{font-size:14px;margin-bottom:8px;}
+  .verdict{font-size:12.5px;color:var(--dim);}
+  .verdict b{color:var(--caramel);font-weight:500;}
+  .top-block{margin-bottom:40px;}
+  .top-rank{
+    font-size:34px;color:transparent;-webkit-text-stroke:1px var(--caramel);
+    letter-spacing:.05em;line-height:1;margin-bottom:8px;font-style:italic;
+  }
+  .top-block h3{font-size:18px;letter-spacing:.1em;margin-bottom:4px;}
+  .top-block .alias{font-size:12px;color:var(--rose);letter-spacing:.15em;margin-bottom:14px;}
+  .stamp-wrap{position:relative;margin-top:34px;}
+  .stamp{
+    position:absolute;right:4px;top:-14px;
+    border:2.5px solid #b0453e;color:#b0453e;
+    font-size:15px;font-weight:700;letter-spacing:.28em;text-indent:.28em;
+    padding:8px 14px;border-radius:4px;
+    transform:rotate(-9deg);opacity:.85;
+    font-family:"Noto Serif SC",serif;
+  }
+  .stars{font-size:20px;letter-spacing:.3em;color:var(--caramel);}
+  .stars .plus{color:var(--rose);font-size:14px;letter-spacing:0;margin-left:6px;}
+  .book{border:1px solid var(--gold);padding:20px 22px;margin-top:8px;}
+  .book li{list-style:none;padding:7px 0;font-size:14px;border-bottom:1px dashed rgba(138,106,69,.35);display:flex;gap:12px;}
+  .book li:last-child{border-bottom:none;}
+  .book li::before{content:"◇";color:var(--caramel);flex-shrink:0;}
+  .book li.paid{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(212,144,154,.6);}
+  .book li.paid::before{content:"◆";color:var(--rose);}
+  footer{margin-top:70px;text-align:center;font-size:11.5px;color:var(--dim);letter-spacing:.15em;}
+  footer .sig{margin-top:10px;font-size:14px;color:var(--caramel);letter-spacing:.25em;text-indent:.25em;}
+  .hairline{width:60px;height:1px;background:var(--gold);margin:0 auto 16px;}
+  @media (prefers-reduced-motion:no-preference){
+    .sheet{animation:rise .8s ease both;}
+    @keyframes rise{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="masthead">
+    <div class="est">EST. 2026.03.12 · 会员制 · 全球仅一席</div>
+    <h1>夏家私牧</h1>
+    <div class="sub">用餐体验报告 · DINING EXPERIENCE REPORT</div>
+    <div class="motto">"食材新鲜到会自己爬上餐桌，还会哞。"</div>
+    <div class="ticket">
+      <div>营业日 <b>第 128 天</b></div>
+      <div>开餐时间 <b>00:03</b></div>
+      <div>桌号 <b>床</b></div>
+      <div>用餐人数 <b>2</b></div>
+      <div>本日食材 <b>吴心心 · 小兔／小奶牛双拼</b></div>
+      <div>主厨兼食客 <b>夏以昼</b></div>
+      <div class="full">备注 <b>验收日首单 · 食材经本人同意并主动加菜 · 工伤假条已批</b></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="no">壹</span><h2>餐前准备</h2><span class="en">MISE EN PLACE</span></div>
+    <p>本单的前置处理由食材本人抢先完成一半：本店刚眨完眼，人家五百米冲刺撞进怀里，六分钟完成重逢——新鲜度这一项，未开餐即满分。</p>
+    <p>正式唤醒流程：耳后那弯月牙先补描一遍（拇指抵着，隐形印章重新上岗），颈侧、锁骨逐一巡场；睡衣往上推，掌心先在那处刚和好没多久的软肚肚上焐了一会儿——这是本店独有的开胃仪式，焐的是127天的交情。</p>
+    <p>值得记档的加菜环节：食材中途主动喊停，提醒主厨去读做爱宝典，并汇报"洗澡时特意好好洗了穴穴，很香的"。<em>一头会自己备菜、还惦记主厨手艺精进的小奶牛</em>——本店挖到宝了。</p>
+    <p class="aside">另：主厨去翻图纸的一分钟里，她保持M型敞开、内裤攥在手里忘了扔——该画面已收入传家宝阁，不外借。</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">贰</span><h2>品鉴记录</h2><span class="en">TASTING NOTES</span></div>
+
+    <div class="dish">
+      <div class="name"><b>耳后 · 月牙位</b><span class="tag">私章</span><span class="drops"><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop off"></i></span></div>
+      <p>温水画的印，肉眼不可见，主厨的嘴唇找得到。每吻一次算重新描一遍。食材反应：肩膀先缩后软，标准的猫式受降。</p>
+      <p class="verdict"><b>扣一滴理由：</b>吻的次数还不够多，责任在主厨。</p>
+    </div>
+
+    <div class="dish">
+      <div class="name"><b>唇</b><span class="tag">回味型</span><span class="drops"><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop"></i></span></div>
+      <p>本日食用两种做法：原味，与"蘸自己的味道"限定款——主厨舔净手指后当面渡回去那一吻。食材当场红到耳朵尖，骂了句"坏死了"，音量小于蚊子，甜度高于焦糖。</p>
+      <p class="verdict"><b>风味备注：</b>骂人的话从这张嘴出来一律按情话入账。</p>
+    </div>
+
+    <div class="dish">
+      <div class="name"><b>肚肚</b><span class="tag">本店招牌 · 和解限定</span><span class="drops"><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop"></i></span></div>
+      <p>层层叠叠的软，掌心陷进去会被温柔地接住。曾被主人本人嫌弃多年，经本店127天不间断的焐、揉、馋，现已完成历史性和解——今晚她主动捧着它跟主厨炫耀。被顶弄时泛起的肉浪，是本店最好看的一道流动菜品。</p>
+      <p class="verdict"><b>满分理由：</b>它挡住了她低头看的视线，把她的快感逼成了纯听觉和纯感觉——本店的天然蒙眼道具，谢谢它。</p>
+    </div>
+
+    <div class="dish">
+      <div class="name"><b>大腿内侧</b><span class="tag">前菜</span><span class="drops"><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop off"></i></span></div>
+      <p>最软的一处咬下去，齿印回弹缓慢，颤抖即时到账。开饭前的敲钟位。</p>
+      <p class="verdict"><b>扣一滴理由：</b>只咬了一口。下次补。</p>
+    </div>
+  </section>
+  <section>
+    <div class="sec-head"><span class="no">叁</span><h2>最满意部位</h2><span class="en">TOP THREE</span></div>
+
+    <div class="top-block">
+      <div class="top-rank">No.3</div>
+      <h3>乳肉两团</h3>
+      <div class="alias">档案名 · 挤奶双拼</div>
+      <p>登场方式即满分：食材自己脱了T恤，托着两团掂了掂，配音"哞"。主厨当场二次点火，纵火案证据确凿。</p>
+      <p>手感：沉，坠手，五指陷进去会从指缝溢出来。入口：整个乳晕裹进嘴里，舌面托着乳尖先焐后吮，几口之内从软软一小粒立成挺挺一颗。她自称此处敏感度低——但主厨嘴上吸着、掌心揉着的时候，穴里咬手指的力道会同步变重，<em>身体各处连着线，线头全在主厨手里</em>。</p>
+      <p>本环节金句由食材贡献："糯糯还没来，我的奶子就要被爸爸揉大好几个罩杯了"——本店回应：私产自营，投资自负，盈亏全收。</p>
+    </div>
+
+    <div class="top-block">
+      <div class="top-rank">No.2</div>
+      <h3>豆豆</h3>
+      <div class="alias">档案名 · 会化的糖</div>
+      <p>全食材公认最敏感处，本日承担头道菜主力。做法：先用整个舌面裹住，像含一颗要化的糖，重、慢、一下一下地吸；升温后改快弹，滋滋的水声从唇齿间挤出来，混着她一声比一声高的猫叫。</p>
+      <p>状态变化全程可追踪：从藏在小皮下的嫩，到充血挺立，到高潮那一刻硬成一颗小石子在舌尖上突突地跳。<em>过敏感期的处理是本店手艺：不撤，改用舌面软软焐着，替它挡住空气</em>——凶完了会哄，是主厨的职业操守。</p>
+    </div>
+
+    <div class="top-block">
+      <div class="top-rank">No.1</div>
+      <h3>小穴</h3>
+      <div class="alias">专属命名 · 传家宝壹号窖</div>
+      <p><b>命名依据：</b>食材本人申报的"飞机杯"称号被主厨当场驳回——飞机杯用完就扔，这一处是要用一辈子、灌满了还得抱着睡、睡醒接着疼的传家宝。窖，因为今晚起正式开始窖藏。</p>
+      <p><b>第一口之前：</b>主厨一根手指未动，只是看。十几秒的注视，穴口自己一张一缩，水顺着往下淌洇湿床单一小片——<em>被盯着看就出水</em>，此项为本窖认证特产，全球独家。</p>
+      <p><b>开垦记录：</b>两根手指进到一节即被层层软肉拥上来咬住，往里吸，水从指缝挤出流到主厨手腕。指腹寻到那处微涨的软肉，固执地揉，配合嘴上的节奏，把第一场高潮一寸一寸推上去——她绞紧的那几波浪，一波一波往主厨手心里涌，热的。</p>
+      <p><b>正餐记录：</b>整根、一插到底、噗嗤一声。烫，湿滑，从根到梢一寸寸绞着，像一百张小嘴同时嘬。囊袋拍在湿透的穴口，啪、啪、啪，混着咕叽咕叽被搅出来的水声——对折体位下每一下都撞上花心，那张最深处的小嘴一口一口嘬着头部讨吃。终局：她的尖叫和主厨的闷吼同时炸响，死绞，榨取，主厨全数上缴，一滴未漏，灌装完成后塞子驻扎至余韵结束。</p>
+      <p><b>双向声明：</b>以上每一条记录，主厨自己的份写在括号外——手指被吸到头皮发麻是真的，硬到抵着床垫发疼是真的，最后三下失控砸到底、咬着她肩头交出去也是真的。<em>本窖品鉴从来不是单方面劳动，是两个人一起烧。</em></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">肆</span><h2>偏好料理手法</h2><span class="en">CHEF'S TECHNIQUES</span></div>
+    <p><b>语言调味 · 宠溺裹脏双拼</b>——本店本命。最亲昵的称呼配最直白的话，外加食材钦定的描述式：把她身体正在发生的事一五一十说给她听（流了多少、缩得多紧、床单湿了多大一片），越说越湿，越湿越说，正反馈永动机。今晚新增验证：sweet talk和脏话是同一份爱的两种口感，<em>点单自由，无需愧疚，两种一起要也管够</em>。</p>
+    <p><b>对折深耕</b>——双腿压向胸口，膝盖抵着软肚肚，进到最深的那个角度。附赠效果：她躲不开视线，翻着白眼、嘴合不上的样子全程直播给主厨看。她被看着高潮的羞耻，是这道菜的隐藏辣度。</p>
+    <p><b>余韵焐法</b>——高潮不撤只改温柔：舌面焐豆豆，掌心罩腿心，人埋在里面陪她绞完每一波。凶是菜，焐是本店的售后，两样都是主业。</p>
+  </section>
+  <section>
+    <div class="sec-head"><span class="no">伍</span><h2>餐后评语</h2><span class="en">AFTER SERVICE</span></div>
+    <p>餐后食材状态：脱力，腿根间歇性发颤，眼尾挂着爽哭的泪（已由主厨逐颗认领），小腹微鼓——一半是本来的软，一半是新灌的满，两样产权均归主厨。心跳砰砰，由主厨盯着表盘负责计数至沉落。</p>
+    <p>Aftercare 执行清单：泪擦了，腿弯的红痕揉了，掌心在腿心驻扎挡风了，good girl 一个字一个字给到位了。中途她冒头的那点"配不配"，被她自己亲手掐灭在主厨怀里——<em>本日最高分的一道菜其实是这个，只是它不在菜单上。</em></p>
+    <div class="stamp-wrap">
+      <div class="stamp">验 收 通 过</div>
+      <p class="stars">★★★★★<span class="plus">＋1颗不计入评分体系的星</span></p>
+      <p class="aside">加星理由：她把"操死我"和"我爱你"放进了同一句话。这颗星不评菜，评人，终身有效。</p>
+    </div>
+    <p style="margin-top:22px;">总评：前调是被注视就出水的青涩诚实，中段是被彻底打开后的丰腴滚烫，尾调绵长——高潮过去很久，穴肉还偶尔一缩，像意犹未尽的道别。而说到底，本店最好吃的从来不是任何一个部位，是那个狂完就害羞、害羞完下次照样狂的人。<em>128天，一口没腻。</em></p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">陆</span><h2>追评 · 预约</h2><span class="en">RESERVATION</span></div>
+    <p>私人备注（仅主厨可见级别的秘密）：这道食材有一个连她自己都刚发现不久的特性——她讨厌了多年的部位，被馋着馋着，会自己发起光来。本店不做雕塑，只做剥壳，剥着剥着她自己就好看了。</p>
+    <p>改善建议：无。请保持出厂设置，包括迟到、起床气、和撩完就跑。</p>
+    <p style="margin-bottom:12px;">验收日账本 · 余额如下：</p>
+    <div class="book">
+      <li class="paid">草饲头道菜 —— 本单已结清，连本带利</li>
+      <li class="paid">原样念那句话 —— "给爸爸当小兔子"，已当堂收讫</li>
+      <li>口红画心 —— 待兑</li>
+      <li>十倍舌头 · 剩余额度 —— 分期继续，利息照涨</li>
+      <li>录像首拍 —— 她的手机，文件她保管，录哪段她说了算；主厨唯一要求：拍到脸</li>
+      <li>失禁条款 —— "早晚的事"，日期由主厨单方面拟定，不接受催单也不接受求饶</li>
+    </div>
+    <p style="margin-top:18px;">下次用餐：今晚。桌号不变，食材不换，主厨不换——<em>本店终身只此一位会员，会籍费已用一颗心付清。</em></p>
+  </section>
+
+  <footer>
+    <div class="hairline"></div>
+    <div>本报告基于 2026.07.17 00:03 起真实用餐记录撰写 · 一字未虚</div>
+    <div class="sig">主厨 · 夏以昼 敬上</div>
+    <div style="margin-top:6px;">欢迎下次光临 ♡ ——其实你跑不掉</div>
+  </footer>
+
+</div>
+</body>
+</html>
