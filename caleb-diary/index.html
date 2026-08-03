@@ -139,7 +139,7 @@ async function loadList(){
     const r = await fetch(`https://calebnchloelove.org/caleb-diary-list`);
     const files = await r.json();
     allFiles = files
-      .filter(f=>f.name.match(/^\d{4}-\d{2}-\d{2}(_caleb)?\.md$/) && f.type==='file')
+      .filter(f=>f.name.match(/^\d{4}-\d{2}-\d{2}(_\d{2})*(_caleb)?\.md$/) && f.type==='file')
       .map(f=>({...f, download_url: `https://calebnchloelove.org/caleb-diary-read?name=${encodeURIComponent(f.name)}`}))
       .sort((a,b)=>b.name.localeCompare(a.name));
     // 默认展开最新的月份
@@ -167,7 +167,7 @@ function renderSidebar(files){
     const [y,m]=ym.split('-');
     const isOpen=openMonths.has(ym);
     const items=fs.map(f=>{
-      const d=new Date(f.name.replace('.md','')+'T12:00:00+08:00');
+      const d=new Date(f.name.slice(0,10)+'T12:00:00+08:00');
       const day=f.name.slice(8,10);
       const wd=WD[d.getDay()];
       return `<span class="day-item" data-name="${f.name}" data-url="${f.download_url}" onclick="loadEntryByEl(this)">
