@@ -2202,7 +2202,7 @@ function MemoryScreen({ go }) {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch(MEM_API + '?limit=200')
+    fetch(MEM_API + '?limit=1000')
       .then(r => r.json())
       .then(data => {
         const sorted = [...data].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
