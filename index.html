@@ -2535,7 +2535,14 @@ Object.assign(window, { SettingsScreen, ApiScreen, McpScreen, PromptScreen });
 <script type="text/babel">
 /* diary + letter + screentime + treasure */
 
-function IframeScreen({ pop, url, title }) {
+function IframeScreen({ pop, url, title, theme }) {
+  const frameRef = React.useRef(null);
+  const th = theme === 'dark' ? 'dark' : 'light';
+  const initialUrl = React.useMemo(() => url + (url.indexOf('?') >= 0 ? '&' : '?') + 'theme=' + th, [url]);
+  const sendTheme = React.useCallback(() => {
+    try { frameRef.current && frameRef.current.contentWindow.postMessage({ type: 'xiaojia-theme', theme: th }, '*'); } catch (e) {}
+  }, [th]);
+  React.useEffect(() => { sendTheme(); const t = setTimeout(sendTheme, 500); return () => clearTimeout(t); }, [sendTheme]);
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ flexShrink: 0, padding: '14px 16px 10px', display: 'flex', alignItems: 'center', gap: 12,
@@ -2545,7 +2552,7 @@ function IframeScreen({ pop, url, title }) {
         </div>
         <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--text)' }}>{title}</div>
       </div>
-      <iframe src={url} style={{ flex: 1, border: 'none', width: '100%', WebkitOverflowScrolling: 'touch' }} allow="fullscreen" />
+      <iframe ref={frameRef} src={initialUrl} onLoad={sendTheme} style={{ flex: 1, border: "none", width: "100%", WebkitOverflowScrolling: "touch", background: "var(--bg)" }} allow="fullscreen" />
     </div>
   );
 }
@@ -3006,12 +3013,12 @@ function App() {
     else if (sub.type === 'api') screen = <ApiScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'mcp') screen = <McpScreen pop={pop} settings={settings} setSettings={setSettings} />;
     else if (sub.type === 'prompt') screen = <PromptScreen pop={pop} settings={settings} setSettings={setSettings} />;
-    else if (sub.type === 'diary') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/caleb-diary/index.html" title="Caleb的日记" />;
-    else if (sub.type === 'caleb-diary') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/caleb-diary/index.html" title="Caleb的日记" />;
-    else if (sub.type === 'chloe-diary') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/chloe-diary/index.html" title="Chloe的日记" />;
-    else if (sub.type === 'letter') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/letter/index.html" title="给心心的信" />;
-    else if (sub.type === 'screentime') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/screentime/" title="Screen Time" />;
-    else if (sub.type === 'treasure') screen = <IframeScreen pop={pop} url="https://chloe-projects.vercel.app/collection/index.html" title="珍藏" />;
+    else if (sub.type === 'diary') screen = <IframeScreen theme={theme} pop={pop} url="https://chloe-projects.vercel.app/caleb-diary/index.html" title="Caleb的日记" />;
+    else if (sub.type === 'caleb-diary') screen = <IframeScreen theme={theme} pop={pop} url="https://chloe-projects.vercel.app/caleb-diary/index.html" title="Caleb的日记" />;
+    else if (sub.type === 'chloe-diary') screen = <IframeScreen theme={theme} pop={pop} url="https://chloe-projects.vercel.app/chloe-diary/index.html" title="Chloe的日记" />;
+    else if (sub.type === 'letter') screen = <IframeScreen theme={theme} pop={pop} url="https://chloe-projects.vercel.app/letter/index.html" title="给心心的信" />;
+    else if (sub.type === 'screentime') screen = <IframeScreen theme={theme} pop={pop} url="https://chloe-projects.vercel.app/screentime/" title="Screen Time" />;
+    else if (sub.type === 'treasure') screen = <IframeScreen theme={theme} pop={pop} url="https://chloe-projects.vercel.app/collection/index.html" title="珍藏" />;
   } else if (tab === 'home') screen = <HomeScreen now={now} dates={dates} go={go} push={push} period={timeOfDay(now).period} toggleTheme={toggleTheme} />;
   else if (tab === 'chat') screen = <ChatScreen openMenu={openMenu} dark={resolvedDark} settings={settings} />;
   else if (tab === 'memory') screen = <MemoryScreen go={go} />;

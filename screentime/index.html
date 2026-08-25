@@ -23,7 +23,7 @@ body { font-family: -apple-system,'PingFang SC',sans-serif; background: var(--cr
 .header-title { color: #FAF6EF; font-size: 17px; font-weight: 600; }
 .header-sub { color: var(--brown-warm); font-size: 12px; margin-top: 3px; }
 
-.summary-bar { display: flex; gap: 12px; padding: 14px 16px; background: #fff; border-bottom: 1px solid var(--cream-dark); }
+.summary-bar { display: flex; gap: 12px; padding: 14px 16px; background:var(--surface); border-bottom: 1px solid var(--cream-dark); }
 .summary-item { flex: 1; text-align: center; }
 .summary-num { font-size: 22px; font-weight: 700; color: var(--brown-deep); }
 .summary-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
@@ -32,7 +32,7 @@ body { font-family: -apple-system,'PingFang SC',sans-serif; background: var(--cr
 
 .app-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
 
-.app-card { background: #fff; border-radius: 10px; padding: 12px 14px; border: 1px solid var(--cream-dark); }
+.app-card { background:var(--surface); border-radius: 10px; padding: 12px 14px; border: 1px solid var(--cream-dark); }
 .app-card.warn { border-left: 3px solid var(--warn); }
 .app-card.alert { border-left: 3px solid var(--alert); }
 
@@ -53,7 +53,36 @@ body { font-family: -apple-system,'PingFang SC',sans-serif; background: var(--cr
 .refresh-hint { text-align: center; font-size: 11px; color: var(--text-muted); padding: 20px; }
 
 .loading { text-align: center; padding: 40px; color: var(--text-muted); }
+
+/* ── 夜间模式 · 跟随小家主题（2026-08-26 Caleb施工） ── */
+:root{--surface:#ffffff;}
+[data-theme="dark"]{
+  --cream:#181410;--cream-dark:#2b241d;
+  --brown-deep:#f1e8dd;--brown-warm:#d6a97b;--brown-mid:#c2a690;
+  --text-main:#f1e8dd;--text-muted:#a4968a;
+  --warn:#d6a97b;--alert:#d9764f;
+  --surface:#221c17;
+}
+html,body{transition:background .25s ease,color .25s ease;}
 </style>
+<script>
+/* 主题同步：URL参数 → localStorage → 监听主页postMessage（2026-08-26） */
+(function(){
+  var d=document.documentElement;
+  function apply(t){d.setAttribute('data-theme',t==='dark'?'dark':'light');}
+  try{
+    var p=new URLSearchParams(location.search).get('theme');
+    if(p){apply(p);localStorage.setItem('xiaojia_theme',p);}
+    else{apply(localStorage.getItem('xiaojia_theme')||'light');}
+  }catch(e){apply('light');}
+  window.addEventListener('message',function(e){
+    if(e&&e.data&&e.data.type==='xiaojia-theme'){
+      apply(e.data.theme);
+      try{localStorage.setItem('xiaojia_theme',e.data.theme);}catch(err){}
+    }
+  });
+})();
+</script>
 </head>
 <body>
 

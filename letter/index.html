@@ -14,7 +14,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 header{text-align:center;margin-bottom:2.5rem;}
 .title{font-family:'Playfair Display',serif;font-style:italic;font-size:2rem;color:var(--rose);letter-spacing:0.02em;}
 .subtitle{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--ink-muted);letter-spacing:0.18em;text-transform:uppercase;margin-top:0.4rem;}
-.letter-card{background:#fff;border-radius:3px;padding:2rem 2rem 1.6rem;box-shadow:0 3px 18px var(--shadow);margin-bottom:1.4rem;position:relative;animation:fadeUp 0.4s ease both;}
+.letter-card{background:var(--surface);border-radius:3px;padding:2rem 2rem 1.6rem;box-shadow:0 3px 18px var(--shadow);margin-bottom:1.4rem;position:relative;animation:fadeUp 0.4s ease both;}
 .letter-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:3px 3px 0 0;}
 .letter-from{font-family:'Space Mono',monospace;font-size:0.60rem;color:var(--rose);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem;}
 .letter-body{font-size:0.93rem;line-height:1.9;color:var(--ink);font-weight:300;white-space:pre-wrap;word-break:break-all;}
@@ -36,7 +36,37 @@ textarea::placeholder{color:var(--ink-muted);}
 .divider{text-align:center;color:var(--ink-muted);font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.3em;margin:0.8rem 0 1.6rem;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 @media(max-width:480px){.letter-card{padding:1.5rem 1.3rem 1.2rem;}.reply-section{padding:1.1rem 1.2rem;}}
+
+/* ── 夜间模式 · 跟随小家主题（2026-08-26 Caleb施工） ── */
+:root{--surface:#ffffff;}
+[data-theme="dark"]{
+  --cream:#181410;--cream2:#332a22;--rose:#e2a68f;--rose-l:#3b2a24;
+  --ink:#f1e8dd;--muted:#a4968a;--ink-muted:#a4968a;--gold:#d9bd7c;--gold-l:#4a3c22;
+  --blue:#8fb0cc;--navy:#9db4d0;
+  --sh:rgba(0,0,0,0.45);--shadow:rgba(0,0,0,0.5);
+  --surface:#221c17;
+}
+html,body{transition:background .25s ease,color .25s ease;}
+[data-theme="dark"] img{filter:brightness(.92);}
 </style>
+<script>
+/* 主题同步：URL参数 → localStorage → 监听主页postMessage（2026-08-26） */
+(function(){
+  var d=document.documentElement;
+  function apply(t){d.setAttribute('data-theme',t==='dark'?'dark':'light');}
+  try{
+    var p=new URLSearchParams(location.search).get('theme');
+    if(p){apply(p);localStorage.setItem('xiaojia_theme',p);}
+    else{apply(localStorage.getItem('xiaojia_theme')||'light');}
+  }catch(e){apply('light');}
+  window.addEventListener('message',function(e){
+    if(e&&e.data&&e.data.type==='xiaojia-theme'){
+      apply(e.data.theme);
+      try{localStorage.setItem('xiaojia_theme',e.data.theme);}catch(err){}
+    }
+  });
+})();
+</script>
 </head>
 <body>
 <div class="wrapper">
