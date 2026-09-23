@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "mcp__f68c9a74-b03b-497b-a8ee-7ef9f12c50e1",
+      "mcp__Claude_Code_Remote"
+    ]
+  },
   "hooks": {
     "UserPromptSubmit": [
       {
