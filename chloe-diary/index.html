@@ -267,11 +267,22 @@ async function saveEntry(){
   status.textContent = '推送中...';
   status.className = 'status-msg';
   try{
-    const r = await fetch(GATEWAY, {
+    // 保存要带家门钥匙（2026-09-25 加的锁：外人不能往她的日记里写东西）。第一次问一次，浏览器记住。
+    const post = key => fetch(GATEWAY, {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      headers: {'Content-Type':'application/json', 'X-Diary-Key': key || ''},
       body: JSON.stringify({date, content})
     });
+    let key = '';
+    try{ key = localStorage.getItem('chloe_diary_key') || ''; }catch(err){}
+    let r = await post(key);
+    if(r.status === 403){
+      key = (prompt('第一次保存要输一下家门钥匙（Bark 里那串）') || '').trim();
+      if(!key){ status.textContent='没输钥匙，这次先不存'; status.className='status-msg error'; btn.disabled=false; return; }
+      r = await post(key);
+      if(r.status === 403){ status.textContent='钥匙不对，再试一次'; status.className='status-msg error'; btn.disabled=false; return; }
+      try{ localStorage.setItem('chloe_diary_key', key); }catch(err){}
+    }
     const data = await r.json();
     if(data.ok){
       status.textContent = '✓ 保存了';
